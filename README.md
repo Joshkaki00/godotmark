@@ -21,9 +21,69 @@ GodotMark is a **comprehensive 3D gaming benchmark** designed specifically for A
 
 ---
 
-## 🚀 Quick Start (Raspberry Pi 5)
+## 🚀 Quick Start (Raspberry Pi)
 
-### 1. Build the Benchmark
+### 1. Install V3D Driver Stack (Required)
+
+**For optimal performance, you MUST configure the V3D graphics driver first!**
+
+```bash
+cd godotmark
+sudo ./install_v3d_stack.sh
+```
+
+This automated script will:
+- ✅ Enable V3D KMS driver in `/boot/config.txt`
+- ✅ Install Mesa Vulkan drivers
+- ✅ Install Vulkan tools for verification
+- ✅ Verify your configuration
+- ✅ Guide you through rebooting if needed
+
+**Time:** ~5 minutes + reboot
+
+<details>
+<summary>Manual Installation (Advanced Users)</summary>
+
+If you prefer to configure manually:
+
+1. Edit `/boot/config.txt` (or `/boot/firmware/config.txt` on newer OS):
+   ```bash
+   sudo nano /boot/config.txt
+   ```
+
+2. Add under `[pi4]` or `[pi5]`:
+   ```
+   dtoverlay=vc4-kms-v3d
+   max_framebuffers=2
+   ```
+
+3. Install Mesa and Vulkan packages:
+   ```bash
+   sudo apt update
+   sudo apt install mesa-vulkan-drivers libvulkan1 vulkan-tools
+   ```
+
+4. Reboot:
+   ```bash
+   sudo reboot
+   ```
+
+5. Verify installation:
+   ```bash
+   cd godotmark
+   ./check_v3d_setup.sh
+   ```
+
+</details>
+
+**Why is this important?**
+- Without V3D, you'll use software rendering (10x slower!)
+- GodotMark will detect missing drivers and show a warning
+- Benchmark results will be inaccurate without proper GPU acceleration
+
+---
+
+### 2. Build the Benchmark
 
 ```bash
 cd /mnt/exfat_drive/dev/godotmark-project/godotmark
