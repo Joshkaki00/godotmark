@@ -42,6 +42,17 @@ cd /mnt/exfat_drive/dev/godotmark-project/godotmark
 
 ## 📋 What Each Step Does
 
+### Step 0: Install V3D Driver Stack
+```bash
+sudo ./install_v3d_stack.sh
+```
+- Enables V3D KMS driver in `/boot/config.txt`
+- Installs Mesa Vulkan drivers (GPU acceleration)
+- Installs verification tools
+- Guides you through rebooting
+- **Time:** ~5 minutes + reboot
+- **Why:** Enables hardware-accelerated graphics (10x performance!)
+
 ### Step 1: Navigate to Project
 ```bash
 cd /mnt/exfat_drive/dev/godotmark-project/godotmark
