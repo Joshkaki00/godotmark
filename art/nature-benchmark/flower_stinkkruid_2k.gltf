@@ -1,0 +1,407 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v4.2.60",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0,
+        1,
+        2,
+        3
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "flower_stinkkruid_a_LOD0",
+      "translation": [
+        -0.5450241565704346,
+        0,
+        0
+      ]
+    },
+    {
+      "mesh": 1,
+      "name": "flower_stinkkruid_b_LOD0"
+    },
+    {
+      "mesh": 2,
+      "name": "flower_stinkkruid_c_LOD0",
+      "translation": [
+        0.41893234848976135,
+        0.00030236548627726734,
+        -0.0003654545289464295
+      ]
+    },
+    {
+      "mesh": 3,
+      "name": "flower_stinkkruid_d_LOD0",
+      "translation": [
+        0.8891304731369019,
+        -0.0020713014528155327,
+        0.0016710838535800576
+      ]
+    }
+  ],
+  "materials": [
+    {
+      "alphaMode": "BLEND",
+      "doubleSided": true,
+      "name": "flower_stinkkruid",
+      "normalTexture": {
+        "index": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Plane.063",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0
+        }
+      ]
+    },
+    {
+      "name": "Plane.081",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 4,
+            "NORMAL": 5,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 0
+        }
+      ]
+    },
+    {
+      "name": "Plane.125",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 8,
+            "NORMAL": 9,
+            "TEXCOORD_0": 10
+          },
+          "indices": 11,
+          "material": 0
+        }
+      ]
+    },
+    {
+      "name": "Plane.131",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 12,
+            "NORMAL": 13,
+            "TEXCOORD_0": 14
+          },
+          "indices": 15,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/jpeg",
+      "name": "flower_stinkkruid_nor_gl",
+      "uri": "textures/flower_stinkkruid_nor_gl_2k.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "name": "flower_stinkkruid_diff-flower_stinkkruid_alpha",
+      "uri": "textures/flower_stinkkruid_diff_2k.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "name": "flower_stinkkruid_rough",
+      "uri": "textures/flower_stinkkruid_arm_2k.jpg"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 45580,
+      "max": [
+        0.19177821278572083,
+        0.17298592627048492,
+        0.14040330052375793
+      ],
+      "min": [
+        -0.15822938084602356,
+        -0.002976861549541354,
+        -0.16009186208248138
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 45580,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 45580,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5123,
+      "count": 119733,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5126,
+      "count": 35903,
+      "max": [
+        0.14238241314888,
+        0.1494433581829071,
+        0.1289207935333252
+      ],
+      "min": [
+        -0.10627175867557526,
+        -0.0032401022035628557,
+        -0.07969766110181808
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 5,
+      "componentType": 5126,
+      "count": 35903,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 6,
+      "componentType": 5126,
+      "count": 35903,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 7,
+      "componentType": 5123,
+      "count": 95043,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 8,
+      "componentType": 5126,
+      "count": 2916,
+      "max": [
+        0.11279593408107758,
+        0.14186786115169525,
+        0.11173894256353378
+      ],
+      "min": [
+        -0.10099292546510696,
+        -0.005533616524189711,
+        -0.07765718549489975
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 9,
+      "componentType": 5126,
+      "count": 2916,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 10,
+      "componentType": 5126,
+      "count": 2916,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 11,
+      "componentType": 5123,
+      "count": 12489,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 12,
+      "componentType": 5126,
+      "count": 3572,
+      "max": [
+        0.11300325393676758,
+        0.12366211414337158,
+        0.10243317484855652
+      ],
+      "min": [
+        -0.10613557696342468,
+        -0.0014632734237238765,
+        -0.11881137639284134
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 13,
+      "componentType": 5126,
+      "count": 3572,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 14,
+      "componentType": 5126,
+      "count": 3572,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 15,
+      "componentType": 5123,
+      "count": 14883,
+      "type": "SCALAR"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 546960,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 546960,
+      "byteOffset": 546960,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 364640,
+      "byteOffset": 1093920,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 239466,
+      "byteOffset": 1458560,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 430836,
+      "byteOffset": 1698028,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 430836,
+      "byteOffset": 2128864,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 287224,
+      "byteOffset": 2559700,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 190086,
+      "byteOffset": 2846924,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 34992,
+      "byteOffset": 3037012,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 34992,
+      "byteOffset": 3072004,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 23328,
+      "byteOffset": 3106996,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 24978,
+      "byteOffset": 3130324,
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 42864,
+      "byteOffset": 3155304,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 42864,
+      "byteOffset": 3198168,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 28576,
+      "byteOffset": 3241032,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 29766,
+      "byteOffset": 3269608,
+      "target": 34963
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 3299376,
+      "uri": "flower_stinkkruid.bin"
+    }
+  ]
+}

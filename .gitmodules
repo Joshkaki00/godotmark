@@ -1,0 +1,7 @@
+[submodule "godot-cpp"]
+	path = godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 4.4
+[submodule "addons/godot-jolt"]
+	path = addons/godot-jolt
+	url = https://github.com/godot-jolt/godot-jolt.git

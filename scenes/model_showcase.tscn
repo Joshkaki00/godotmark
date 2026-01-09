@@ -1,0 +1,77 @@
+[gd_scene load_steps=9 format=3 uid="uid://b8k70anx4ow2e"]
+
+[ext_resource type="PackedScene" uid="uid://b5dx826utlmsv" path="res://art/model-test/marble_bust_01_2k.gltf/marble_bust_01_2k.gltf" id="1"]
+[ext_resource type="Script" uid="uid://d2v8cwogf5gtd" path="res://scripts/model_showcase.gd" id="2"]
+[ext_resource type="Script" uid="uid://bhhc8dg27adb6" path="res://scripts/cinematic_camera.gd" id="3"]
+[ext_resource type="AudioStream" uid="uid://5ocp7f3qwe57" path="res://art/model-test/Excelsior In Aeternum.ogg" id="4"]
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 1
+background_color = Color(0.1, 0.1, 0.12, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.3, 0.3, 0.35, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+ssao_radius = 2.0
+glow_intensity = 0.5
+glow_bloom = 0.1
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_1"]
+emission_shape = 1
+emission_sphere_radius = 2.0
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 1.5
+gravity = Vector3(0, -0.5, 0)
+scale_min = 0.02
+scale_max = 0.05
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_1"]
+albedo_color = Color(1, 1, 0.9, 0.8)
+emission_enabled = true
+emission = Color(1, 0.95, 0.8, 1)
+emission_energy_multiplier = 2.0
+
+[sub_resource type="SphereMesh" id="SphereMesh_1"]
+material = SubResource("StandardMaterial3D_1")
+radius = 0.02
+height = 0.04
+
+[node name="ModelShowcase" type="Node3D"]
+script = ExtResource("2")
+
+[node name="MarbleBust" parent="." instance=ExtResource("1")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 2, 10)
+fov = 60.0
+script = ExtResource("3")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 3, 8, 3)
+light_energy = 1.2
+directional_shadow_mode = 0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
+
+[node name="Particles" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+emitting = false
+amount = 500
+lifetime = 3.0
+visibility_aabb = AABB(-4, -2, -4, 8, 6, 8)
+process_material = SubResource("ParticleProcessMaterial_1")
+draw_pass_1 = SubResource("SphereMesh_1")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4")
+
+[node name="FadeOverlay" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

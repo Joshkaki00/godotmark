@@ -1,0 +1,160 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v3.5.30",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "coast_line_02"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "coast_line_02",
+      "normalTexture": {
+        "index": 0
+      },
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 1
+        },
+        "metallicFactor": 0,
+        "metallicRoughnessTexture": {
+          "index": 2
+        }
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Plane.001",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "TEXCOORD_0": 1,
+            "NORMAL": 2
+          },
+          "indices": 3,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    },
+    {
+      "sampler": 0,
+      "source": 1
+    },
+    {
+      "sampler": 0,
+      "source": 2
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/jpeg",
+      "name": "coast_line_02_nor_gl",
+      "uri": "textures/coast_line_02_nor_gl_2k.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "name": "coast_line_02_diff",
+      "uri": "textures/coast_line_02_diff_2k.jpg"
+    },
+    {
+      "mimeType": "image/jpeg",
+      "name": "coast_line_02_rough",
+      "uri": "textures/coast_line_02_arm_2k.jpg"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 383936,
+      "max": [
+        22.90814208984375,
+        1.6950998306274414,
+        12.479026794433594
+      ],
+      "min": [
+        -22.731002807617188,
+        -0.5916532278060913,
+        -10.80163288116455
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 383936,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 383936,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5125,
+      "count": 2270820,
+      "type": "SCALAR"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 4607232,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 3071488,
+      "byteOffset": 4607232,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 4607232,
+      "byteOffset": 7678720,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 9083280,
+      "byteOffset": 12285952,
+      "target": 34963
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 21369232,
+      "uri": "coast_line_02.bin"
+    }
+  ]
+}

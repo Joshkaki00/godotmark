@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://dm13tujsp2rb7"
+path="res://.godot/imported/Forest Glass (nature benchmark).ogg-8eafe01e99ad1938c57ad692f2c7e0dd.oggvorbisstr"
+
+[deps]
+
+source_file="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg"
+dest_files=["res://.godot/imported/Forest Glass (nature benchmark).ogg-8eafe01e99ad1938c57ad692f2c7e0dd.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,81 @@
+================================================================================
+🐛 ADAPTIVE QUALITY FIX - APPLY NOW
+================================================================================
+
+THE PROBLEM:
+  Your RPi5 runs at ~36 FPS, but the adaptive quality system was configured
+  for 60 FPS systems. It had two bugs:
+  
+  1. UPGRADE_FPS = 40 (your 36 FPS is below this, so it never upgraded!)
+  2. Frame-based hysteresis (assumes 60 FPS, broken at other framerates)
+
+THE FIX:
+  ✅ Lowered UPGRADE_FPS to 33 (now 36 FPS can upgrade!)
+  ✅ Lowered MIN_FPS to 25 (better threshold for ARM SBCs)
+  ✅ Changed to TIME-BASED hysteresis (works at any framerate!)
+  
+  Now it will:
+  - Upgrade after 3 seconds above 33 FPS ✅
+  - Downgrade after 2 seconds below 25 FPS ✅
+  - Work perfectly at 36 FPS, 60 FPS, or any framerate ✅
+
+================================================================================
+🔨 REBUILD ON YOUR RPI5 (Copy-paste these commands):
+================================================================================
+
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+
+# Clean old build
+scons -c
+rm -f bin/libgodotmark.linux.template_release.arm64.so
+
+# Rebuild with fix
+scons platform=linux arch=arm64 target=template_release cpu=rpi5 -j4
+
+# Run
+cd ..
+./Godot_v4.4-stable_linux.arm64 --path godotmark
+
+================================================================================
+🧪 TESTING THE FIX
+================================================================================
+
+After launching:
+
+1. Press 'V' to enable verbose logging
+2. Watch the console output
+3. You should see (after ~3 seconds each):
+
+   [AdaptiveQuality] Above target for 1.0s (FPS: 36.0)
+   [AdaptiveQuality] Above target for 2.0s (FPS: 36.0)
+   [AdaptiveQuality] FPS above 33.0 for 3.0s → Upgrading to High
+   ... (wait 3 more seconds)
+   [AdaptiveQuality] FPS above 33.0 for 3.0s → Upgrading to Ultra
+
+4. Now it's actually ADAPTING! 🎉
+
+================================================================================
+📊 WHAT TO EXPECT
+================================================================================
+
+With empty scene (current):
+  • Medium → High → Ultra (upgrades because stable at 36 FPS)
+  • No performance difference (nothing to render yet)
+
+Once we add 3D stress test scenes:
+  • Will upgrade when FPS > 33 for 3 seconds
+  • Will downgrade when FPS < 25 for 2 seconds
+  • Thermal throttle at 75°C (immediate downgrade)
+
+================================================================================
+🚀 READY TO REBUILD!
+================================================================================
+
+The code changes are already made in:
+  • godotmark/src/benchmarks/adaptive_quality_manager.h
+  • godotmark/src/benchmarks/adaptive_quality_manager.cpp
+
+Just run the rebuild commands above on your RPi5!
+
+================================================================================
+

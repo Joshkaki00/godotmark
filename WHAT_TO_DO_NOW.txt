@@ -1,0 +1,199 @@
+================================================================================
+                        GODOTMARK - WHAT TO DO NOW
+================================================================================
+
+PROBLEM:
+--------
+You tried to run GodotMark on your Raspberry Pi 5, but got this error:
+
+  ERROR: GDExtension dynamic library not found: 'res://godotmark.gdextension'.
+
+WHY:
+----
+The C++ GDExtension library was built for Windows (x86_64), not ARM64 Linux.
+Your RPi5 needs an ARM64 Linux version of the library.
+
+SOLUTION:
+---------
+Build the library NATIVELY on your Raspberry Pi 5.
+
+================================================================================
+                             🚀 DO THIS NOW
+================================================================================
+
+STEP 1: Open Terminal on RPi5
+------------------------------
+
+STEP 2: Navigate to Project
+----------------------------
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+
+STEP 3: Make Build Script Executable
+-------------------------------------
+chmod +x build_native_rpi5.sh
+
+STEP 4: Build the Library (THIS WILL TAKE 10-20 MINUTES)
+---------------------------------------------------------
+./build_native_rpi5.sh template_release rpi5 yes
+
+WHAT THIS DOES:
+  ✅ Checks for dependencies (scons, g++, python3)
+  ✅ Installs them if missing
+  ✅ Initializes godot-cpp submodule
+  ✅ Compiles C++ code optimized for your RPi5
+  ✅ Creates: bin/libgodotmark.linux.template_release.arm64.so
+
+STEP 5: Verify Build
+--------------------
+chmod +x check_build.sh
+./check_build.sh
+
+YOU SHOULD SEE:
+  ✅ Release library found:
+  -rwxr-xr-x 1 pi pi 1.5M ... bin/libgodotmark.linux.template_release.arm64.so
+  
+  File type:
+  ELF 64-bit LSB shared object, ARM aarch64
+
+STEP 6: Run the Benchmark
+--------------------------
+cd /mnt/exfat_drive/dev/godotmark-project
+./Godot_v4.4-stable_linux.arm64 --path godotmark
+
+YOU SHOULD SEE:
+  [GodotMark] Extension initialized
+  [PlatformDetector] Initializing...
+  
+  ========================================
+  GodotMark System Information
+  ========================================
+  Platform: Linux
+  CPU: aarch64 (4 cores)
+  GPU: V3D 7.1 (Raspberry Pi 5)
+  ...
+
+================================================================================
+                              🎮 DEBUG KEYS
+================================================================================
+
+Once running, you can use these keyboard shortcuts:
+
+  Space   - Pause/Resume the benchmark
+  Q / E   - Manually decrease/increase quality
+  T       - Toggle quick test mode (10s instead of 60s)
+  V       - Toggle verbose logging (see detailed C++ output)
+  R       - Reset the benchmark
+  Esc     - Exit
+
+================================================================================
+                        ⚠️ TROUBLESHOOTING
+================================================================================
+
+IF BUILD FAILS: "scons: command not found"
+------------------------------------------
+sudo apt update
+sudo apt install -y scons build-essential python3 git
+
+IF BUILD FAILS: "godot-cpp not found"
+--------------------------------------
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+git submodule update --init --recursive
+
+IF BUILD FAILS: "Out of memory" or "Killed"
+--------------------------------------------
+# Reduce parallel jobs (use -j2 instead of -j4)
+scons platform=linux arch=arm64 target=template_release cpu=rpi5 optimize_size=yes -j2
+
+# OR enable more swap
+sudo dphys-swapfile swapoff
+sudo nano /etc/dphys-swapfile  # Change CONF_SWAPSIZE to 2048
+sudo dphys-swapfile setup
+sudo dphys-swapfile swapon
+
+IF STILL GETTING "GDExtension not found" AFTER BUILD
+-----------------------------------------------------
+1. Check the library exists:
+   ls -lh bin/libgodotmark.linux.template_release.arm64.so
+
+2. Check it's ARM64:
+   file bin/libgodotmark.linux.template_release.arm64.so
+   (should say "ARM aarch64")
+
+3. Try running from correct directory:
+   cd /mnt/exfat_drive/dev/godotmark-project
+   ./Godot_v4.4-stable_linux.arm64 --path godotmark
+
+================================================================================
+                         📊 WHAT TO EXPECT
+================================================================================
+
+PERFORMANCE (Undervolted RPi5):
+  - FPS: 20-35 (High/Ultra quality)
+  - Temperature: 50-60°C (with active cooling)
+  - CPU Usage: 70-90%
+  - GPU Usage: 80-95%
+
+ADAPTIVE QUALITY:
+  - Will start at Medium quality
+  - Automatically upgrade to High/Ultra if FPS is good
+  - Automatically downgrade if FPS drops below target
+
+STABILITY INDICATORS:
+  ✅ GOOD - Consistent FPS, no crashes, temp < 65°C
+  ⚠️  MARGINAL - FPS fluctuates, temp > 70°C
+  ❌ BAD - Crashes, freezes, throttling detected
+
+MONITORING (Run in another terminal):
+  watch -n 1 'vcgencmd measure_temp'       # Temperature
+  watch -n 1 'vcgencmd get_throttled'      # Throttling (should be 0x0)
+
+================================================================================
+                          📚 DOCUMENTATION
+================================================================================
+
+For more details, read these files:
+
+  BUILD_AND_RUN.md               - Quick start guide (3 commands)
+  RPi5_BUILD_INSTRUCTIONS.md     - Detailed build instructions
+  CURRENT_STATUS.md              - Current project status
+  README.md                      - Full project overview
+  TESTING_GUIDE.md               - Testing workflow
+
+================================================================================
+                          ✅ QUICK CHECKLIST
+================================================================================
+
+□ Navigate to godotmark directory
+□ Run build_native_rpi5.sh (takes 10-20 min)
+□ Verify build with check_build.sh
+□ Run benchmark from parent directory
+□ Monitor FPS and temperature
+□ Complete 60-second test (or press T for 10s quick test)
+□ Check for crashes or throttling
+□ Review exported JSON results
+
+================================================================================
+                        🚀 READY TO BUILD!
+================================================================================
+
+COPY-PASTE THIS INTO YOUR RPI5 TERMINAL:
+
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark && \
+chmod +x build_native_rpi5.sh && \
+./build_native_rpi5.sh template_release rpi5 yes
+
+BUILD TIME: ~10-20 minutes (first time), ~1-2 min (incremental)
+
+THEN RUN:
+
+cd /mnt/exfat_drive/dev/godotmark-project && \
+./Godot_v4.4-stable_linux.arm64 --path godotmark
+
+================================================================================
+
+Good luck testing your undervolted Raspberry Pi 5! 🔋⚡🎮
+
+If you have any questions, all the documentation is in the godotmark/ folder.
+
+================================================================================
+

@@ -1,0 +1,122 @@
+================================================================================
+MODEL SHOWCASE - QUICK START GUIDE
+================================================================================
+
+🎭 1-Minute Cinematic GPU Benchmark
+   Marble Bust + Progressive Effects + Epic Soundtrack
+
+================================================================================
+WINDOWS - QUICK TEST
+================================================================================
+
+1. Open Godot 4.4.0
+2. Load project: D:\dev\godotmark-project\godotmark
+3. Press F5 to run
+4. Press M key
+5. Enjoy the show! (60 seconds)
+
+Results saved to:
+%APPDATA%\Godot\app_userdata\GodotMark\model_showcase_results.json
+
+================================================================================
+RPI5 - QUICK TEST
+================================================================================
+
+cd /mnt/exfat_drive/dev/godotmark-project
+./Godot_v4.4-stable_linux.arm64 --path godotmark
+
+Press M key to launch showcase
+
+Results saved to:
+~/.local/share/godot/app_userdata/GodotMark/model_showcase_results.json
+
+================================================================================
+WHAT TO EXPECT
+================================================================================
+
+Phase 1 (0-12s):   Basic PBR rendering
+Phase 2 (12-24s):  HDR environment + shadows
+Phase 3 (24-36s):  Reflections (SSR) + ambient occlusion (SSAO)
+Phase 4 (36-48s):  Particles + glow/bloom
+Phase 5 (48-60s):  Maximum complexity + depth of field
+
+Camera: Smooth cinematic movement throughout
+
+================================================================================
+CONTROLS
+================================================================================
+
+Before launching (from main scene):
+  Q/E - Adjust quality preset
+  V   - Enable verbose logging
+  M   - Launch Model Showcase
+
+During showcase:
+  ESC - Exit early (return to main scene)
+
+================================================================================
+QUALITY PRESETS
+================================================================================
+
+Potato:  Phases 1-2 only (basic rendering)
+Low:     Phases 1-3 (no particles)
+Medium:  Phases 1-4 (500 particles)
+High:    Phases 1-5 (2000 particles + DOF)
+Ultra:   Phases 1-5 (5000 particles + all effects)
+
+================================================================================
+EXPECTED PERFORMANCE
+================================================================================
+
+Windows (GTX 1060):
+  Phase 1: 100-120 FPS
+  Phase 2: 80-100 FPS
+  Phase 3: 60-80 FPS
+  Phase 4: 50-70 FPS
+  Phase 5: 40-60 FPS
+
+Raspberry Pi 5 (Medium Quality):
+  Phase 1: 50-60 FPS
+  Phase 2: 40-50 FPS
+  Phase 3: 35-45 FPS
+  Phase 4: 30-40 FPS
+  Phase 5: 25-35 FPS
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+Audio not playing:
+  - Check that art/model-test/Excelsior In Aeternum.ogg exists
+  - Verify audio import settings
+
+HDR not loading:
+  - Check that art/model-test/sunflowers_puresky_2k.hdr exists
+  - Re-import in Godot Editor
+
+Low FPS:
+  - Press Q to lower quality preset
+  - Check thermal throttling (press V for temps)
+  - Verify GPU drivers are up to date
+
+Particles not visible:
+  - Wait until Phase 4 (36 seconds)
+  - Check quality is Medium or higher
+  - Enable verbose logging (V key)
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Full Guide:    MODEL_SHOWCASE_GUIDE.md
+Testing Guide: MODEL_SHOWCASE_TESTING.md
+Plan:          c:\Users\mehew\.cursor\plans\1-minute_model_showcase_*.plan.md
+
+================================================================================
+READY TO RUN!
+================================================================================
+
+Just press M and enjoy the 60-second GPU stress test! 🎬
+
+================================================================================
+

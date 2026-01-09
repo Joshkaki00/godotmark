@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://5ocp7f3qwe57"
+path="res://.godot/imported/Excelsior In Aeternum.ogg-c3342cb205dfe2c6ad1c9d321ebbf95e.oggvorbisstr"
+
+[deps]
+
+source_file="res://art/model-test/Excelsior In Aeternum.ogg"
+dest_files=["res://.godot/imported/Excelsior In Aeternum.ogg-c3342cb205dfe2c6ad1c9d321ebbf95e.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,83 @@
+================================================================================
+❌ LIBRARY NOT FOUND - DIAGNOSIS NEEDED
+================================================================================
+
+The error says:
+  "ERROR: GDExtension dynamic library not found"
+
+But the build log showed:
+  "scons: done building targets."
+
+This is contradictory! Let's find out what's happening.
+
+================================================================================
+🔍 RUN THESE COMMANDS TO DIAGNOSE (Copy-paste all):
+================================================================================
+
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+
+echo "=== 1. Check bin directory ==="
+ls -lh bin/
+
+echo ""
+echo "=== 2. Look for ANY .so files ==="
+find . -name "*.so" -ls
+
+echo ""
+echo "=== 3. Check what .gdextension expects ==="
+cat godotmark.gdextension | grep arm64
+
+echo ""
+echo "=== 4. Check if library exists ==="
+test -f bin/libgodotmark.linux.template_release.arm64.so && echo "✅ EXISTS" || echo "❌ DOES NOT EXIST"
+
+echo ""
+echo "=== 5. Check last 20 lines of build log ==="
+tail -20 build.log
+
+echo ""
+echo "=== 6. Look for linking errors ==="
+grep -i "error\|failed\|cannot" build.log | tail -10
+
+================================================================================
+📋 PASTE THE FULL OUTPUT HERE
+================================================================================
+
+This will tell us:
+  1. Does the bin/ directory exist?
+  2. Was the .so file created at all?
+  3. Was it created in the wrong location?
+  4. Did linking actually succeed?
+
+================================================================================
+🤔 POSSIBLE CAUSES:
+================================================================================
+
+1. Build failed during LINKING phase (after compilation succeeded)
+2. Library created in wrong directory
+3. Filesystem issue (exFAT permissions?)
+4. Out of disk space
+5. Build script showed wrong "success" message
+
+================================================================================
+🔧 IF LIBRARY DOESN'T EXIST:
+================================================================================
+
+The build might have failed during the linking phase. We need to:
+
+1. Clean everything:
+   cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+   scons -c
+   rm -rf bin/*.so
+
+2. Rebuild with verbose output:
+   scons platform=linux arch=arm64 target=template_release -j4 verbose=yes 2>&1 | tee build_verbose.log
+
+3. Check the verbose log:
+   grep -i "linking\|error\|failed" build_verbose.log
+
+================================================================================
+
+PLEASE RUN THE DIAGNOSTIC COMMANDS ABOVE AND SHARE THE OUTPUT!
+
+

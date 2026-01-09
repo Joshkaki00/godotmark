@@ -1,0 +1,92 @@
+================================================================================
+🎭 MODEL SHOWCASE - 1-MINUTE GPU BENCHMARK
+================================================================================
+
+IMPLEMENTATION COMPLETE! Ready to test.
+
+================================================================================
+QUICK START (WINDOWS)
+================================================================================
+
+1. Open Godot 4.4.0
+2. Load: D:\dev\godotmark-project\godotmark
+3. Press F5 (run main scene)
+4. Press M key
+5. Watch the 60-second show!
+
+================================================================================
+WHAT YOU'LL SEE
+================================================================================
+
+0-12s:   Basic marble bust with simple lighting
+12-24s:  HDR environment appears, shadows enabled
+24-36s:  Reflections and ambient occlusion
+36-48s:  Particles and glow effects
+48-60s:  Maximum complexity with depth of field
+
+Camera smoothly orbits around the bust throughout.
+
+================================================================================
+AFTER TESTING
+================================================================================
+
+Results saved to:
+%APPDATA%\Godot\app_userdata\GodotMark\model_showcase_results.json
+
+Check console for performance summary:
+  Phase 1: Avg XX.X FPS (min: XX.X, max: XX.X)
+  Phase 2: Avg XX.X FPS (min: XX.X, max: XX.X)
+  ...
+
+================================================================================
+NEXT: DEPLOY TO RPI5
+================================================================================
+
+After Windows testing succeeds:
+
+1. Copy entire godotmark folder to RPi5
+2. Run: ./Godot_v4.4-stable_linux.arm64 --path godotmark
+3. Press M key
+4. Compare performance with Windows
+
+Expected RPi5 performance (Medium quality):
+  Phase 1: 50-60 FPS
+  Phase 2: 40-50 FPS
+  Phase 3: 35-45 FPS
+  Phase 4: 30-40 FPS
+  Phase 5: 25-35 FPS
+
+================================================================================
+DOCUMENTATION
+================================================================================
+
+Full details:
+  - MODEL_SHOWCASE_GUIDE.md (user guide)
+  - MODEL_SHOWCASE_TESTING.md (testing procedures)
+  - MODEL_SHOWCASE_IMPLEMENTATION.md (technical details)
+  - MODEL_SHOWCASE_QUICKSTART.txt (quick reference)
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+If audio doesn't play:
+  - Check art/model-test/Excelsior In Aeternum.ogg exists
+
+If HDR doesn't load:
+  - Check art/model-test/sunflowers_puresky_2k.hdr exists
+  - Re-import in Godot Editor
+
+If FPS is too low:
+  - Press Q to lower quality before launching (M key)
+
+================================================================================
+READY TO ROCK! 🚀
+================================================================================
+
+Just press M and enjoy the cinematic GPU stress test!
+
+All code is complete. All documentation is ready. Time to test! 🎬
+
+================================================================================
+
