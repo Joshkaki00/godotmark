@@ -218,6 +218,17 @@ sudo dphys-swapfile swapon
 
 ### Runtime Issues
 
+#### "V3D driver not loaded" or "Software rendering detected"
+**Cause:** V3D driver stack not properly configured
+
+**Solution:**
+```bash
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+sudo ./install_v3d_stack.sh  # Run installer
+sudo reboot  # Reboot if prompted
+./check_v3d_setup.sh  # Verify after reboot
+```
+
 #### "GDExtension dynamic library not found"
 **Cause:** Library not built or in wrong location
 
