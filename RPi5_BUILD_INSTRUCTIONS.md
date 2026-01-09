@@ -1,5 +1,31 @@
 # Building GodotMark Natively on Raspberry Pi 5
 
+## Prerequisites
+
+### IMPORTANT: V3D Driver Setup (Required!)
+
+**Before building, you MUST configure the V3D graphics driver!**
+
+```bash
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+sudo ./install_v3d_stack.sh
+```
+
+This will:
+- ✅ Enable V3D KMS driver
+- ✅ Install Mesa Vulkan drivers
+- ✅ Install verification tools
+- ✅ Guide you through rebooting
+
+**Why?** Without V3D, GodotMark will use software rendering (10x slower!) and benchmark results will be inaccurate.
+
+**Verify installation:**
+```bash
+./check_v3d_setup.sh
+```
+
+---
+
 ## Quick Start (On Your RPi5)
 
 ### 1. Navigate to Project
