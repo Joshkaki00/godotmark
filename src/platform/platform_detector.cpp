@@ -353,3 +353,162 @@ bool PlatformDetector::is_arm64() const {
 #endif
 }
 
+// V3D driver checks
+bool PlatformDetector::is_v3d_driver_loaded() const {
+#ifdef __linux__
+    // Check if v3d kernel module is loaded
+    String lsmod_check = read_file_content("/proc/modules");
+    if (lsmod_check.contains("v3d")) {
+        if (verbose_logging) {
+            UtilityFunctions::print("[Verbose] V3D module found in /proc/modules");
+        }
+        return true;
+    }
+    
+    // Alternative: Check if DRI device exists
+    std::ifstream dri_device("/dev/dri/renderD128");
+    if (dri_device.good()) {
+        if (verbose_logging) {
+            UtilityFunctions::print("[Verbose] DRI render device found");
+        }
+        return true;
+    }
+    
+    if (verbose_logging) {
+        UtilityFunctions::print("[Verbose] V3D module not loaded");
+    }
+    return false;
+#else
+    return false;
+#endif
+}
+
+bool PlatformDetector::is_v3d_config_enabled() const {
+#ifdef __linux__
+    // Check /boot/config.txt or /boot/firmware/config.txt
+    String config_content = read_file_content("/boot/firmware/config.txt");
+    if (config_content.is_empty()) {
+        config_content = read_file_content("/boot/config.txt");
+    }
+    
+    if (config_content.is_empty()) {
+        if (verbose_logging) {
+            UtilityFunctions::print("[Verbose] Could not read config.txt");
+        }
+        return false;
+    }
+    
+    // Check for uncommented dtoverlay=vc4-kms-v3d
+    bool enabled = config_content.contains("dtoverlay=vc4-kms-v3d") && 
+                   !config_content.contains("#dtoverlay=vc4-kms-v3d");
+    
+    if (verbose_logging) {
+        UtilityFunctions::print(String("[Verbose] V3D config enabled: ") + (enabled ? "yes" : "no"));
+    }
+    
+    return enabled;
+#else
+    return false;
+#endif
+}
+
+bool PlatformDetector::is_vulkan_driver_available() const {
+#ifdef __linux__
+    // Check if Vulkan loader library exists
+    std::ifstream vulkan_lib("/usr/lib/aarch64-linux-gnu/libvulkan.so.1");
+    if (vulkan_lib.good()) {
+        if (verbose_logging) {
+            UtilityFunctions::print("[Verbose] Vulkan library found");
+        }
+        return true;
+    }
+    
+    // Alternative path for x86_64
+    std::ifstream vulkan_lib_x86("/usr/lib/x86_64-linux-gnu/libvulkan.so.1");
+    if (vulkan_lib_x86.good()) {
+        if (verbose_logging) {
+            UtilityFunctions::print("[Verbose] Vulkan library found (x86_64)");
+        }
+        return true;
+    }
+    
+    if (verbose_logging) {
+        UtilityFunctions::print("[Verbose] Vulkan library not found");
+    }
+    return false;
+#else
+    return vulkan_supported;
+#endif
+}
+
+String PlatformDetector::get_mesa_version() const {
+#ifdef __linux__
+    // Try to read mesa version from dpkg
+    String dpkg_output = read_file_content("/var/lib/dpkg/status");
+    
+    if (dpkg_output.contains("mesa-vulkan-drivers")) {
+        int pkg_start = dpkg_output.find("Package: mesa-vulkan-drivers");
+        if (pkg_start >= 0) {
+            int version_start = dpkg_output.find("Version:", pkg_start);
+            if (version_start >= 0) {
+                int colon = dpkg_output.find(":", version_start);
+                int newline = dpkg_output.find("\n", colon);
+                if (colon > 0 && newline > colon) {
+                    String version = dpkg_output.substr(colon + 1, newline - colon - 1).strip_edges();
+                    if (verbose_logging) {
+                        UtilityFunctions::print("[Verbose] Mesa version: " + version);
+                    }
+                    return version;
+                }
+            }
+        }
+    }
+    
+    if (verbose_logging) {
+        UtilityFunctions::print("[Verbose] Could not determine Mesa version");
+    }
+    return "Unknown";
+#else
+    return "N/A";
+#endif
+}
+
+String PlatformDetector::get_driver_status_summary() const {
+    String summary = "\n";
+    summary += "========================================\n";
+    summary += "Driver Status Summary\n";
+    summary += "========================================\n";
+    
+    if (!is_raspberry_pi()) {
+        summary += "Not a Raspberry Pi - driver checks not applicable\n";
+        summary += "========================================\n";
+        return summary;
+    }
+    
+    bool v3d_loaded = is_v3d_driver_loaded();
+    bool v3d_config = is_v3d_config_enabled();
+    bool vulkan_avail = is_vulkan_driver_available();
+    String mesa_ver = get_mesa_version();
+    
+    summary += "V3D Config Enabled: " + String(v3d_config ? "YES" : "NO") + "\n";
+    summary += "V3D Driver Loaded: " + String(v3d_loaded ? "YES" : "NO") + "\n";
+    summary += "Vulkan Available: " + String(vulkan_avail ? "YES" : "NO") + "\n";
+    summary += "Mesa Version: " + mesa_ver + "\n";
+    summary += "========================================\n";
+    
+    if (!v3d_config || !v3d_loaded || !vulkan_avail) {
+        summary += "\n";
+        summary += "[WARNING] Driver stack not fully configured!\n";
+        summary += "For optimal performance, run:\n";
+        summary += "  cd godotmark\n";
+        summary += "  sudo ./install_v3d_stack.sh\n";
+        summary += "========================================\n";
+    } else {
+        summary += "\n";
+        summary += "[OK] Driver stack properly configured!\n";
+        summary += "========================================\n";
+    }
+    
+    return summary;
+}
+
