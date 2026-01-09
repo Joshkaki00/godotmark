@@ -396,14 +396,17 @@ After running successfully:
 **Copy-paste this into your RPi5 terminal:**
 
 ```bash
+# Step 0: Install V3D driver stack (REQUIRED)
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark && \
+sudo ./install_v3d_stack.sh
+# Reboot if prompted, then continue:
+
+# Steps 1-2: Build
 cd /mnt/exfat_drive/dev/godotmark-project/godotmark && \
 chmod +x build_native_rpi5.sh && \
 ./build_native_rpi5.sh template_release rpi5 yes
-```
 
-**Then run:**
-
-```bash
+# Step 3: Run
 cd /mnt/exfat_drive/dev/godotmark-project && \
 ./Godot_v4.4-stable_linux.arm64 --path godotmark
 ```
