@@ -44,6 +44,12 @@ void PlatformDetector::_bind_methods() {
     ClassDB::bind_method(D_METHOD("is_orange_pi"), &PlatformDetector::is_orange_pi);
     ClassDB::bind_method(D_METHOD("is_jetson"), &PlatformDetector::is_jetson);
     ClassDB::bind_method(D_METHOD("is_arm64"), &PlatformDetector::is_arm64);
+    
+    ClassDB::bind_method(D_METHOD("is_v3d_driver_loaded"), &PlatformDetector::is_v3d_driver_loaded);
+    ClassDB::bind_method(D_METHOD("is_v3d_config_enabled"), &PlatformDetector::is_v3d_config_enabled);
+    ClassDB::bind_method(D_METHOD("is_vulkan_driver_available"), &PlatformDetector::is_vulkan_driver_available);
+    ClassDB::bind_method(D_METHOD("get_mesa_version"), &PlatformDetector::get_mesa_version);
+    ClassDB::bind_method(D_METHOD("get_driver_status_summary"), &PlatformDetector::get_driver_status_summary);
 }
 
 void PlatformDetector::set_verbose_logging(bool enabled) {
