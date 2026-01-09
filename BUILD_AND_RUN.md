@@ -1,10 +1,15 @@
 # GodotMark - Build & Run Guide for RPi5
 
-## 🚀 Quick Start (3 Commands)
+## 🚀 Quick Start (4 Steps)
 
 **On your Raspberry Pi 5, run these commands:**
 
 ```bash
+# 0. Install V3D driver stack (REQUIRED - do this first!)
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+sudo ./install_v3d_stack.sh
+# Follow prompts, reboot if requested, then continue:
+
 # 1. Navigate to project
 cd /mnt/exfat_drive/dev/godotmark-project/godotmark
 
@@ -18,6 +23,20 @@ cd /mnt/exfat_drive/dev/godotmark-project
 ```
 
 **That's it!** 🎉
+
+### ⚠️ IMPORTANT: V3D Driver Stack Required!
+
+**Step 0 is CRITICAL!** Without the V3D driver stack:
+- ❌ You'll use software rendering (10x slower)
+- ❌ Benchmark results will be inaccurate
+- ❌ FPS will be < 5 instead of 20-40
+- ✅ GodotMark will detect this and warn you automatically
+
+**Verify your driver setup:**
+```bash
+cd /mnt/exfat_drive/dev/godotmark-project/godotmark
+./check_v3d_setup.sh
+```
 
 ---
 
