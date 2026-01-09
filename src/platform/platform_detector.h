@@ -71,6 +71,13 @@ public:
     bool is_orange_pi() const;
     bool is_jetson() const;
     bool is_arm64() const;
+    
+    // V3D driver checks (Raspberry Pi specific)
+    bool is_v3d_driver_loaded() const;
+    bool is_v3d_config_enabled() const;
+    bool is_vulkan_driver_available() const;
+    String get_mesa_version() const;
+    String get_driver_status_summary() const;
 };
 
 #endif // GODOTMARK_PLATFORM_DETECTOR_H
