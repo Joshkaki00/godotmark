@@ -93,14 +93,16 @@ chmod +x build_native_rpi5.sh
 
 **Build time:** ~10-20 minutes (first time)
 
-### 2. Run the Benchmark
+### 3. Run the Benchmark
 
 ```bash
 cd /mnt/exfat_drive/dev/godotmark-project
 ./Godot_v4.4-stable_linux.arm64 --path godotmark
 ```
 
-### 3. Use Debug Controls
+**Note:** GodotMark will automatically check your driver configuration on startup!
+
+### 4. Use Debug Controls
 
 | Key | Action |
 |-----|--------|
