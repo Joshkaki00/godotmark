@@ -49,6 +49,42 @@ func initialize_systems():
 	
 	print("[main.gd] Core systems initialized")
 
+func check_driver_stack():
+	"""Check if V3D/Vulkan driver stack is properly configured on Raspberry Pi"""
+	
+	var v3d_loaded = platform_detector.is_v3d_driver_loaded()
+	var v3d_config = platform_detector.is_v3d_config_enabled()
+	var vulkan_available = platform_detector.is_vulkan_driver_available()
+	
+	# Print detailed driver status
+	print(platform_detector.get_driver_status_summary())
+	
+	# Show warning if not fully configured
+	if not v3d_loaded or not v3d_config or not vulkan_available:
+		print("\n" + "=".repeat(60))
+		print("[WARNING] Suboptimal graphics driver configuration detected!")
+		print("=".repeat(60))
+		print("")
+		print("Your Raspberry Pi may not be using the V3D driver stack.")
+		print("This will result in reduced performance and benchmark accuracy.")
+		print("")
+		print("To fix this, run the automated installer:")
+		print("  1. Exit this application")
+		print("  2. Open a terminal in the godotmark directory")
+		print("  3. Run: sudo ./install_v3d_stack.sh")
+		print("  4. Follow the prompts and reboot if requested")
+		print("")
+		print("Alternatively, verify your setup with:")
+		print("  ./check_v3d_setup.sh")
+		print("")
+		print("Continuing in 5 seconds...")
+		print("=".repeat(60) + "\n")
+		
+		# Wait 5 seconds before continuing
+		await get_tree().create_timer(5.0).timeout
+	else:
+		print("\n[OK] V3D driver stack properly configured!\n")
+
 func _process(delta):
 	# Update performance monitoring
 	if perf_monitor:
