@@ -19,6 +19,10 @@ func _ready():
 	# Initialize C++ systems
 	initialize_systems()
 	
+	# Check driver stack on Raspberry Pi
+	if platform_detector.is_raspberry_pi():
+		check_driver_stack()
+	
 	# Connect UI to systems
 	stats_overlay.set_monitors(perf_monitor, quality_manager)
 	debug_controller.set_systems(quality_manager, null)  # Will set stress_test later
