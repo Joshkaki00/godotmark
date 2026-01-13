@@ -41,11 +41,11 @@ var phase_start_times = {
 # Particle optimization
 var particle_lod_enabled = true
 var max_safe_particles = {
-	0: 30,    # Potato: minimal ambient
-	1: 75,    # Low: light ambient
-	2: 150,   # Medium: moderate ambient
-	3: 300,   # High: more visible
-	4: 500    # Ultra: full effect
+	0: 100,    # Potato: minimal ambient
+	1: 200,    # Low: light ambient
+	2: 350,    # Medium: moderate ambient
+	3: 500,    # High: more visible
+	4: 700     # Ultra: full effect
 }
 
 # Enhanced performance metrics with CPU, GPU and timestamps
@@ -271,13 +271,13 @@ func run_warmup_phase():
 		particles.process_material = particle_mat
 		
 		var sphere_mesh = SphereMesh.new()
-		sphere_mesh.radius = 0.01  # Smaller
-		sphere_mesh.height = 0.02  # Smaller
+		sphere_mesh.radius = 0.02  # Visible but not huge
+		sphere_mesh.height = 0.04  # Visible but not huge
 		var material = StandardMaterial3D.new()
-		material.albedo_color = Color(0.9, 0.9, 0.95, 0.3)  # Subtle blue-white, very transparent
+		material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)  # Warm white, visible
 		material.emission_enabled = true
-		material.emission = Color(0.8, 0.85, 0.9)  # Cool subtle glow
-		material.emission_energy_multiplier = 0.3  # Very subtle
+		material.emission = Color(1.0, 0.95, 0.85)  # Warm glow
+		material.emission_energy_multiplier = 1.2  # Noticeable but not blinding
 		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		sphere_mesh.material = material
 		particles.draw_pass_1 = sphere_mesh
@@ -637,13 +637,13 @@ func transition_to_phase_4():
 		# Add draw mesh for particles (this is what was missing!)
 		if particles.draw_pass_1 == null:
 			var sphere_mesh = SphereMesh.new()
-			sphere_mesh.radius = 0.01  # Smaller
-			sphere_mesh.height = 0.02  # Smaller
+			sphere_mesh.radius = 0.02  # Visible but not huge
+			sphere_mesh.height = 0.04  # Visible but not huge
 			var material = StandardMaterial3D.new()
-			material.albedo_color = Color(0.9, 0.9, 0.95, 0.3)  # Subtle blue-white, very transparent
+			material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)  # Warm white, visible
 			material.emission_enabled = true
-			material.emission = Color(0.8, 0.85, 0.9)  # Cool subtle glow
-			material.emission_energy_multiplier = 0.3  # Very subtle
+			material.emission = Color(1.0, 0.95, 0.85)  # Warm glow
+			material.emission_energy_multiplier = 1.2  # Noticeable but not blinding
 			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			sphere_mesh.material = material
 			particles.draw_pass_1 = sphere_mesh
