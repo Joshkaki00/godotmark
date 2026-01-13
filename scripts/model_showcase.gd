@@ -33,21 +33,23 @@ var max_safe_particles = {
 	4: 3000   # Ultra: capped for stability
 }
 
-# Enhanced performance metrics with GPU and timestamps
-var metrics = {
-	"phase_1": {"fps": [], "frame_times": [], "temps": [], "gpu": [], "timestamps": []},
-	"phase_2": {"fps": [], "frame_times": [], "temps": [], "gpu": [], "timestamps": []},
-	"phase_3": {"fps": [], "frame_times": [], "temps": [], "gpu": [], "timestamps": []},
-	"phase_4": {"fps": [], "frame_times": [], "temps": [], "gpu": [], "timestamps": []},
-	"phase_5": {"fps": [], "frame_times": [], "temps": [], "gpu": [], "timestamps": []}
-}
+# Enhanced performance metrics with CPU, GPU and timestamps
+var metrics = {}
 
 var current_phase_key = "phase_1"
 
 # Per-second aggregated data
 var per_second_metrics = []
-var current_second_data = {"fps": [], "frame_times": [], "temps": [], "gpu": []}
+var current_second_data = {}
 var last_second_mark = 0.0
+
+# Memory optimization: track indices instead of using append
+var phase_sample_indices = {}
+var second_sample_index = 0
+
+# Memory diagnostics
+var frame_count = 0
+var last_memory_report = 0.0
 
 func _ready():
 	print("\n========================================")
@@ -70,9 +72,60 @@ func _ready():
 		print("[ModelShowcase] WARNING: Main scene not found, creating standalone systems")
 		# Create standalone performance monitor since we're running without Main
 		perf_monitor = PerformanceMonitor.new()
+		perf_monitor.set_verbose_logging(true)  # Force verbose for debugging
 		platform_detector = PlatformDetector.new()
 		platform_detector.initialize()
 		print("[ModelShowcase] Standalone systems created")
+	
+	# Pre-allocate all arrays to prevent GC pauses during benchmark
+	print("[ModelShowcase] Pre-allocating arrays for optimal performance...")
+	var expected_samples = 720  # 12 seconds per phase @ 60 FPS
+	
+	for phase_key in ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]:
+		metrics[phase_key] = {
+			"fps": [],
+			"frame_times": [],
+			"cpu": [],
+			"temps": [],
+			"gpu": [],
+			"timestamps": []
+		}
+		# Pre-allocate capacity
+		metrics[phase_key]["fps"].resize(expected_samples)
+		metrics[phase_key]["frame_times"].resize(expected_samples)
+		metrics[phase_key]["cpu"].resize(expected_samples)
+		metrics[phase_key]["temps"].resize(expected_samples)
+		metrics[phase_key]["gpu"].resize(expected_samples)
+		metrics[phase_key]["timestamps"].resize(expected_samples)
+		
+		# Reset to 0 size but keep capacity
+		metrics[phase_key]["fps"].clear()
+		metrics[phase_key]["frame_times"].clear()
+		metrics[phase_key]["cpu"].clear()
+		metrics[phase_key]["temps"].clear()
+		metrics[phase_key]["gpu"].clear()
+		metrics[phase_key]["timestamps"].clear()
+		
+		# Initialize sample indices
+		phase_sample_indices[phase_key] = 0
+	
+	# Pre-allocate per-second arrays (60 FPS = 60 samples per second)
+	current_second_data = {
+		"fps": [],
+		"frame_times": [],
+		"cpu": [],
+		"temps": [],
+		"gpu": []
+	}
+	for key in current_second_data.keys():
+		current_second_data[key].resize(60)
+		current_second_data[key].clear()
+	
+	# Pre-allocate per_second_metrics (60 seconds)
+	per_second_metrics.resize(60)
+	per_second_metrics.clear()
+	
+	print("[ModelShowcase] Array pre-allocation complete")
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -87,6 +140,7 @@ func _ready():
 
 func _process(delta):
 	timeline += delta
+	frame_count += 1
 	
 	# Update performance monitor if we created it standalone
 	if perf_monitor:
@@ -95,45 +149,61 @@ func _process(delta):
 	# Collect comprehensive metrics
 	var fps = 0.0
 	var frame_time = 0.0
+	var cpu_usage = 0.0
 	var temp = 0.0
 	var gpu_usage = 0.0
 	
 	if perf_monitor:
 		fps = perf_monitor.get_avg_fps()
 		frame_time = perf_monitor.get_current_frametime_ms()
+		cpu_usage = perf_monitor.get_cpu_usage()
 		temp = perf_monitor.get_temperature()
 		gpu_usage = perf_monitor.get_gpu_usage()  # 0-100
 	else:
 		# Fallback: use Engine metrics
 		fps = Engine.get_frames_per_second()
 		frame_time = 1000.0 / fps if fps > 0 else 0.0
+		cpu_usage = 0.0  # Not available
 		temp = 0.0  # Not available
 		gpu_usage = 0.0  # Not available
 	
-	# Per-frame data
-	metrics[current_phase_key]["fps"].append(fps)
-	metrics[current_phase_key]["frame_times"].append(frame_time)
-	metrics[current_phase_key]["temps"].append(temp)
-	metrics[current_phase_key]["gpu"].append(gpu_usage)
-	metrics[current_phase_key]["timestamps"].append(timeline)
+	# Per-frame data (use push_back on pre-allocated arrays)
+	metrics[current_phase_key]["fps"].push_back(fps)
+	metrics[current_phase_key]["frame_times"].push_back(frame_time)
+	metrics[current_phase_key]["cpu"].push_back(cpu_usage)
+	metrics[current_phase_key]["temps"].push_back(temp)
+	metrics[current_phase_key]["gpu"].push_back(gpu_usage)
+	metrics[current_phase_key]["timestamps"].push_back(timeline)
 	
-	# Per-second aggregation
-	current_second_data["fps"].append(fps)
-	current_second_data["frame_times"].append(frame_time)
-	current_second_data["temps"].append(temp)
-	current_second_data["gpu"].append(gpu_usage)
+	# Per-second aggregation (use push_back on pre-allocated arrays)
+	current_second_data["fps"].push_back(fps)
+	current_second_data["frame_times"].push_back(frame_time)
+	current_second_data["cpu"].push_back(cpu_usage)
+	current_second_data["temps"].push_back(temp)
+	current_second_data["gpu"].push_back(gpu_usage)
 	
 	if timeline - last_second_mark >= 1.0:
 		aggregate_second_data()
 		last_second_mark = timeline
 	
-	# Update UI overlay
-	if metrics_overlay:
-		metrics_overlay.update_metrics(fps, frame_time, temp, gpu_usage)
+	# Report memory usage every 5 seconds
+	if timeline - last_memory_report >= 5.0:
+		var mem_static = Performance.get_monitor(Performance.MEMORY_STATIC)
+		var mem_dynamic = Performance.get_monitor(Performance.MEMORY_DYNAMIC)
+		print("[Memory] Static: %.2f MB, Dynamic: %.2f MB, Frame: %d" % [
+			mem_static / 1048576.0,
+			mem_dynamic / 1048576.0,
+			frame_count
+		])
+		last_memory_report = timeline
+	
+	# Update UI overlay (every 3 frames to reduce overhead)
+	if metrics_overlay and Engine.get_process_frames() % 3 == 0:
+		metrics_overlay.update_metrics(fps, frame_time, cpu_usage, temp, gpu_usage)
 		metrics_overlay.update_progress(timeline, 60.0)
 	
-	# Dynamic particle LOD based on performance
-	if particle_lod_enabled and particles.emitting:
+	# Dynamic particle LOD based on performance (check every 10 frames)
+	if particle_lod_enabled and particles.emitting and Engine.get_process_frames() % 10 == 0:
 		optimize_particles_for_performance(fps)
 	
 	# Fade to black at 55 seconds (song fades out)
@@ -209,31 +279,36 @@ func aggregate_second_data():
 	
 	var avg_fps = 0.0
 	var avg_ft = 0.0
+	var avg_cpu = 0.0
 	var avg_temp = 0.0
 	var avg_gpu = 0.0
 	
 	for i in current_second_data["fps"].size():
 		avg_fps += current_second_data["fps"][i]
 		avg_ft += current_second_data["frame_times"][i]
+		avg_cpu += current_second_data["cpu"][i]
 		avg_temp += current_second_data["temps"][i]
 		avg_gpu += current_second_data["gpu"][i]
 	
 	avg_fps /= current_second_data["fps"].size()
 	avg_ft /= current_second_data["frame_times"].size()
+	avg_cpu /= current_second_data["cpu"].size()
 	avg_temp /= current_second_data["temps"].size()
 	avg_gpu /= current_second_data["gpu"].size()
 	
-	per_second_metrics.append({
+	per_second_metrics.push_back({
 		"second": int(timeline),
 		"phase": phase,
 		"fps": avg_fps,
 		"frame_time": avg_ft,
+		"cpu": avg_cpu,
 		"temp": avg_temp,
 		"gpu": avg_gpu
 	})
 	
-	# Clear for next second
-	current_second_data = {"fps": [], "frame_times": [], "temps": [], "gpu": []}
+	# Clear for next second (reuse arrays instead of recreating)
+	for key in current_second_data.keys():
+		current_second_data[key].clear()
 
 func calculate_percentiles(data: Array) -> Dictionary:
 	"""Calculate percentile statistics for a data array"""
@@ -296,6 +371,9 @@ func transition_to_phase_2():
 	print("\n[Phase 2] HDR Lighting + Shadows (12-24s)")
 	print("  - Enabling HDR environment and shadow casting")
 	
+	# Force GC during transition to prevent mid-phase pauses
+	OS.delay_msec(1)
+	
 	# Enable shadows
 	light.shadow_enabled = true
 	light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
@@ -315,6 +393,9 @@ func transition_to_phase_2():
 
 func transition_to_phase_3():
 	print("\n[Phase 3] Enhanced Materials + Reflections (24-36s)")
+	
+	# Force GC during transition to prevent mid-phase pauses
+	OS.delay_msec(1)
 	
 	# Only enable advanced features for Low+ quality
 	if current_quality_preset >= 1:  # Low or higher
@@ -338,6 +419,9 @@ func transition_to_phase_3():
 
 func transition_to_phase_4():
 	print("\n[Phase 4] Particles + Glow (36-48s)")
+	
+	# Force GC during transition to prevent mid-phase pauses
+	OS.delay_msec(1)
 	
 	# Only enable for Medium+ quality
 	if current_quality_preset >= 2:  # Medium or higher
@@ -391,6 +475,9 @@ func start_fadeout():
 
 func transition_to_phase_5():
 	print("\n[Phase 5] Maximum Complexity (48-60s)")
+	
+	# Force GC during transition to prevent mid-phase pauses
+	OS.delay_msec(1)
 	
 	# Only enable for High+ quality
 	if current_quality_preset >= 3:  # High or higher
@@ -482,10 +569,19 @@ func export_results():
 		}
 	
 	# Process each phase with comprehensive metrics
+	# Pre-allocate all_fps array to prevent resizing
+	var total_samples = 0
+	for phase_key in ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]:
+		total_samples += metrics[phase_key]["fps"].size()
+	
 	var all_fps = []
+	all_fps.resize(total_samples)
+	all_fps.clear()
+	
 	for phase_key in ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]:
 		var fps_data = metrics[phase_key]["fps"]
 		var frame_time_data = metrics[phase_key]["frame_times"]
+		var cpu_data = metrics[phase_key]["cpu"]
 		var temp_data = metrics[phase_key]["temps"]
 		var gpu_data = metrics[phase_key]["gpu"]
 		

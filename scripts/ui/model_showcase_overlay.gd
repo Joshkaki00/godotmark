@@ -3,6 +3,7 @@ extends Control
 
 @onready var fps_label = $Panel/MarginContainer/VBoxContainer/FPSLabel
 @onready var frame_time_label = $Panel/MarginContainer/VBoxContainer/FrameTimeLabel
+@onready var cpu_label = $Panel/MarginContainer/VBoxContainer/CPULabel
 @onready var temp_label = $Panel/MarginContainer/VBoxContainer/TempLabel
 @onready var gpu_label = $Panel/MarginContainer/VBoxContainer/GPULabel
 @onready var phase_label = $Panel/MarginContainer/VBoxContainer/PhaseLabel
@@ -13,7 +14,7 @@ func _ready():
 	# Ensure we're always on top
 	set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 
-func update_metrics(fps: float, frame_time: float, temp: float, gpu_usage: float):
+func update_metrics(fps: float, frame_time: float, cpu_usage: float, temp: float, gpu_usage: float):
 	"""Update performance metrics with color-coded FPS"""
 	
 	# Color-coded FPS (green >30, yellow 20-30, red <20)
@@ -22,6 +23,7 @@ func update_metrics(fps: float, frame_time: float, temp: float, gpu_usage: float
 	fps_label.add_theme_color_override("font_color", fps_color)
 	
 	frame_time_label.text = "Frame: %.2f ms" % frame_time
+	cpu_label.text = "CPU: %.1f%%" % cpu_usage
 	temp_label.text = "Temp: %.1f°C" % temp
 	gpu_label.text = "GPU: %.1f%%" % gpu_usage
 
