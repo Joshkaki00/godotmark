@@ -352,23 +352,20 @@ func _process(delta):
 		temp = 0.0  # Not available
 		gpu_usage = 0.0  # Not available
 	
-	# Only collect data after 2-second phase warmup
-	var phase_elapsed = timeline - phase_start_times.get(current_phase_key, 0.0)
-	if phase_elapsed >= 2.0:
-		# Per-frame data (use push_back on pre-allocated arrays)
-		metrics[current_phase_key]["fps"].push_back(fps)
-		metrics[current_phase_key]["frame_times"].push_back(frame_time)
-		metrics[current_phase_key]["cpu"].push_back(cpu_usage)
-		metrics[current_phase_key]["temps"].push_back(temp)
-		metrics[current_phase_key]["gpu"].push_back(gpu_usage)
-		metrics[current_phase_key]["timestamps"].push_back(timeline)
-		
-		# Per-second aggregation (use push_back on pre-allocated arrays)
-		current_second_data["fps"].push_back(fps)
-		current_second_data["frame_times"].push_back(frame_time)
-		current_second_data["cpu"].push_back(cpu_usage)
-		current_second_data["temps"].push_back(temp)
-		current_second_data["gpu"].push_back(gpu_usage)
+	# Per-frame data (use push_back on pre-allocated arrays)
+	metrics[current_phase_key]["fps"].push_back(fps)
+	metrics[current_phase_key]["frame_times"].push_back(frame_time)
+	metrics[current_phase_key]["cpu"].push_back(cpu_usage)
+	metrics[current_phase_key]["temps"].push_back(temp)
+	metrics[current_phase_key]["gpu"].push_back(gpu_usage)
+	metrics[current_phase_key]["timestamps"].push_back(timeline)
+	
+	# Per-second aggregation (use push_back on pre-allocated arrays)
+	current_second_data["fps"].push_back(fps)
+	current_second_data["frame_times"].push_back(frame_time)
+	current_second_data["cpu"].push_back(cpu_usage)
+	current_second_data["temps"].push_back(temp)
+	current_second_data["gpu"].push_back(gpu_usage)
 	
 	if timeline - last_second_mark >= 1.0:
 		aggregate_second_data()
