@@ -8,5 +8,4 @@ using namespace godot;
 void initialize_godotmark_module(ModuleInitializationLevel p_level);
 void uninitialize_godotmark_module(ModuleInitializationLevel p_level);
 
-#endif // GODOTMARK_REGISTER_TYPES_H
-
+#endif  // GODOTMARK_REGISTER_TYPES_H

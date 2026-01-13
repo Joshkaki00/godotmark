@@ -4,15 +4,16 @@ importer="texture"
 type="CompressedTexture2D"
 uid="uid://b63prb8tx1d7q"
 path.s3tc="res://.godot/imported/marble_bust_01_diff_2k.jpg-d2b0e1d31586d96119e4ca8f39801e79.s3tc.ctex"
+path.etc2="res://.godot/imported/marble_bust_01_diff_2k.jpg-d2b0e1d31586d96119e4ca8f39801e79.etc2.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
+"imported_formats": ["s3tc_bptc", "etc2_astc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_diff_2k.jpg"
-dest_files=["res://.godot/imported/marble_bust_01_diff_2k.jpg-d2b0e1d31586d96119e4ca8f39801e79.s3tc.ctex"]
+dest_files=["res://.godot/imported/marble_bust_01_diff_2k.jpg-d2b0e1d31586d96119e4ca8f39801e79.s3tc.ctex", "res://.godot/imported/marble_bust_01_diff_2k.jpg-d2b0e1d31586d96119e4ca8f39801e79.etc2.ctex"]
 
 [params]
 

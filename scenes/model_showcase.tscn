@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://b8k70anx4ow2e"]
+[gd_scene load_steps=10 format=3 uid="uid://b8k70anx4ow2e"]
 
 [ext_resource type="PackedScene" uid="uid://b5dx826utlmsv" path="res://art/model-test/marble_bust_01_2k.gltf/marble_bust_01_2k.gltf" id="1"]
 [ext_resource type="Script" uid="uid://d2v8cwogf5gtd" path="res://scripts/model_showcase.gd" id="2"]
 [ext_resource type="Script" uid="uid://bhhc8dg27adb6" path="res://scripts/cinematic_camera.gd" id="3"]
 [ext_resource type="AudioStream" uid="uid://5ocp7f3qwe57" path="res://art/model-test/Excelsior In Aeternum.ogg" id="4"]
+[ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="5"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -75,3 +76,5 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0, 0)
+
+[node name="MetricsOverlay" parent="." instance=ExtResource("5")]
