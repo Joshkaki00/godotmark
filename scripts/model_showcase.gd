@@ -72,7 +72,7 @@ func _ready():
 		print("[ModelShowcase] WARNING: Main scene not found, creating standalone systems")
 		# Create standalone performance monitor since we're running without Main
 		perf_monitor = PerformanceMonitor.new()
-		perf_monitor.set_verbose_logging(true)  # Force verbose for debugging
+		# Verbose logging disabled - causes resource spikes during benchmark
 		platform_detector = PlatformDetector.new()
 		platform_detector.initialize()
 		print("[ModelShowcase] Standalone systems created")
@@ -126,6 +126,19 @@ func _ready():
 	per_second_metrics.clear()
 	
 	print("[ModelShowcase] Array pre-allocation complete")
+	
+	# Pre-warm shaders to prevent first-frame compilation spikes
+	print("[ModelShowcase] Pre-warming shaders...")
+	await get_tree().process_frame
+	
+	# Trigger shader compilation by briefly enabling effects
+	if env and env.environment:
+		var original_glow = env.environment.glow_enabled
+		env.environment.glow_enabled = true
+		await get_tree().process_frame
+		env.environment.glow_enabled = original_glow
+	
+	print("[ModelShowcase] Shader pre-warming complete")
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -186,13 +199,11 @@ func _process(delta):
 		aggregate_second_data()
 		last_second_mark = timeline
 	
-	# Report memory usage every 5 seconds
-	if timeline - last_memory_report >= 5.0:
-		var mem_static = Performance.get_monitor(Performance.MEMORY_STATIC)
-		var mem_dynamic = Performance.get_monitor(Performance.MEMORY_DYNAMIC)
-		print("[Memory] Static: %.2f MB, Dynamic: %.2f MB, Frame: %d" % [
+	# Report memory usage every 15 seconds (reduced frequency)
+	if timeline - last_memory_report >= 15.0:
+		var mem_static = Performance.get_monitor(Performance.MEMORY_STATIC_MAX)
+		print("[Memory] Static: %.2f MB, Frame: %d" % [
 			mem_static / 1048576.0,
-			mem_dynamic / 1048576.0,
 			frame_count
 		])
 		last_memory_report = timeline
@@ -315,15 +326,15 @@ func calculate_percentiles(data: Array) -> Dictionary:
 	if data.size() == 0:
 		return {"p1": 0.0, "p5": 0.0, "p50": 0.0, "p95": 0.0, "p99": 0.0}
 	
-	var sorted = data.duplicate()
-	sorted.sort()
+	# Sort in-place to avoid allocation (data is not reused after export)
+	data.sort()
 	
 	return {
-		"p1": sorted[int(sorted.size() * 0.01)],
-		"p5": sorted[int(sorted.size() * 0.05)],
-		"p50": sorted[int(sorted.size() * 0.50)],  # Median
-		"p95": sorted[int(sorted.size() * 0.95)],
-		"p99": sorted[int(sorted.size() * 0.99)]
+		"p1": data[int(data.size() * 0.01)],
+		"p5": data[int(data.size() * 0.05)],
+		"p50": data[int(data.size() * 0.50)],  # Median
+		"p95": data[int(data.size() * 0.95)],
+		"p99": data[int(data.size() * 0.99)]
 	}
 
 func calculate_average(data: Array) -> float:
@@ -371,8 +382,8 @@ func transition_to_phase_2():
 	print("\n[Phase 2] HDR Lighting + Shadows (12-24s)")
 	print("  - Enabling HDR environment and shadow casting")
 	
-	# Force GC during transition to prevent mid-phase pauses
-	OS.delay_msec(1)
+	# Yield to allow GC opportunity during transition
+	await get_tree().process_frame
 	
 	# Enable shadows
 	light.shadow_enabled = true
@@ -394,8 +405,8 @@ func transition_to_phase_2():
 func transition_to_phase_3():
 	print("\n[Phase 3] Enhanced Materials + Reflections (24-36s)")
 	
-	# Force GC during transition to prevent mid-phase pauses
-	OS.delay_msec(1)
+	# Yield to allow GC opportunity during transition
+	await get_tree().process_frame
 	
 	# Only enable advanced features for Low+ quality
 	if current_quality_preset >= 1:  # Low or higher
@@ -420,8 +431,8 @@ func transition_to_phase_3():
 func transition_to_phase_4():
 	print("\n[Phase 4] Particles + Glow (36-48s)")
 	
-	# Force GC during transition to prevent mid-phase pauses
-	OS.delay_msec(1)
+	# Yield to allow GC opportunity during transition
+	await get_tree().process_frame
 	
 	# Only enable for Medium+ quality
 	if current_quality_preset >= 2:  # Medium or higher
@@ -476,8 +487,8 @@ func start_fadeout():
 func transition_to_phase_5():
 	print("\n[Phase 5] Maximum Complexity (48-60s)")
 	
-	# Force GC during transition to prevent mid-phase pauses
-	OS.delay_msec(1)
+	# Yield to allow GC opportunity during transition
+	await get_tree().process_frame
 	
 	# Only enable for High+ quality
 	if current_quality_preset >= 3:  # High or higher
