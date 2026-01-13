@@ -69,13 +69,13 @@ func _ready():
 			current_quality_preset = quality_manager.get_quality_preset()
 			print("[ModelShowcase] Quality preset: ", quality_manager.get_quality_name())
 	else:
-		print("[ModelShowcase] WARNING: Main scene not found, using Engine fallback")
-		# PerformanceMonitor disabled - causes resource spikes
-		# Will use Engine.get_frames_per_second() fallback
-		perf_monitor = null
+		print("[ModelShowcase] WARNING: Main scene not found, creating standalone systems")
+		# Create standalone performance monitor since we're running without Main
+		perf_monitor = PerformanceMonitor.new()
+		# Verbose logging disabled - causes resource spikes during benchmark
 		platform_detector = PlatformDetector.new()
 		platform_detector.initialize()
-		print("[ModelShowcase] Standalone systems created (Engine fallback mode)")
+		print("[ModelShowcase] Standalone systems created")
 	
 	# Pre-allocate all arrays to prevent GC pauses during benchmark
 	print("[ModelShowcase] Pre-allocating arrays for optimal performance...")
@@ -127,52 +127,18 @@ func _ready():
 	
 	print("[ModelShowcase] Array pre-allocation complete")
 	
-	# Comprehensive shader pre-warming to eliminate first-frame spikes
-	print("[ModelShowcase] Pre-warming shaders and effects...")
+	# Pre-warm shaders to prevent first-frame compilation spikes
+	print("[ModelShowcase] Pre-warming shaders...")
 	await get_tree().process_frame
 	
+	# Trigger shader compilation by briefly enabling effects
 	if env and env.environment:
-		# Enable all effects that will be used during benchmark
 		var original_glow = env.environment.glow_enabled
-		var original_ssr = env.environment.ssr_enabled
-		var original_ssao = env.environment.ssao_enabled
-		
-		# Enable glow (used in phase 4-5)
 		env.environment.glow_enabled = true
-		env.environment.glow_intensity = 1.0
-		env.environment.glow_bloom = 0.2
 		await get_tree().process_frame
-		
-		# Enable SSR (used in phase 3-5)
-		env.environment.ssr_enabled = true
-		await get_tree().process_frame
-		
-		# Enable SSAO (used in phase 3-5)
-		env.environment.ssao_enabled = true
-		await get_tree().process_frame
-		
-		# Enable shadows (used in phase 2-5)
-		if light:
-			light.shadow_enabled = true
-			await get_tree().process_frame
-			light.shadow_enabled = false
-		
-		# Restore original states
 		env.environment.glow_enabled = original_glow
-		env.environment.ssr_enabled = original_ssr
-		env.environment.ssao_enabled = original_ssao
 	
-	print("[ModelShowcase] Shader pre-warming complete (all effects)")
-	
-	# Pre-load HDR texture to prevent phase 2 loading spike
-	print("[ModelShowcase] Pre-loading HDR environment...")
-	var hdr_path = "res://art/model-test/sunflowers_puresky_2k.hdr"
-	if ResourceLoader.exists(hdr_path):
-		var hdr_texture = load(hdr_path)
-		# Texture is now cached, won't cause spike in phase 2
-		print("[ModelShowcase] HDR pre-loaded successfully")
-	else:
-		print("[ModelShowcase] WARNING: HDR texture not found")
+	print("[ModelShowcase] Shader pre-warming complete")
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -189,8 +155,9 @@ func _process(delta):
 	timeline += delta
 	frame_count += 1
 	
-	# PerformanceMonitor disabled - using Engine fallback
-	# No update needed
+	# Update performance monitor if we created it standalone
+	if perf_monitor:
+		perf_monitor.update(delta)
 	
 	# Collect comprehensive metrics
 	var fps = 0.0
@@ -213,22 +180,20 @@ func _process(delta):
 		temp = 0.0  # Not available
 		gpu_usage = 0.0  # Not available
 	
-	# Skip metrics collection for first 2 seconds (warmup period)
-	if timeline >= 2.0:
-		# Per-frame data (use push_back on pre-allocated arrays)
-		metrics[current_phase_key]["fps"].push_back(fps)
-		metrics[current_phase_key]["frame_times"].push_back(frame_time)
-		metrics[current_phase_key]["cpu"].push_back(cpu_usage)
-		metrics[current_phase_key]["temps"].push_back(temp)
-		metrics[current_phase_key]["gpu"].push_back(gpu_usage)
-		metrics[current_phase_key]["timestamps"].push_back(timeline)
-		
-		# Per-second aggregation (use push_back on pre-allocated arrays)
-		current_second_data["fps"].push_back(fps)
-		current_second_data["frame_times"].push_back(frame_time)
-		current_second_data["cpu"].push_back(cpu_usage)
-		current_second_data["temps"].push_back(temp)
-		current_second_data["gpu"].push_back(gpu_usage)
+	# Per-frame data (use push_back on pre-allocated arrays)
+	metrics[current_phase_key]["fps"].push_back(fps)
+	metrics[current_phase_key]["frame_times"].push_back(frame_time)
+	metrics[current_phase_key]["cpu"].push_back(cpu_usage)
+	metrics[current_phase_key]["temps"].push_back(temp)
+	metrics[current_phase_key]["gpu"].push_back(gpu_usage)
+	metrics[current_phase_key]["timestamps"].push_back(timeline)
+	
+	# Per-second aggregation (use push_back on pre-allocated arrays)
+	current_second_data["fps"].push_back(fps)
+	current_second_data["frame_times"].push_back(frame_time)
+	current_second_data["cpu"].push_back(cpu_usage)
+	current_second_data["temps"].push_back(temp)
+	current_second_data["gpu"].push_back(gpu_usage)
 	
 	if timeline - last_second_mark >= 1.0:
 		aggregate_second_data()
@@ -424,16 +389,16 @@ func transition_to_phase_2():
 	light.shadow_enabled = true
 	light.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
 	
-	# Load HDR environment (pre-loaded in _ready, should be cached)
+	# Load HDR environment
 	var hdr_path = "res://art/model-test/sunflowers_puresky_2k.hdr"
 	if ResourceLoader.exists(hdr_path):
 		var sky = Sky.new()
 		var sky_material = PanoramaSkyMaterial.new()
-		sky_material.panorama = load(hdr_path)  # Should be instant (cached)
+		sky_material.panorama = load(hdr_path)
 		sky.sky_material = sky_material
 		env.environment.background_mode = Environment.BG_SKY
 		env.environment.sky = sky
-		print("  ✓ HDR environment loaded (from cache)")
+		print("  ✓ HDR environment loaded")
 	else:
 		print("  ⚠ HDR not found, using color background")
 
