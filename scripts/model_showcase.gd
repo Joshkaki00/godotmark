@@ -67,7 +67,12 @@ func _ready():
 			current_quality_preset = quality_manager.get_quality_preset()
 			print("[ModelShowcase] Quality preset: ", quality_manager.get_quality_name())
 	else:
-		print("[ModelShowcase] WARNING: Main scene not found, using fallback metrics")
+		print("[ModelShowcase] WARNING: Main scene not found, creating standalone systems")
+		# Create standalone performance monitor since we're running without Main
+		perf_monitor = PerformanceMonitor.new()
+		platform_detector = PlatformDetector.new()
+		platform_detector.initialize()
+		print("[ModelShowcase] Standalone systems created")
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -82,6 +87,10 @@ func _ready():
 
 func _process(delta):
 	timeline += delta
+	
+	# Update performance monitor if we created it standalone
+	if perf_monitor:
+		perf_monitor.update(delta)
 	
 	# Collect comprehensive metrics
 	var fps = 0.0
