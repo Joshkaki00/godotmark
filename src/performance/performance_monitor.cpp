@@ -7,7 +7,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <sstream>
 
-bool PerformanceMonitor::verbose_logging = false;
+bool PerformanceMonitor::verbose_logging = false;  // Disabled by default for performance
 
 PerformanceMonitor::PerformanceMonitor()
     : history_index(0),
@@ -28,8 +28,11 @@ PerformanceMonitor::PerformanceMonitor()
       throttle_events(0),
       cpu_usage(0.0f),
       gpu_usage(0.0f),
+      prev_total_cpu_time(0),
+      prev_idle_cpu_time(0),
       last_update_time(0),
-      console_output_timer(0.0f) {
+      console_output_timer(0.0f),
+      cpu_gpu_update_timer(0.0f) {
   // Initialize arrays
   fps_history.fill(0.0f);
   frametime_history_ms.fill(0.0f);
@@ -108,6 +111,26 @@ String PerformanceMonitor::read_file_content(const String& path) {
 #endif
 }
 
+String PerformanceMonitor::read_command_output(const String& command) {
+#ifdef __linux__
+  FILE* pipe = popen(command.utf8().get_data(), "r");
+  if (!pipe) {
+    return "";
+  }
+  
+  char buffer[128];
+  std::string result = "";
+  while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+    result += buffer;
+  }
+  pclose(pipe);
+  
+  return String(result.c_str());
+#else
+  return "";
+#endif
+}
+
 void PerformanceMonitor::update(float delta) {
   // Calculate FPS
   delta_accumulator += delta;
@@ -130,11 +153,17 @@ void PerformanceMonitor::update(float delta) {
   if (delta_accumulator >= 1.0f) {
     update_statistics();
     read_temperature();
-    read_cpu_usage();
     detect_throttling();
 
     delta_accumulator = 0.0f;
     frame_count = 0;
+  }
+
+  // Update CPU/GPU every 100ms for responsive UI
+  cpu_gpu_update_timer += delta;
+  if (cpu_gpu_update_timer >= CPU_GPU_UPDATE_INTERVAL) {
+    read_cpu_usage();
+    cpu_gpu_update_timer = 0.0f;
   }
 
   // Console output every second
@@ -200,12 +229,26 @@ void PerformanceMonitor::read_temperature() {
       "/sys/class/thermal/thermal_zone1/temp",
       "/sys/devices/virtual/thermal/thermal_zone0/temp"};
 
+  bool found = false;
   for (const char* path : thermal_paths) {
+    if (verbose_logging) {
+      UtilityFunctions::print("[PerformanceMonitor] Trying thermal path: ", path);
+    }
+    
     String temp_str = read_file_content(path);
     if (!temp_str.is_empty()) {
+      if (verbose_logging) {
+        UtilityFunctions::print("[PerformanceMonitor] Temperature read: ", temp_str);
+      }
+      
       // Temperature is in millidegrees Celsius
       int temp_millidegrees = temp_str.to_int();
       current_temperature = temp_millidegrees / 1000.0f;
+
+      if (verbose_logging) {
+        UtilityFunctions::print("[PerformanceMonitor] Temperature: ", 
+                               String::num(current_temperature, 1), "°C");
+      }
 
       // Update max temperature
       if (current_temperature > max_temperature) {
@@ -220,34 +263,118 @@ void PerformanceMonitor::read_temperature() {
             (avg_temperature * 0.9f) + (current_temperature * 0.1f);
       }
 
+      found = true;
       break;
+    }
+  }
+  
+  if (!found) {
+    // Try vcgencmd as fallback (Raspberry Pi specific)
+    String vcgencmd_result = read_command_output("vcgencmd measure_temp");
+    if (!vcgencmd_result.is_empty()) {
+      // Output format: "temp=52.3'C"
+      int temp_start = vcgencmd_result.find("=");
+      int temp_end = vcgencmd_result.find("'");
+      if (temp_start >= 0 && temp_end > temp_start) {
+        String temp_str = vcgencmd_result.substr(temp_start + 1, temp_end - temp_start - 1);
+        current_temperature = temp_str.to_float();
+        
+        if (verbose_logging) {
+          UtilityFunctions::print("[PerformanceMonitor] Temperature from vcgencmd: ", 
+                                 String::num(current_temperature, 1), "°C");
+        }
+        
+        // Update max temperature
+        if (current_temperature > max_temperature) {
+          max_temperature = current_temperature;
+        }
+
+        // Update average (simple moving average)
+        if (avg_temperature == 0.0f) {
+          avg_temperature = current_temperature;
+        } else {
+          avg_temperature =
+              (avg_temperature * 0.9f) + (current_temperature * 0.1f);
+        }
+        
+        found = true;
+      }
+    }
+    
+    if (!found && verbose_logging) {
+      UtilityFunctions::print("[PerformanceMonitor] WARNING: No thermal zones found");
     }
   }
 #else
   // On Windows, we can't easily read temperature
   current_temperature = 0.0f;
+  if (verbose_logging) {
+    UtilityFunctions::print("[PerformanceMonitor] Windows: Temperature not available");
+  }
 #endif
 }
 
 void PerformanceMonitor::read_cpu_usage() {
 #ifdef __linux__
   // Read /proc/stat for CPU usage
-  // This is a simplified implementation
   String stat = read_file_content("/proc/stat");
+  if (verbose_logging) {
+    UtilityFunctions::print("[PerformanceMonitor] /proc/stat read: ", 
+                           stat.is_empty() ? "FAILED" : "SUCCESS");
+  }
+  
   if (!stat.is_empty()) {
-    // Parse first line: cpu  user nice system idle iowait irq softirq
+    // Parse first line: cpu  user nice system idle iowait irq softirq steal
     int cpu_start = stat.find("cpu ");
     if (cpu_start >= 0) {
       int line_end = stat.find("\n", cpu_start);
       String cpu_line = stat.substr(cpu_start + 4, line_end - cpu_start - 4);
-
-      // Simple approximation: assume 50% usage during benchmarks
-      // Real implementation would track previous values and calculate delta
-      cpu_usage = 50.0f;
+      
+      // Parse values
+      PackedStringArray values = cpu_line.split(" ", false);
+      if (values.size() >= 4) {
+        uint64_t user = values[0].to_int();
+        uint64_t nice = values[1].to_int();
+        uint64_t system = values[2].to_int();
+        uint64_t idle = values[3].to_int();
+        uint64_t iowait = values.size() > 4 ? values[4].to_int() : 0;
+        uint64_t irq = values.size() > 5 ? values[5].to_int() : 0;
+        uint64_t softirq = values.size() > 6 ? values[6].to_int() : 0;
+        
+        uint64_t total = user + nice + system + idle + iowait + irq + softirq;
+        uint64_t idle_time = idle + iowait;
+        
+        // Calculate delta
+        if (prev_total_cpu_time > 0) {
+          uint64_t total_delta = total - prev_total_cpu_time;
+          uint64_t idle_delta = idle_time - prev_idle_cpu_time;
+          
+          if (total_delta > 0) {
+            cpu_usage = 100.0f * (1.0f - (float)idle_delta / (float)total_delta);
+          }
+        }
+        
+        prev_total_cpu_time = total;
+        prev_idle_cpu_time = idle_time;
+        
+        if (verbose_logging) {
+          UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ", 
+                                 String::num(cpu_usage, 1), "%");
+        }
+      }
+    }
+  } else {
+    if (verbose_logging) {
+      UtilityFunctions::print("[PerformanceMonitor] WARNING: Could not read /proc/stat");
     }
   }
 #else
   // On Windows, approximate based on frame time
+  if (verbose_logging) {
+    UtilityFunctions::print("[PerformanceMonitor] Windows CPU calc: frametime=", 
+                           String::num(current_frametime_ms, 2), "ms");
+  }
+  
   // If we're taking >16ms per frame, assume high CPU usage
   if (current_frametime_ms > 16.0f) {
     cpu_usage = (current_frametime_ms / 16.0f) * 50.0f;
@@ -255,10 +382,20 @@ void PerformanceMonitor::read_cpu_usage() {
   } else {
     cpu_usage = 30.0f;  // Default assumption
   }
+  
+  if (verbose_logging) {
+    UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ", 
+                           String::num(cpu_usage, 1), "%");
+  }
 #endif
 
   // GPU usage approximation (would need platform-specific APIs for real values)
   gpu_usage = cpu_usage * 0.8f;  // Rough estimate
+  
+  if (verbose_logging) {
+    UtilityFunctions::print("[PerformanceMonitor] GPU usage set to: ", 
+                           String::num(gpu_usage, 1), "%");
+  }
 }
 
 void PerformanceMonitor::detect_throttling() {

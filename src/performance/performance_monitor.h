@@ -44,10 +44,16 @@ class PerformanceMonitor : public RefCounted {
   float cpu_usage;
   float gpu_usage;
 
+  // CPU usage tracking (Linux)
+  uint64_t prev_total_cpu_time;
+  uint64_t prev_idle_cpu_time;
+
   // Timing
   uint64_t last_update_time;
   float console_output_timer;
   static constexpr float CONSOLE_OUTPUT_INTERVAL = 1.0f;  // Output every second
+  float cpu_gpu_update_timer;
+  static constexpr float CPU_GPU_UPDATE_INTERVAL = 0.1f;  // Update every 100ms
 
   // Debug flag
   static bool verbose_logging;
@@ -58,6 +64,7 @@ class PerformanceMonitor : public RefCounted {
   void read_cpu_usage();
   void detect_throttling();
   String read_file_content(const String& path);
+  String read_command_output(const String& command);
 
  protected:
   static void _bind_methods();

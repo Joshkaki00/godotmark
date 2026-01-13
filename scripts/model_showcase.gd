@@ -537,10 +537,29 @@ func export_results():
 		print("    Stability: %.1f/100" % results["summary"]["stability_score"])
 	else:
 		print("\n✗ Failed to export results")
+	
+	print("[ModelShowcase] Benchmark complete - returning to Main scene")
+	
+	# Remove ourselves from the tree (triggers _exit_tree)
+	queue_free()
 
 func _input(event):
 	# Allow ESC to exit early
 	if event.is_action_pressed("ui_cancel"):
 		print("\n[ModelShowcase] Cancelled by user")
-		get_tree().change_scene_to_file("res://scenes/main.tscn")
+		queue_free()
+
+func _exit_tree():
+	"""Cleanup when showcase ends - restore Main scene UI"""
+	print("[ModelShowcase] Cleaning up...")
+	
+	var main = get_tree().root.get_node_or_null("Main")
+	if main:
+		# Restore UI elements
+		if main.has_node("UI"):
+			main.get_node("UI").visible = true
+		if main.has_node("DebugController"):
+			main.get_node("DebugController").visible = true
+		
+		print("[ModelShowcase] Main scene UI restored")
 
