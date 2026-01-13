@@ -259,7 +259,7 @@ func run_warmup_phase():
 		# Create particle material
 		var particle_mat = ParticleProcessMaterial.new()
 		particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-		particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
+		particle_mat.emission_box_extents = Vector3(4.0, 3.0, 4.0)
 		particle_mat.direction = Vector3(0, 1, 0)  # Upward drift
 		particle_mat.spread = 25.0  # More spread
 		particle_mat.initial_velocity_min = 0.3  # Faster
@@ -623,7 +623,7 @@ func transition_to_phase_4():
 		if particles.process_material == null:
 			var particle_mat = ParticleProcessMaterial.new()
 			particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
-			particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
+			particle_mat.emission_box_extents = Vector3(4.0, 3.0, 4.0)
 			particle_mat.direction = Vector3(0, 1, 0)  # Upward drift
 			particle_mat.spread = 25.0  # More spread
 			particle_mat.initial_velocity_min = 0.3  # Faster
