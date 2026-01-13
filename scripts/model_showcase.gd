@@ -10,6 +10,7 @@ extends Node3D
 @onready var audio = $AudioStreamPlayer
 @onready var fade_overlay = $FadeOverlay
 @onready var metrics_overlay = $MetricsOverlay
+@onready var loading_screen = $LoadingScreen
 
 # Performance monitoring
 var perf_monitor: PerformanceMonitor
@@ -23,14 +24,28 @@ var phase = 0
 var phase_triggered = [false, false, false, false, false, false, false]
 var fade_started = false
 
+# Warmup tracking
+var warmup_complete = false
+var warmup_timer = 0.0
+const WARMUP_DURATION = 10.0  # 10 seconds like 3DMark
+
+# Phase start times for warmup skip
+var phase_start_times = {
+	"phase_1": 0.0,
+	"phase_2": 12.0,
+	"phase_3": 24.0,
+	"phase_4": 36.0,
+	"phase_5": 48.0
+}
+
 # Particle optimization
 var particle_lod_enabled = true
 var max_safe_particles = {
-	0: 100,   # Potato: very few
-	1: 500,   # Low: minimal
-	2: 1000,  # Medium: reduced from 2000
-	3: 2000,  # High: reduced from 5000
-	4: 3000   # Ultra: capped for stability
+	0: 30,    # Potato: minimal ambient
+	1: 75,    # Low: light ambient
+	2: 150,   # Medium: moderate ambient
+	3: 300,   # High: more visible
+	4: 500    # Ultra: full effect
 }
 
 # Enhanced performance metrics with CPU, GPU and timestamps
@@ -55,6 +70,13 @@ func _ready():
 	print("\n========================================")
 	print("[ModelShowcase] Starting 1-Minute Benchmark")
 	print("========================================\n")
+	
+	# Hide everything during warmup - only show loading screen
+	bust.visible = false
+	camera.current = false
+	light.visible = false
+	particles.visible = false
+	metrics_overlay.visible = false
 	
 	# Get performance systems from main scene if available
 	var main = get_tree().root.get_node_or_null("Main")
@@ -127,18 +149,28 @@ func _ready():
 	
 	print("[ModelShowcase] Array pre-allocation complete")
 	
-	# Pre-warm shaders to prevent first-frame compilation spikes
-	print("[ModelShowcase] Pre-warming shaders...")
+	# Show loading screen
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Initializing systems...")
+	
 	await get_tree().process_frame
 	
-	# Trigger shader compilation by briefly enabling effects
-	if env and env.environment:
-		var original_glow = env.environment.glow_enabled
-		env.environment.glow_enabled = true
-		await get_tree().process_frame
-		env.environment.glow_enabled = original_glow
+	# Start comprehensive warmup
+	await run_warmup_phase()
 	
-	print("[ModelShowcase] Shader pre-warming complete")
+	# Hide loading screen
+	if loading_screen:
+		loading_screen.visible = false
+	
+	warmup_complete = true
+	
+	# Show everything now that warmup is complete
+	bust.visible = true
+	camera.current = true
+	light.visible = true
+	particles.visible = true
+	metrics_overlay.visible = true
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -147,16 +179,156 @@ func _ready():
 	if metrics_overlay:
 		metrics_overlay.update_phase(1, "Basic PBR")
 	
-	# Start audio
+	# Start audio and benchmark timer
 	audio.play()
-	print("[ModelShowcase] Audio started - 60 second timer begins")
+	print("[ModelShowcase] Benchmark started - 60 second timer begins")
+
+func run_warmup_phase():
+	"""Comprehensive 10-second warmup phase like 3DMark"""
+	print("\n========================================")
+	print("[Warmup] Starting 10-second warmup phase")
+	print("========================================\n")
+	
+	var warmup_start = Time.get_ticks_msec()
+	
+	# Step 1: Preload all assets (0-20%)
+	if loading_screen:
+		loading_screen.update_progress(0.0, "Loading HDR environment...")
+	
+	var hdr_path = "res://art/model-test/sunflowers_puresky_2k.hdr"
+	if ResourceLoader.exists(hdr_path):
+		var hdr_texture = load(hdr_path)
+		print("[Warmup] HDR texture loaded")
+	await get_tree().process_frame
+	
+	if loading_screen:
+		loading_screen.update_progress(20.0, "Preloading materials...")
+	await get_tree().process_frame
+	
+	# Step 2: Pre-compile all shaders (20-50%)
+	if loading_screen:
+		loading_screen.update_progress(20.0, "Compiling shaders...")
+	
+	if env and env.environment:
+		# Glow shader
+		var original_glow = env.environment.glow_enabled
+		env.environment.glow_enabled = true
+		env.environment.glow_intensity = 1.0
+		env.environment.glow_bloom = 0.2
+		await get_tree().process_frame
+		print("[Warmup] Glow shader compiled")
+		
+		if loading_screen:
+			loading_screen.update_progress(30.0, "Compiling SSR shaders...")
+		
+		# SSR shader
+		var original_ssr = env.environment.ssr_enabled
+		env.environment.ssr_enabled = true
+		await get_tree().process_frame
+		print("[Warmup] SSR shader compiled")
+		
+		if loading_screen:
+			loading_screen.update_progress(40.0, "Compiling SSAO shaders...")
+		
+		# SSAO shader
+		var original_ssao = env.environment.ssao_enabled
+		env.environment.ssao_enabled = true
+		await get_tree().process_frame
+		print("[Warmup] SSAO shader compiled")
+		
+		# Restore states
+		env.environment.glow_enabled = original_glow
+		env.environment.ssr_enabled = original_ssr
+		env.environment.ssao_enabled = original_ssao
+	
+	if loading_screen:
+		loading_screen.update_progress(50.0, "Compiling shadow shaders...")
+	
+	# Shadow shader
+	if light:
+		light.shadow_enabled = true
+		await get_tree().process_frame
+		print("[Warmup] Shadow shader compiled")
+		light.shadow_enabled = false
+	
+	# Step 3: Warmup particle system (50-60%)
+	if loading_screen:
+		loading_screen.update_progress(50.0, "Warming up particle system...")
+	
+	if particles:
+		# Create particle material
+		var particle_mat = ParticleProcessMaterial.new()
+		particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+		particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
+		particle_mat.direction = Vector3(0, 0.3, 0)  # Gentle upward drift
+		particle_mat.spread = 15.0  # Less spread = more organized
+		particle_mat.initial_velocity_min = 0.05  # Much slower
+		particle_mat.initial_velocity_max = 0.15  # Much slower
+		particle_mat.gravity = Vector3(0, -0.05, 0)  # Gentle float
+		particle_mat.scale_min = 0.01  # Smaller
+		particle_mat.scale_max = 0.03  # Smaller, less variation
+		particle_mat.lifetime_randomness = 0.3  # Natural fade
+		particles.process_material = particle_mat
+		
+		var sphere_mesh = SphereMesh.new()
+		sphere_mesh.radius = 0.01  # Smaller
+		sphere_mesh.height = 0.02  # Smaller
+		var material = StandardMaterial3D.new()
+		material.albedo_color = Color(0.9, 0.9, 0.95, 0.3)  # Subtle blue-white, very transparent
+		material.emission_enabled = true
+		material.emission = Color(0.8, 0.85, 0.9)  # Cool subtle glow
+		material.emission_energy_multiplier = 0.3  # Very subtle
+		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+		sphere_mesh.material = material
+		particles.draw_pass_1 = sphere_mesh
+		
+		particles.amount = 100
+		particles.emitting = true
+		await get_tree().process_frame
+		print("[Warmup] Particle system initialized")
+		particles.emitting = false
+	
+	if loading_screen:
+		loading_screen.update_progress(60.0, "Stabilizing systems...")
+	
+	# Step 4: Let systems stabilize (60-100%)
+	# Run for remaining time to reach 10 seconds total
+	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	var remaining = WARMUP_DURATION - elapsed
+	
+	print("[Warmup] Stabilization phase: %.1fs" % remaining)
+	
+	var stabilize_start = Time.get_ticks_msec()
+	while remaining > 0:
+		await get_tree().process_frame
+		
+		elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
+		remaining = WARMUP_DURATION - elapsed
+		
+		# Update progress bar
+		var progress = 60.0 + (40.0 * (1.0 - (remaining / (WARMUP_DURATION * 0.4))))
+		if loading_screen:
+			loading_screen.update_progress(progress, "Stabilizing systems...")
+			loading_screen.update_timer(max(0.0, remaining))
+	
+	if loading_screen:
+		loading_screen.update_progress(100.0, "Ready!")
+	
+	await get_tree().process_frame
+	
+	print("\n[Warmup] Complete - systems stable")
+	print("========================================\n")
 
 func _process(delta):
+	# Don't process anything during warmup
+	if not warmup_complete:
+		return
+	
 	timeline += delta
 	frame_count += 1
 	
-	# Update performance monitor if we created it standalone
-	if perf_monitor:
+	# Update performance monitor every 5 frames to reduce overhead
+	if perf_monitor and frame_count % 5 == 0:
 		perf_monitor.update(delta)
 	
 	# Collect comprehensive metrics
@@ -180,20 +352,23 @@ func _process(delta):
 		temp = 0.0  # Not available
 		gpu_usage = 0.0  # Not available
 	
-	# Per-frame data (use push_back on pre-allocated arrays)
-	metrics[current_phase_key]["fps"].push_back(fps)
-	metrics[current_phase_key]["frame_times"].push_back(frame_time)
-	metrics[current_phase_key]["cpu"].push_back(cpu_usage)
-	metrics[current_phase_key]["temps"].push_back(temp)
-	metrics[current_phase_key]["gpu"].push_back(gpu_usage)
-	metrics[current_phase_key]["timestamps"].push_back(timeline)
-	
-	# Per-second aggregation (use push_back on pre-allocated arrays)
-	current_second_data["fps"].push_back(fps)
-	current_second_data["frame_times"].push_back(frame_time)
-	current_second_data["cpu"].push_back(cpu_usage)
-	current_second_data["temps"].push_back(temp)
-	current_second_data["gpu"].push_back(gpu_usage)
+	# Only collect data after 2-second phase warmup
+	var phase_elapsed = timeline - phase_start_times.get(current_phase_key, 0.0)
+	if phase_elapsed >= 2.0:
+		# Per-frame data (use push_back on pre-allocated arrays)
+		metrics[current_phase_key]["fps"].push_back(fps)
+		metrics[current_phase_key]["frame_times"].push_back(frame_time)
+		metrics[current_phase_key]["cpu"].push_back(cpu_usage)
+		metrics[current_phase_key]["temps"].push_back(temp)
+		metrics[current_phase_key]["gpu"].push_back(gpu_usage)
+		metrics[current_phase_key]["timestamps"].push_back(timeline)
+		
+		# Per-second aggregation (use push_back on pre-allocated arrays)
+		current_second_data["fps"].push_back(fps)
+		current_second_data["frame_times"].push_back(frame_time)
+		current_second_data["cpu"].push_back(cpu_usage)
+		current_second_data["temps"].push_back(temp)
+		current_second_data["gpu"].push_back(gpu_usage)
 	
 	if timeline - last_second_mark >= 1.0:
 		aggregate_second_data()
@@ -447,27 +622,29 @@ func transition_to_phase_4():
 		# Create particle material if needed
 		if particles.process_material == null:
 			var particle_mat = ParticleProcessMaterial.new()
-			particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_SPHERE
-			particle_mat.emission_sphere_radius = 2.0
-			particle_mat.direction = Vector3(0, 1, 0)
-			particle_mat.spread = 45.0
-			particle_mat.initial_velocity_min = 0.5
-			particle_mat.initial_velocity_max = 1.5
-			particle_mat.gravity = Vector3(0, -0.5, 0)
-			particle_mat.scale_min = 0.02
-			particle_mat.scale_max = 0.05
+			particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
+			particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
+			particle_mat.direction = Vector3(0, 0.3, 0)  # Gentle upward drift
+			particle_mat.spread = 15.0  # Less spread = more organized
+			particle_mat.initial_velocity_min = 0.05  # Much slower
+			particle_mat.initial_velocity_max = 0.15  # Much slower
+			particle_mat.gravity = Vector3(0, -0.05, 0)  # Gentle float
+			particle_mat.scale_min = 0.01  # Smaller
+			particle_mat.scale_max = 0.03  # Smaller, less variation
+			particle_mat.lifetime_randomness = 0.3  # Natural fade
 			particles.process_material = particle_mat
 		
 		# Add draw mesh for particles (this is what was missing!)
 		if particles.draw_pass_1 == null:
 			var sphere_mesh = SphereMesh.new()
-			sphere_mesh.radius = 0.02
-			sphere_mesh.height = 0.04
+			sphere_mesh.radius = 0.01  # Smaller
+			sphere_mesh.height = 0.02  # Smaller
 			var material = StandardMaterial3D.new()
-			material.albedo_color = Color(1, 1, 0.9, 0.8)  # Warm white, slightly transparent
+			material.albedo_color = Color(0.9, 0.9, 0.95, 0.3)  # Subtle blue-white, very transparent
 			material.emission_enabled = true
-			material.emission = Color(1, 0.95, 0.8)
-			material.emission_energy_multiplier = 2.0
+			material.emission = Color(0.8, 0.85, 0.9)  # Cool subtle glow
+			material.emission_energy_multiplier = 0.3  # Very subtle
+			material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			sphere_mesh.material = material
 			particles.draw_pass_1 = sphere_mesh
 		
