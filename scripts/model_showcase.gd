@@ -260,19 +260,19 @@ func run_warmup_phase():
 		var particle_mat = ParticleProcessMaterial.new()
 		particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 		particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
-		particle_mat.direction = Vector3(0, 0.3, 0)  # Gentle upward drift
-		particle_mat.spread = 15.0  # Less spread = more organized
-		particle_mat.initial_velocity_min = 0.05  # Much slower
-		particle_mat.initial_velocity_max = 0.15  # Much slower
-		particle_mat.gravity = Vector3(0, -0.05, 0)  # Gentle float
-		particle_mat.scale_min = 0.01  # Smaller
-		particle_mat.scale_max = 0.03  # Smaller, less variation
+		particle_mat.direction = Vector3(0, 1, 0)  # Upward drift
+		particle_mat.spread = 25.0  # More spread
+		particle_mat.initial_velocity_min = 0.3  # Faster
+		particle_mat.initial_velocity_max = 0.8  # Faster
+		particle_mat.gravity = Vector3(0, -0.2, 0)  # More gravity
+		particle_mat.scale_min = 0.02  # Bigger
+		particle_mat.scale_max = 0.05  # Bigger
 		particle_mat.lifetime_randomness = 0.3  # Natural fade
 		particles.process_material = particle_mat
 		
 		var sphere_mesh = SphereMesh.new()
-		sphere_mesh.radius = 0.02  # Visible but not huge
-		sphere_mesh.height = 0.04  # Visible but not huge
+		sphere_mesh.radius = 0.025  # Bigger
+		sphere_mesh.height = 0.05  # Bigger
 		var material = StandardMaterial3D.new()
 		material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)  # Warm white, visible
 		material.emission_enabled = true
@@ -624,21 +624,21 @@ func transition_to_phase_4():
 			var particle_mat = ParticleProcessMaterial.new()
 			particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 			particle_mat.emission_box_extents = Vector3(3.0, 2.0, 3.0)
-			particle_mat.direction = Vector3(0, 0.3, 0)  # Gentle upward drift
-			particle_mat.spread = 15.0  # Less spread = more organized
-			particle_mat.initial_velocity_min = 0.05  # Much slower
-			particle_mat.initial_velocity_max = 0.15  # Much slower
-			particle_mat.gravity = Vector3(0, -0.05, 0)  # Gentle float
-			particle_mat.scale_min = 0.01  # Smaller
-			particle_mat.scale_max = 0.03  # Smaller, less variation
+			particle_mat.direction = Vector3(0, 1, 0)  # Upward drift
+			particle_mat.spread = 25.0  # More spread
+			particle_mat.initial_velocity_min = 0.3  # Faster
+			particle_mat.initial_velocity_max = 0.8  # Faster
+			particle_mat.gravity = Vector3(0, -0.2, 0)  # More gravity
+			particle_mat.scale_min = 0.02  # Bigger
+			particle_mat.scale_max = 0.05  # Bigger
 			particle_mat.lifetime_randomness = 0.3  # Natural fade
 			particles.process_material = particle_mat
 		
 		# Add draw mesh for particles (this is what was missing!)
 		if particles.draw_pass_1 == null:
 			var sphere_mesh = SphereMesh.new()
-			sphere_mesh.radius = 0.02  # Visible but not huge
-			sphere_mesh.height = 0.04  # Visible but not huge
+			sphere_mesh.radius = 0.025  # Bigger
+			sphere_mesh.height = 0.05  # Bigger
 			var material = StandardMaterial3D.new()
 			material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)  # Warm white, visible
 			material.emission_enabled = true
