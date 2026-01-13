@@ -338,16 +338,15 @@ func _process(delta):
 	var temp = 0.0
 	var gpu_usage = 0.0
 	
+	# Always use Engine FPS for immediate measurement from frame 1
+	fps = Engine.get_frames_per_second()
+	frame_time = delta * 1000.0  # Current frame time in ms
+	
 	if perf_monitor:
-		fps = perf_monitor.get_avg_fps()
-		frame_time = perf_monitor.get_current_frametime_ms()
 		cpu_usage = perf_monitor.get_cpu_usage()
 		temp = perf_monitor.get_temperature()
 		gpu_usage = perf_monitor.get_gpu_usage()  # 0-100
 	else:
-		# Fallback: use Engine metrics
-		fps = Engine.get_frames_per_second()
-		frame_time = 1000.0 / fps if fps > 0 else 0.0
 		cpu_usage = 0.0  # Not available
 		temp = 0.0  # Not available
 		gpu_usage = 0.0  # Not available
