@@ -63,11 +63,13 @@ func _ready():
 		print("[ModelShowcase] Systems found: perf=%s, quality=%s, platform=%s" % [
 			perf_monitor != null, quality_manager != null, platform_detector != null
 		])
-		if quality_manager:
-			current_quality_preset = quality_manager.get_quality_preset()
-			print("[ModelShowcase] Quality preset: ", quality_manager.get_quality_name())
 	else:
 		print("[ModelShowcase] WARNING: Main scene not found, using fallback metrics")
+	
+	# ALWAYS use High quality for model showcase (it's a visual benchmark!)
+	# Don't inherit adaptive quality from main scene
+	current_quality_preset = 3  # High (enables all effects including DOF)
+	print("[ModelShowcase] Forcing High quality preset for visual showcase")
 	
 	# Setup initial phase
 	setup_phase_1()
