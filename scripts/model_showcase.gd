@@ -559,7 +559,7 @@ func _exit_tree():
 		if main.has_node("UI"):
 			main.get_node("UI").visible = true
 		if main.has_node("DebugController"):
-			main.get_node("DebugController").visible = true
+			main.get_node("DebugController").process_mode = Node.PROCESS_MODE_ALWAYS
 		
 		print("[ModelShowcase] Main scene UI restored")
 

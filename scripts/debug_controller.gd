@@ -103,7 +103,7 @@ func launch_model_showcase():
 		if main.has_node("UI"):
 			main.get_node("UI").visible = false
 		if main.has_node("DebugController"):
-			main.get_node("DebugController").visible = false
+			main.get_node("DebugController").process_mode = Node.PROCESS_MODE_DISABLED
 		
 		# Add showcase as child of root (so it's at same level as Main)
 		get_tree().root.add_child(showcase_instance)
