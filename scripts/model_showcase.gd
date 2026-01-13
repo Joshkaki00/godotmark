@@ -54,6 +54,24 @@ func _ready():
 	print("[ModelShowcase] Starting 1-Minute Benchmark")
 	print("========================================\n")
 	
+	# DEBUG: Verify all nodes are found
+	print("[ModelShowcase] Node check:")
+	print("  bust: ", bust != null)
+	print("  camera: ", camera != null)
+	print("  light: ", light != null)
+	print("  env: ", env != null)
+	print("  particles: ", particles != null)
+	print("  audio: ", audio != null)
+	print("  fade_overlay: ", fade_overlay != null)
+	print("  metrics_overlay: ", metrics_overlay != null)
+	
+	# Ensure camera is current (critical when dynamically loaded)
+	if camera:
+		camera.make_current()
+		print("[ModelShowcase] Camera set as current")
+	else:
+		print("[ModelShowcase] ERROR: Camera node not found!")
+	
 	# Get performance systems from main scene if available
 	var main = get_tree().root.get_node_or_null("Main")
 	if main:

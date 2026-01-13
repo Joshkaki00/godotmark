@@ -105,8 +105,15 @@ func launch_model_showcase():
 		if main.has_node("DebugController"):
 			main.get_node("DebugController").process_mode = Node.PROCESS_MODE_DISABLED
 		
-		# Add showcase as child of root (so it's at same level as Main)
-		get_tree().root.add_child(showcase_instance)
+		# Add showcase as child of root (deferred for proper initialization)
+		get_tree().root.call_deferred("add_child", showcase_instance)
+		
+		# Wait a frame then ensure camera is current
+		await get_tree().process_frame
+		if showcase_instance.has_node("Camera3D"):
+			var cam = showcase_instance.get_node("Camera3D")
+			cam.make_current()
+			print("[DebugController] Camera set as current")
 		
 		print("[DebugController] Model Showcase launched (Main scene preserved)")
 	else:
