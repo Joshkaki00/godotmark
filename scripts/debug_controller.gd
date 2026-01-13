@@ -75,46 +75,13 @@ func toggle_quick_test():
 
 func toggle_verbose():
 	verbose_enabled = not verbose_enabled
-	
-	# Get perf_monitor from main scene
-	var main = get_tree().root.get_node_or_null("Main")
-	if main and main.perf_monitor:
-		main.perf_monitor.set_verbose_logging(verbose_enabled)
-	
-	# Enable for other systems
+	# Enable for all systems
 	if quality_manager:
 		quality_manager.set_verbose_logging(verbose_enabled)
 	if stress_test:
 		stress_test.set_verbose_logging(verbose_enabled)
-	
 	print("[DebugController] Verbose logging: ", "ON" if verbose_enabled else "OFF")
 
 func launch_model_showcase():
 	print("[DebugController] Launching Model Showcase...")
-	
-	# Load the scene
-	var showcase_scene = load("res://scenes/model_showcase.tscn")
-	var showcase_instance = showcase_scene.instantiate()
-	
-	# Hide main scene UI
-	var main = get_tree().root.get_node("Main")
-	if main:
-		# Hide UI elements
-		if main.has_node("UI"):
-			main.get_node("UI").visible = false
-		if main.has_node("DebugController"):
-			main.get_node("DebugController").process_mode = Node.PROCESS_MODE_DISABLED
-		
-		# Add showcase as child of root (deferred for proper initialization)
-		get_tree().root.call_deferred("add_child", showcase_instance)
-		
-		# Wait a frame then ensure camera is current
-		await get_tree().process_frame
-		if showcase_instance.has_node("Camera3D"):
-			var cam = showcase_instance.get_node("Camera3D")
-			cam.make_current()
-			print("[DebugController] Camera set as current")
-		
-		print("[DebugController] Model Showcase launched (Main scene preserved)")
-	else:
-		print("[DebugController] ERROR: Could not find Main scene")
+	get_tree().change_scene_to_file("res://scenes/model_showcase.tscn")

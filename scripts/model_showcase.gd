@@ -54,24 +54,6 @@ func _ready():
 	print("[ModelShowcase] Starting 1-Minute Benchmark")
 	print("========================================\n")
 	
-	# DEBUG: Verify all nodes are found
-	print("[ModelShowcase] Node check:")
-	print("  bust: ", bust != null)
-	print("  camera: ", camera != null)
-	print("  light: ", light != null)
-	print("  env: ", env != null)
-	print("  particles: ", particles != null)
-	print("  audio: ", audio != null)
-	print("  fade_overlay: ", fade_overlay != null)
-	print("  metrics_overlay: ", metrics_overlay != null)
-	
-	# Ensure camera is current (critical when dynamically loaded)
-	if camera:
-		camera.make_current()
-		print("[ModelShowcase] Camera set as current")
-	else:
-		print("[ModelShowcase] ERROR: Camera node not found!")
-	
 	# Get performance systems from main scene if available
 	var main = get_tree().root.get_node_or_null("Main")
 	if main:
@@ -81,13 +63,11 @@ func _ready():
 		print("[ModelShowcase] Systems found: perf=%s, quality=%s, platform=%s" % [
 			perf_monitor != null, quality_manager != null, platform_detector != null
 		])
+		if quality_manager:
+			current_quality_preset = quality_manager.get_quality_preset()
+			print("[ModelShowcase] Quality preset: ", quality_manager.get_quality_name())
 	else:
 		print("[ModelShowcase] WARNING: Main scene not found, using fallback metrics")
-	
-	# ALWAYS use High quality for model showcase (it's a visual benchmark!)
-	# Don't inherit adaptive quality from main scene
-	current_quality_preset = 3  # High (enables all effects including DOF)
-	print("[ModelShowcase] Forcing High quality preset for visual showcase")
 	
 	# Setup initial phase
 	setup_phase_1()
@@ -557,29 +537,10 @@ func export_results():
 		print("    Stability: %.1f/100" % results["summary"]["stability_score"])
 	else:
 		print("\n✗ Failed to export results")
-	
-	print("[ModelShowcase] Benchmark complete - returning to Main scene")
-	
-	# Remove ourselves from the tree (triggers _exit_tree)
-	queue_free()
 
 func _input(event):
 	# Allow ESC to exit early
 	if event.is_action_pressed("ui_cancel"):
 		print("\n[ModelShowcase] Cancelled by user")
-		queue_free()
-
-func _exit_tree():
-	"""Cleanup when showcase ends - restore Main scene UI"""
-	print("[ModelShowcase] Cleaning up...")
-	
-	var main = get_tree().root.get_node_or_null("Main")
-	if main:
-		# Restore UI elements
-		if main.has_node("UI"):
-			main.get_node("UI").visible = true
-		if main.has_node("DebugController"):
-			main.get_node("DebugController").process_mode = Node.PROCESS_MODE_ALWAYS
-		
-		print("[ModelShowcase] Main scene UI restored")
+		get_tree().change_scene_to_file("res://scenes/main.tscn")
 

@@ -7,7 +7,7 @@
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <sstream>
 
-bool PerformanceMonitor::verbose_logging = false;  // Disabled by default for performance
+bool PerformanceMonitor::verbose_logging = true;  // Enable for debugging
 
 PerformanceMonitor::PerformanceMonitor()
     : history_index(0),
