@@ -10,13 +10,23 @@ GPUBasicsScene::GPUBasicsScene()
     : triangles_per_object(100),
       spawn_radius(10.0f),
       camera_angle(0.0f),
-      camera_speed(0.5f) {
+      camera_speed(0.5f),
+      active_object_count(0) {
   // Set progressive stress test parameters
   set_max_load(100000);    // Max 100,000 triangles
   set_ramp_rate(1000.0f);  // 1000 triangles/second
 }
 
-GPUBasicsScene::~GPUBasicsScene() { cleanup_load(); }
+GPUBasicsScene::~GPUBasicsScene() {
+  cleanup_load();
+
+  // Delete all pooled objects
+  for (MeshInstance3D* instance : object_pool) {
+    remove_child(instance);
+    memdelete(instance);
+  }
+  object_pool.clear();
+}
 
 void GPUBasicsScene::_bind_methods() {
   ClassDB::bind_method(D_METHOD("set_triangles_per_object", "count"),
@@ -32,8 +42,26 @@ void GPUBasicsScene::_bind_methods() {
 void GPUBasicsScene::_ready() {
   ProgressiveStressTest::_ready();
 
+  // Create 5 mesh templates (reused across all objects)
+  UtilityFunctions::print("[GPUBasicsScene] Creating mesh templates...");
+  for (int i = 0; i < 5; i++) {
+    mesh_templates.push_back(create_procedural_mesh(triangles_per_object));
+  }
+
+  // Create 5 material templates
+  UtilityFunctions::print("[GPUBasicsScene] Creating material templates...");
+  for (int i = 0; i < 5; i++) {
+    material_templates.push_back(create_test_material());
+  }
+
+  // Pre-create object pool (max possible objects)
+  int max_objects = get_max_load() / triangles_per_object;
+  UtilityFunctions::print("[GPUBasicsScene] Initializing object pool: ",
+                          max_objects, " objects...");
+  initialize_object_pool(max_objects);
+
   UtilityFunctions::print("[GPUBasicsScene] Ready - Max Load: ", get_max_load(),
-                          " triangles");
+                          " triangles | Pool Size: ", max_objects, " objects");
 }
 
 void GPUBasicsScene::_process(double delta) {
@@ -59,44 +87,35 @@ void GPUBasicsScene::_process(double delta) {
 void GPUBasicsScene::apply_load(int load) {
   // Calculate how many objects we need for this triangle count
   int target_objects = load / triangles_per_object;
-  int current_objects = mesh_instances.size();
-
-  if (target_objects > current_objects) {
-    // Spawn more objects
-    int to_spawn = target_objects - current_objects;
-    spawn_objects(to_spawn);
-  } else if (target_objects < current_objects) {
-    // Despawn some objects
-    int to_despawn = current_objects - target_objects;
-    for (int i = 0; i < to_despawn && !mesh_instances.empty(); i++) {
-      MeshInstance3D* instance = mesh_instances.back();
-      mesh_instances.pop_back();
-      remove_child(instance);
-      memdelete(instance);
-    }
-  }
+  
+  // Use object pooling - just show/hide objects (no allocation/deallocation)
+  set_active_objects(target_objects);
 }
 
-void GPUBasicsScene::cleanup_load() { despawn_all_objects(); }
+void GPUBasicsScene::cleanup_load() {
+  // Hide all objects (don't delete them - they're in the pool)
+  set_active_objects(0);
+}
 
-void GPUBasicsScene::spawn_objects(int count) {
-  for (int i = 0; i < count; i++) {
+void GPUBasicsScene::initialize_object_pool(int pool_size) {
+  object_pool.reserve(pool_size);
+
+  for (int i = 0; i < pool_size; i++) {
     MeshInstance3D* instance = memnew(MeshInstance3D);
 
-    // Create procedural mesh
-    instance->set_mesh(create_procedural_mesh(triangles_per_object));
+    // Assign mesh from templates (cycle through)
+    instance->set_mesh(mesh_templates[i % mesh_templates.size()]);
 
-    // Set material
-    instance->set_surface_override_material(0, create_test_material());
+    // Assign material from templates
+    instance->set_surface_override_material(
+        0, material_templates[i % material_templates.size()]);
 
-    // Random position in a sphere
+    // Random position in sphere
     float theta = UtilityFunctions::randf() * Math_PI * 2.0f;
     float phi = UtilityFunctions::randf() * Math_PI;
     float r = UtilityFunctions::randf() * spawn_radius;
-
     Vector3 pos(r * sin(phi) * cos(theta), r * sin(phi) * sin(theta),
                 r * cos(phi));
-
     instance->set_position(pos);
 
     // Random rotation
@@ -105,17 +124,35 @@ void GPUBasicsScene::spawn_objects(int count) {
                 UtilityFunctions::randf() * Math_PI * 2.0f);
     instance->set_rotation(rot);
 
+    // Add to scene (but hide initially)
     add_child(instance);
-    mesh_instances.push_back(instance);
+    instance->set_visible(false);
+
+    object_pool.push_back(instance);
   }
+
+  active_object_count = 0;
+  UtilityFunctions::print("[GPUBasicsScene] Object pool initialized: ",
+                          pool_size, " objects created");
 }
 
-void GPUBasicsScene::despawn_all_objects() {
-  for (MeshInstance3D* instance : mesh_instances) {
-    remove_child(instance);
-    memdelete(instance);
+void GPUBasicsScene::set_active_objects(int count) {
+  // Clamp to pool size
+  count = std::min(count, static_cast<int>(object_pool.size()));
+
+  if (count > active_object_count) {
+    // Show more objects
+    for (int i = active_object_count; i < count; i++) {
+      object_pool[i]->set_visible(true);
+    }
+  } else if (count < active_object_count) {
+    // Hide some objects
+    for (int i = count; i < active_object_count; i++) {
+      object_pool[i]->set_visible(false);
+    }
   }
-  mesh_instances.clear();
+
+  active_object_count = count;
 }
 
 Ref<ArrayMesh> GPUBasicsScene::create_procedural_mesh(int triangle_count) {
@@ -168,7 +205,7 @@ int GPUBasicsScene::get_triangles_per_object() const {
 }
 
 int GPUBasicsScene::get_total_triangles() const {
-  return mesh_instances.size() * triangles_per_object;
+  return active_object_count * triangles_per_object;
 }
 
-int GPUBasicsScene::get_object_count() const { return mesh_instances.size(); }
+int GPUBasicsScene::get_object_count() const { return active_object_count; }

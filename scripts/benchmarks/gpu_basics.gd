@@ -20,6 +20,7 @@ var metrics = {
 	"temp": [],
 	"gpu": []
 }
+var sample_index = 0  # Current position in pre-allocated arrays
 var current_test_name = "Initializing..."
 
 # Threaded loading state
@@ -60,15 +61,17 @@ func _ready():
 		platform_detector.initialize()
 		print("[GPUBasics] Standalone systems created")
 	
-	# Pre-allocate metrics arrays (60 seconds @ 60 FPS = ~3600 samples)
+	# Pre-allocate metrics arrays with EXACT size (no growth during benchmark)
 	print("[GPUBasics] Pre-allocating arrays for optimal performance...")
 	var expected_samples = 3600  # 60s @ 60 FPS
 	
 	for key in metrics.keys():
 		metrics[key].resize(expected_samples)
-		metrics[key].clear()
+		# Initialize with zeros (don't clear - keep allocated space)
+		for i in range(expected_samples):
+			metrics[key][i] = 0.0
 	
-	print("[GPUBasics] Array pre-allocation complete")
+	print("[GPUBasics] Array pre-allocation complete (fixed size: %d samples)" % expected_samples)
 	
 	# Show loading screen
 	if loading_screen:
@@ -212,13 +215,15 @@ func _process(delta):
 		var temp = perf_monitor.get_temperature() if perf_monitor else 0.0
 		var gpu_usage = perf_monitor.get_gpu_usage() if perf_monitor else 0.0
 		
-		# Store metrics (use push_back on pre-allocated arrays)
-		metrics["time"].push_back(benchmark_timer)
-		metrics["fps"].push_back(fps)
-		metrics["frame_time"].push_back(frame_time)
-		metrics["cpu"].push_back(cpu_usage)
-		metrics["temp"].push_back(temp)
-		metrics["gpu"].push_back(gpu_usage)
+		# Store metrics using direct indexing (no array growth, no allocations)
+		if sample_index < metrics["time"].size():
+			metrics["time"][sample_index] = benchmark_timer
+			metrics["fps"][sample_index] = fps
+			metrics["frame_time"][sample_index] = frame_time
+			metrics["cpu"][sample_index] = cpu_usage
+			metrics["temp"][sample_index] = temp
+			metrics["gpu"][sample_index] = gpu_usage
+			sample_index += 1
 		
 		# Update UI overlay (every 3 frames to reduce overhead)
 		if metrics_overlay and Engine.get_process_frames() % 3 == 0:
@@ -252,16 +257,16 @@ func _finish_benchmark():
 
 func _export_results():
 	"""Calculate statistics and export results to JSON"""
-	if metrics["fps"].is_empty():
+	if sample_index == 0:
 		print("[GPUBasics] No metrics to export")
 		return
 	
-	# Get direct references to metric arrays (no copying needed!)
-	var fps_data = metrics["fps"]
-	var frame_time_data = metrics["frame_time"]
-	var cpu_data = metrics["cpu"]
-	var temp_data = metrics["temp"]
-	var gpu_data = metrics["gpu"]
+	# Get slices of arrays (only valid data up to sample_index)
+	var fps_data = metrics["fps"].slice(0, sample_index)
+	var frame_time_data = metrics["frame_time"].slice(0, sample_index)
+	var cpu_data = metrics["cpu"].slice(0, sample_index)
+	var temp_data = metrics["temp"].slice(0, sample_index)
+	var gpu_data = metrics["gpu"].slice(0, sample_index)
 	
 	# Calculate averages
 	var avg_fps = _calculate_average(fps_data)
@@ -298,7 +303,7 @@ func _export_results():
 		"version": "1.0",
 		"timestamp": Time.get_datetime_string_from_system(),
 		"duration": benchmark_duration,
-		"sample_count": metrics["fps"].size(),
+		"sample_count": sample_index,
 		"metrics": {
 			"avg_fps": avg_fps,
 			"min_fps": min_fps,
@@ -349,16 +354,17 @@ func _calculate_percentiles(data: Array) -> Dictionary:
 	if data.is_empty():
 		return {"p1": 0.0, "p5": 0.0, "p50": 0.0, "p95": 0.0, "p99": 0.0}
 	
-	# Sort in-place for percentile calculation
-	data.sort()
+	# Create a copy for sorting (don't mutate original array)
+	var sorted_data = data.duplicate()
+	sorted_data.sort()
 	
-	var size = data.size()
+	var size = sorted_data.size()
 	return {
-		"p1": data[int(size * 0.01)],
-		"p5": data[int(size * 0.05)],
-		"p50": data[int(size * 0.50)],
-		"p95": data[int(size * 0.95)],
-		"p99": data[int(size * 0.99)]
+		"p1": sorted_data[int(size * 0.01)],
+		"p5": sorted_data[int(size * 0.05)],
+		"p50": sorted_data[int(size * 0.50)],
+		"p95": sorted_data[int(size * 0.95)],
+		"p99": sorted_data[int(size * 0.99)]
 	}
 
 func _input(event):

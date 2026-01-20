@@ -15,8 +15,13 @@ class GPUBasicsScene : public ProgressiveStressTest {
   GDCLASS(GPUBasicsScene, ProgressiveStressTest)
 
  private:
-  // Scene objects
-  std::vector<MeshInstance3D*> mesh_instances;
+  // Object pool (all objects pre-created, show/hide as needed)
+  std::vector<MeshInstance3D*> object_pool;
+  int active_object_count;
+
+  // Shared resources (created once, reused across all objects)
+  std::vector<Ref<ArrayMesh>> mesh_templates;
+  std::vector<Ref<StandardMaterial3D>> material_templates;
 
   // Configuration
   int triangles_per_object;
@@ -30,9 +35,9 @@ class GPUBasicsScene : public ProgressiveStressTest {
   Ref<ArrayMesh> create_procedural_mesh(int triangle_count);
   Ref<StandardMaterial3D> create_test_material();
 
-  // Object management
-  void spawn_objects(int count);
-  void despawn_all_objects();
+  // Pool management
+  void initialize_object_pool(int pool_size);
+  void set_active_objects(int count);
 
  protected:
   static void _bind_methods();
