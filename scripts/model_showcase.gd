@@ -383,8 +383,8 @@ func _process(delta):
 	timeline += delta
 	frame_count += 1
 	
-	# Update performance monitor every 5 frames to reduce overhead
-	if perf_monitor and frame_count % 5 == 0:
+	# Update performance monitor every frame for real-time data
+	if perf_monitor:
 		perf_monitor.update(delta)
 	
 	# Collect comprehensive metrics
@@ -435,8 +435,8 @@ func _process(delta):
 		])
 		last_memory_report = timeline
 	
-	# Update UI overlay (every 3 frames to reduce overhead)
-	if metrics_overlay and Engine.get_process_frames() % 3 == 0:
+	# Update UI overlay every frame for true real-time display
+	if metrics_overlay:
 		metrics_overlay.update_metrics(fps, frame_time, cpu_usage, temp, gpu_usage)
 		metrics_overlay.update_progress(timeline, 60.0)
 	
