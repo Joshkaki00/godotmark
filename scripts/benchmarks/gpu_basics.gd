@@ -219,8 +219,8 @@ func _export_results():
 	if platform_detector:
 		results["platform"] = {
 			"name": platform_detector.get_platform_name(),
-			"cpu": platform_detector.get_cpu_name(),
-			"gpu": platform_detector.get_gpu_name(),
+			"cpu": platform_detector.get_cpu_model(),
+			"gpu": platform_detector.get_gpu_vendor(),
 			"ram_mb": platform_detector.get_ram_mb()
 		}
 	
