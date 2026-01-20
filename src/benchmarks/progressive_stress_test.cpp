@@ -141,24 +141,6 @@ void ProgressiveStressTest::reset_test() {
 void ProgressiveStressTest::update_load(float current_fps, float delta) {
   int old_load = current_load;
 
-  // Adaptive quality control: Emergency brake if sustained low FPS
-  static float low_fps_duration = 0.0f;
-  static const float LOW_FPS_THRESHOLD = 30.0f;
-  static const float LOW_FPS_TIMEOUT = 3.0f;  // 3 seconds
-  
-  if (current_fps < LOW_FPS_THRESHOLD) {
-    low_fps_duration += delta;
-    if (low_fps_duration > LOW_FPS_TIMEOUT) {
-      // Cap max load at current level to prevent further degradation
-      max_load = current_load;
-      UtilityFunctions::print("[AdaptiveQuality] Max load capped at ", 
-                              current_load, " due to sustained low FPS");
-      low_fps_duration = 0.0f;  // Reset timer
-    }
-  } else {
-    low_fps_duration = 0.0f;  // Reset if FPS recovers
-  }
-
   // Ramp up if performance is good
   if (current_fps > RAMP_UP_FPS_THRESHOLD && current_load < max_load) {
     current_load += static_cast<int>(ramp_rate * delta);
