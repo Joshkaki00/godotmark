@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://cqk7y8mx3nw1d"]
 
-[ext_resource type="Script" path="res://scripts/benchmarks/gpu_basics.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/camera_controller.gd" id="2"]
+[ext_resource type="Script" uid="uid://ccn8epe5ixsxs" path="res://scripts/benchmarks/gpu_basics.gd" id="1"]
+[ext_resource type="Script" uid="uid://chornrb4cmv7a" path="res://scripts/camera_controller.gd" id="2"]
 [ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/gpu_basics_overlay.tscn" id="4"]
 
