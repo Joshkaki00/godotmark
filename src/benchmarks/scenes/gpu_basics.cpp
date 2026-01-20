@@ -11,7 +11,8 @@ GPUBasicsScene::GPUBasicsScene()
       spawn_radius(10.0f),
       camera_angle(0.0f),
       camera_speed(0.5f),
-      active_object_count(0) {
+      active_object_count(0),
+      pool_initialized(false) {
   // Set progressive stress test parameters
   set_max_load(100000);    // Max 100,000 triangles
   set_ramp_rate(1000.0f);  // 1000 triangles/second
@@ -54,14 +55,8 @@ void GPUBasicsScene::_ready() {
     material_templates.push_back(create_test_material());
   }
 
-  // Pre-create object pool (max possible objects)
-  int max_objects = get_max_load() / triangles_per_object;
-  UtilityFunctions::print("[GPUBasicsScene] Initializing object pool: ",
-                          max_objects, " objects...");
-  initialize_object_pool(max_objects);
-
-  UtilityFunctions::print("[GPUBasicsScene] Ready - Max Load: ", get_max_load(),
-                          " triangles | Pool Size: ", max_objects, " objects");
+  UtilityFunctions::print("[GPUBasicsScene] Ready - Templates created");
+  UtilityFunctions::print("  (Object pool will be created on first start_test call)");
 }
 
 void GPUBasicsScene::_process(double delta) {
@@ -82,6 +77,21 @@ void GPUBasicsScene::_process(double delta) {
       log_timer = 0.0f;
     }
   }
+}
+
+void GPUBasicsScene::start_test(float test_duration) {
+  // Initialize object pool on first start (not in _ready to avoid blocking)
+  if (!pool_initialized) {
+    int max_objects = get_max_load() / triangles_per_object;
+    UtilityFunctions::print("[GPUBasicsScene] Initializing object pool: ",
+                            max_objects, " objects...");
+    initialize_object_pool(max_objects);
+    pool_initialized = true;
+    UtilityFunctions::print("[GPUBasicsScene] Pool initialized - starting test");
+  }
+
+  // Call parent start_test
+  ProgressiveStressTest::start_test(test_duration);
 }
 
 void GPUBasicsScene::apply_load(int load) {

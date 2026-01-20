@@ -18,6 +18,7 @@ class GPUBasicsScene : public ProgressiveStressTest {
   // Object pool (all objects pre-created, show/hide as needed)
   std::vector<MeshInstance3D*> object_pool;
   int active_object_count;
+  bool pool_initialized;
 
   // Shared resources (created once, reused across all objects)
   std::vector<Ref<ArrayMesh>> mesh_templates;
@@ -50,6 +51,7 @@ class GPUBasicsScene : public ProgressiveStressTest {
   virtual void _process(double delta) override;
 
   // Override from ProgressiveStressTest
+  void start_test(float test_duration = 60.0f);
   virtual void apply_load(int load) override;
   virtual void cleanup_load() override;
 
