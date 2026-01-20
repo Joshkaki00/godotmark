@@ -80,6 +80,9 @@ void GPUBasicsScene::_process(double delta) {
 }
 
 void GPUBasicsScene::start_test(float test_duration) {
+  UtilityFunctions::print("[GPUBasicsScene] start_test() called");
+  UtilityFunctions::print("  pool_initialized = ", pool_initialized);
+  
   // Initialize object pool on first start (not in _ready to avoid blocking)
   if (!pool_initialized) {
     int max_objects = get_max_load() / triangles_per_object;
@@ -87,16 +90,27 @@ void GPUBasicsScene::start_test(float test_duration) {
                             max_objects, " objects...");
     initialize_object_pool(max_objects);
     pool_initialized = true;
-    UtilityFunctions::print("[GPUBasicsScene] Pool initialized - starting test");
+    UtilityFunctions::print("[GPUBasicsScene] Pool initialized - ", 
+                            object_pool.size(), " objects in pool");
   }
 
+  UtilityFunctions::print("[GPUBasicsScene] Calling parent start_test()");
   // Call parent start_test
   ProgressiveStressTest::start_test(test_duration);
+  UtilityFunctions::print("[GPUBasicsScene] is_running = ", get_is_running());
 }
 
 void GPUBasicsScene::apply_load(int load) {
   // Calculate how many objects we need for this triangle count
   int target_objects = load / triangles_per_object;
+  
+  // Debug logging (only log changes)
+  static int last_target = -1;
+  if (target_objects != last_target) {
+    UtilityFunctions::print("[GPUBasicsScene] apply_load: target_objects = ",
+                            target_objects, " (load = ", load, ")");
+    last_target = target_objects;
+  }
   
   // Use object pooling - just show/hide objects (no allocation/deallocation)
   set_active_objects(target_objects);
@@ -149,6 +163,14 @@ void GPUBasicsScene::initialize_object_pool(int pool_size) {
 void GPUBasicsScene::set_active_objects(int count) {
   // Clamp to pool size
   count = std::min(count, static_cast<int>(object_pool.size()));
+
+  // Debug logging
+  static int last_count = -1;
+  if (count != last_count) {
+    UtilityFunctions::print("[GPUBasicsScene] set_active_objects: ",
+                            active_object_count, " -> ", count);
+    last_count = count;
+  }
 
   if (count > active_object_count) {
     // Show more objects
