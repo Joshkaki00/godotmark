@@ -115,6 +115,7 @@ func run_warmup_phase():
 		loading_screen.update_progress(5.0, "Creating GPU scene...")
 	
 	var temp_controller = GPUBasicsScene.new()
+	temp_controller.visible = false  # Hide during warmup - no visual rendering
 	add_child(temp_controller)
 	await get_tree().process_frame
 	print("[Warmup] C++ scene created")

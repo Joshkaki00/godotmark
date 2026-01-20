@@ -6,12 +6,24 @@ extends Control
 @onready var status_label = $Panel/VBoxContainer/StatusLabel
 @onready var timer_label = $Panel/VBoxContainer/TimerLabel
 
+func _ready():
+	# Ensure nodes are available
+	if not progress_bar:
+		progress_bar = $Panel/VBoxContainer/ProgressBar
+	if not status_label:
+		status_label = $Panel/VBoxContainer/StatusLabel
+	if not timer_label:
+		timer_label = $Panel/VBoxContainer/TimerLabel
+
 func update_progress(percent: float, status: String):
 	"""Update progress bar and status text"""
-	progress_bar.value = percent
-	status_label.text = status
+	if progress_bar:
+		progress_bar.value = percent
+	if status_label:
+		status_label.text = status
 
 func update_timer(seconds: float):
 	"""Update countdown timer"""
-	timer_label.text = "Time remaining: %.1fs" % seconds
+	if timer_label:
+		timer_label.text = "Time remaining: %.1fs" % seconds
 
