@@ -229,9 +229,36 @@ func run_warmup_phase():
 	if hdr_texture:
 		print("[Warmup] HDR texture loaded successfully")
 	
-	# Phase 2: Pre-compile all shaders (60-80%)
+	# Phase 1b: Preload all marble bust textures (60-70%)
 	if loading_screen:
-		loading_screen.update_progress(60.0, "Compiling shaders...")
+		loading_screen.update_progress(60.0, "Loading bust textures...")
+	
+	var texture_paths = [
+		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_diff_2k.jpg",
+		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_nor_gl_2k.jpg",
+		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_rough_2k.jpg"
+	]
+	
+	for tex_path in texture_paths:
+		if ResourceLoader.exists(tex_path):
+			loader.queue_resource(tex_path)
+	
+	# Poll loading with progress update
+	while not loader.is_loading_complete():
+		loader.update_progress()
+		var progress = loader.get_overall_progress()
+		var scaled_progress = 60.0 + (progress * 10.0)  # 60-70%
+		
+		if loading_screen:
+			loading_screen.update_progress(scaled_progress, "Loading textures... %.0f%%" % (progress * 100.0))
+		
+		await get_tree().process_frame
+	
+	print("[Warmup] Bust textures loaded successfully")
+	
+	# Phase 2: Pre-compile all shaders (70-85%)
+	if loading_screen:
+		loading_screen.update_progress(70.0, "Compiling shaders...")
 	
 	if env and env.environment:
 		# Glow shader
@@ -243,7 +270,7 @@ func run_warmup_phase():
 		print("[Warmup] Glow shader compiled")
 		
 		if loading_screen:
-			loading_screen.update_progress(65.0, "Compiling SSR shaders...")
+			loading_screen.update_progress(72.0, "Compiling SSR shaders...")
 		
 		# SSR shader
 		var original_ssr = env.environment.ssr_enabled
@@ -252,7 +279,7 @@ func run_warmup_phase():
 		print("[Warmup] SSR shader compiled")
 		
 		if loading_screen:
-			loading_screen.update_progress(70.0, "Compiling SSAO shaders...")
+			loading_screen.update_progress(74.0, "Compiling SSAO shaders...")
 		
 		# SSAO shader
 		var original_ssao = env.environment.ssao_enabled
@@ -261,7 +288,7 @@ func run_warmup_phase():
 		print("[Warmup] SSAO shader compiled")
 		
 		if loading_screen:
-			loading_screen.update_progress(75.0, "Compiling shadow shaders...")
+			loading_screen.update_progress(76.0, "Compiling shadow shaders...")
 		
 		# Restore states
 		env.environment.glow_enabled = original_glow
@@ -275,69 +302,135 @@ func run_warmup_phase():
 		print("[Warmup] Shadow shader compiled")
 		light.shadow_enabled = false
 	
+	# Phase 2b: Force material shader compilation on marble bust (78-80%)
+	if loading_screen:
+		loading_screen.update_progress(78.0, "Compiling material shaders...")
+	
+	if bust:
+		# Get the mesh instance and its materials
+		var mesh_instance = bust as MeshInstance3D
+		if mesh_instance and mesh_instance.mesh:
+			for surface_idx in range(mesh_instance.mesh.get_surface_count()):
+				var mat = mesh_instance.get_surface_override_material(surface_idx)
+				if not mat:
+					mat = mesh_instance.mesh.surface_get_material(surface_idx)
+				
+				if mat:
+					# Force shader compilation by making bust visible and rendering it
+					bust.visible = true
+					camera.current = true
+					await get_tree().process_frame
+					print("[Warmup] Bust material shaders compiled")
+					bust.visible = false  # Hide again until benchmark starts
+					break  # Only need to do this once
+	
 	if loading_screen:
 		loading_screen.update_progress(80.0, "Shaders compiled")
 	
-	# Phase 3: Warmup particle system and stabilize (80-100%)
+	# Phase 3: Render test frames to create GPU buffers (80-90%)
 	if loading_screen:
-		loading_screen.update_progress(80.0, "Warming up particle system...")
+		loading_screen.update_progress(80.0, "Creating GPU buffers...")
 	
+	# Setup particle system for rendering
 	if particles:
-		# Create particle material
 		var particle_mat = ParticleProcessMaterial.new()
 		particle_mat.emission_shape = ParticleProcessMaterial.EMISSION_SHAPE_BOX
 		particle_mat.emission_box_extents = Vector3(4.0, 3.0, 4.0)
-		particle_mat.direction = Vector3(0, 1, 0)  # Upward drift
-		particle_mat.spread = 25.0  # More spread
-		particle_mat.initial_velocity_min = 0.3  # Faster
-		particle_mat.initial_velocity_max = 0.8  # Faster
-		particle_mat.gravity = Vector3(0, -0.2, 0)  # More gravity
-		particle_mat.scale_min = 0.02  # Bigger
-		particle_mat.scale_max = 0.05  # Bigger
-		particle_mat.lifetime_randomness = 0.3  # Natural fade
+		particle_mat.direction = Vector3(0, 1, 0)
+		particle_mat.spread = 25.0
+		particle_mat.initial_velocity_min = 0.3
+		particle_mat.initial_velocity_max = 0.8
+		particle_mat.gravity = Vector3(0, -0.2, 0)
+		particle_mat.scale_min = 0.02
+		particle_mat.scale_max = 0.05
+		particle_mat.lifetime_randomness = 0.3
 		particles.process_material = particle_mat
 		
 		var sphere_mesh = SphereMesh.new()
-		sphere_mesh.radius = 0.025  # Bigger
-		sphere_mesh.height = 0.05  # Bigger
+		sphere_mesh.radius = 0.025
+		sphere_mesh.height = 0.05
 		var material = StandardMaterial3D.new()
-		material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)  # Warm white, visible
+		material.albedo_color = Color(1.0, 1.0, 0.95, 0.7)
 		material.emission_enabled = true
-		material.emission = Color(1.0, 0.95, 0.85)  # Warm glow
-		material.emission_energy_multiplier = 1.2  # Noticeable but not blinding
+		material.emission = Color(1.0, 0.95, 0.85)
+		material.emission_energy_multiplier = 1.2
 		material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 		sphere_mesh.material = material
 		particles.draw_pass_1 = sphere_mesh
-		
-		particles.amount = 100
+	
+	# Show everything and render multiple frames to force GPU buffer creation
+	bust.visible = true
+	camera.current = true
+	light.visible = true
+	if particles:
+		particles.visible = true
 		particles.emitting = true
+	
+	# Render 10 frames to ensure all GPU resources created
+	for i in range(10):
+		if loading_screen:
+			loading_screen.update_progress(80.0 + i, "Rendering test frames... %d/10" % (i+1))
 		await get_tree().process_frame
-		print("[Warmup] Particle system initialized")
+	
+	if particles:
 		particles.emitting = false
+	print("[Warmup] GPU buffers created - rendered 10 test frames")
+	
+	# Hide everything again until benchmark starts
+	bust.visible = false
+	light.visible = false
+	if particles:
+		particles.visible = false
 	
 	if loading_screen:
-		loading_screen.update_progress(85.0, "Stabilizing systems...")
+		loading_screen.update_progress(90.0, "Systems ready...")
 	
-	# Let systems stabilize for a minimum duration
+	# Phase 4: Extended thermal stabilization for Pi 5 (90-100%)
+	if loading_screen:
+		loading_screen.update_progress(90.0, "Thermal stabilization...")
+	
 	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
-	var min_warmup_time = 3.0  # Minimum 3 seconds for thermal stabilization
+	var min_warmup_time = 5.0  # INCREASED from 3.0 to 5.0 for Pi 5
+	
+	# Additional stabilization: monitor temperature
+	var stable_temp_count = 0
+	var required_stable_frames = 60  # 1 second of stable temp
+	
+	while stable_temp_count < required_stable_frames:
+		await get_tree().process_frame
+		
+		if perf_monitor:
+			perf_monitor.update(0.016)  # Approximate delta
+			var temp = perf_monitor.get_temperature()
+			
+			# Consider stable if temp is reasonable
+			# (Pi 5 throttles if temp rises too fast)
+			if temp > 0 and temp < 75.0:  # Safe operating temp
+				stable_temp_count += 1
+			else:
+				stable_temp_count += 1  # Still count up even if no temp reading
+		else:
+			# No temp monitoring, just wait minimum time
+			stable_temp_count += 1
+		
+		var progress = 90.0 + (10.0 * (stable_temp_count / float(required_stable_frames)))
+		if loading_screen:
+			loading_screen.update_progress(progress, "Stabilizing... %d%%" % int(progress))
+	
+	# Ensure minimum time has elapsed
+	elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
 	var remaining = max(0.0, min_warmup_time - elapsed)
 	
 	if remaining > 0:
-		print("[Warmup] Stabilization phase: %.1fs" % remaining)
-		
+		print("[Warmup] Additional stabilization: %.1fs" % remaining)
 		var stabilize_start = Time.get_ticks_msec()
 		while remaining > 0:
 			await get_tree().process_frame
-			
 			var stabilize_elapsed = (Time.get_ticks_msec() - stabilize_start) / 1000.0
 			remaining = min_warmup_time - elapsed - stabilize_elapsed
 			
-			# Update progress bar (85-100%)
-			var progress = 85.0 + (15.0 * (stabilize_elapsed / min_warmup_time))
 			if loading_screen:
-				loading_screen.update_progress(min(100.0, progress), "Stabilizing systems...")
-				loading_screen.update_timer(max(0.0, remaining))
+				loading_screen.update_progress(99.0, "Stabilizing...")
 	
 	if loading_screen:
 		loading_screen.update_progress(100.0, "Ready!")

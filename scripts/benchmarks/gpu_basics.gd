@@ -30,6 +30,10 @@ var loader = null
 var loading_screen
 var metrics_overlay
 
+# Warmup tracking
+var warmup_complete = false
+const WARMUP_DURATION = 10.0
+
 func _enter_tree():
 	# Get UI nodes from parent
 	loading_screen = get_parent().get_node_or_null("LoadingScreen")
@@ -66,6 +70,22 @@ func _ready():
 	
 	print("[GPUBasics] Array pre-allocation complete")
 	
+	# Show loading screen
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Initializing GPU Basics...")
+	
+	await get_tree().process_frame
+	
+	# Run warmup phase
+	await run_warmup_phase()
+	
+	# Hide loading screen
+	if loading_screen:
+		loading_screen.visible = false
+	
+	warmup_complete = true
+	
 	# Create C++ controller
 	cpp_controller = GPUBasicsScene.new()
 	add_child(cpp_controller)
@@ -82,7 +102,77 @@ func _ready():
 	
 	print("[GPUBasics] Benchmark started - Press ESC to return to menu")
 
+func run_warmup_phase():
+	"""Warmup phase for GPU Basics benchmark"""
+	print("\n========================================")
+	print("[Warmup] Starting GPU Basics warmup phase")
+	print("========================================\n")
+	
+	var warmup_start = Time.get_ticks_msec()
+	
+	# Phase 1: Create C++ scene early for preloading (0-30%)
+	if loading_screen:
+		loading_screen.update_progress(5.0, "Creating GPU scene...")
+	
+	var temp_controller = GPUBasicsScene.new()
+	add_child(temp_controller)
+	await get_tree().process_frame
+	print("[Warmup] C++ scene created")
+	
+	# Phase 2: Render test frames (30-70%)
+	if loading_screen:
+		loading_screen.update_progress(30.0, "Compiling shaders...")
+	
+	# Render 20 frames to compile all shaders and create GPU buffers
+	for i in range(20):
+		if loading_screen:
+			var progress = 30.0 + (i * 2.0)  # 30-70%
+			loading_screen.update_progress(progress, "Rendering test frames... %d/20" % (i+1))
+		await get_tree().process_frame
+	
+	print("[Warmup] Test frames rendered - shaders compiled")
+	
+	# Phase 3: Thermal stabilization (70-100%)
+	if loading_screen:
+		loading_screen.update_progress(70.0, "Thermal stabilization...")
+	
+	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	var min_warmup_time = 5.0  # 5 seconds for Pi 5
+	var remaining = max(0.0, min_warmup_time - elapsed)
+	
+	if remaining > 0:
+		print("[Warmup] Stabilization phase: %.1fs" % remaining)
+		
+		var stabilize_start = Time.get_ticks_msec()
+		while remaining > 0:
+			await get_tree().process_frame
+			
+			var stabilize_elapsed = (Time.get_ticks_msec() - stabilize_start) / 1000.0
+			remaining = min_warmup_time - elapsed - stabilize_elapsed
+			
+			# Update progress bar (70-100%)
+			var progress = 70.0 + (30.0 * (stabilize_elapsed / min_warmup_time))
+			if loading_screen:
+				loading_screen.update_progress(min(100.0, progress), "Stabilizing systems...")
+	
+	if loading_screen:
+		loading_screen.update_progress(100.0, "Ready!")
+	
+	await get_tree().process_frame
+	
+	# Clean up temp controller
+	temp_controller.stop_test()
+	temp_controller.queue_free()
+	
+	var total_time = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	print("\n[Warmup] Complete - systems stable (%.1fs)" % total_time)
+	print("========================================\n")
+
 func _process(delta):
+	# Don't process anything during warmup
+	if not warmup_complete:
+		return
+	
 	# Handle threaded loading
 	if is_loading and loader:
 		loader.update_progress()
