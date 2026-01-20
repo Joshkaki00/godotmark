@@ -1,15 +1,11 @@
 extends Node
 ## GodotMark Entry Point
-## Editor Testing & Refinement Version
+## Main menu launcher
 
 # Core systems (C++)
 var platform_detector: PlatformDetector
 var perf_monitor: PerformanceMonitor
 var quality_manager: AdaptiveQualityManager
-
-# UI references
-@onready var debug_controller = $DebugController
-@onready var stats_overlay = $UI/StatsOverlay
 
 func _ready():
 	print("\n========================================")
@@ -23,17 +19,7 @@ func _ready():
 	if platform_detector.is_raspberry_pi():
 		check_driver_stack()
 	
-	# Connect UI to systems
-	stats_overlay.set_monitors(perf_monitor, quality_manager)
-	debug_controller.set_systems(quality_manager, null)  # Will set stress_test later
-	
-	print("\n[main.gd] Ready! Use debug keys to control:")
-	print("  Space - Pause/Resume")
-	print("  Q/E   - Quality Down/Up")
-	print("  T     - Toggle Quick Test (10s/60s)")
-	print("  V     - Verbose Logging")
-	print("  M     - Launch Model Showcase (1-minute benchmark)")
-	print("  Esc   - Exit\n")
+	print("\n[main.gd] Ready! Main menu loaded.\n")
 
 func initialize_systems():
 	# Platform detection
@@ -48,6 +34,16 @@ func initialize_systems():
 	quality_manager.initialize(AdaptiveQualityManager.MEDIUM)
 	
 	print("[main.gd] Core systems initialized")
+
+func get_platform_info() -> String:
+	"""Get platform info string for display"""
+	if platform_detector:
+		var cpu_name = platform_detector.get_cpu_name()
+		if platform_detector.is_raspberry_pi():
+			return "Raspberry Pi"
+		elif cpu_name != "Unknown CPU":
+			return cpu_name
+	return "Unknown Platform"
 
 func check_driver_stack():
 	"""Check if V3D/Vulkan driver stack is properly configured on Raspberry Pi"""
@@ -84,15 +80,3 @@ func check_driver_stack():
 		await get_tree().create_timer(5.0).timeout
 	else:
 		print("\n[OK] V3D driver stack properly configured!\n")
-
-func _process(delta):
-	# Update performance monitoring
-	if perf_monitor:
-		perf_monitor.update(delta)
-	
-	# Update adaptive quality
-	if quality_manager and perf_monitor:
-		var fps = perf_monitor.get_avg_fps()
-		var temp = perf_monitor.get_temperature()
-		quality_manager.update(fps, temp)
-

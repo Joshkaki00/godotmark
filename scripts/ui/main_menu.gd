@@ -1,0 +1,139 @@
+extends Control
+## Main Menu Controller
+## Provides access to all benchmark tests
+
+# UI references
+@onready var subtitle = $CenterContainer/VBoxContainer/Subtitle
+@onready var model_showcase_button = $CenterContainer/VBoxContainer/ModelShowcaseButton
+@onready var gpu_basics_button = $CenterContainer/VBoxContainer/GPUBasicsButton
+@onready var full_suite_button = $CenterContainer/VBoxContainer/FullSuiteButton
+@onready var exit_button = $CenterContainer/VBoxContainer/ExitButton
+@onready var loading_screen = $LoadingScreen
+
+# Threaded loading state
+var is_loading = false
+var loader = null
+var target_scene_path = ""
+
+func _ready():
+	# Update subtitle with system info
+	update_system_info()
+	
+	# Connect button signals
+	model_showcase_button.pressed.connect(_on_model_showcase_pressed)
+	gpu_basics_button.pressed.connect(_on_gpu_basics_pressed)
+	full_suite_button.pressed.connect(_on_full_suite_pressed)
+	exit_button.pressed.connect(_on_exit_pressed)
+	
+	print("\n[MainMenu] Ready - Select a benchmark to begin")
+
+func update_system_info():
+	# Try to get platform info from Main scene if available
+	var main = get_tree().root.get_node_or_null("Main")
+	if main and main.has_method("get_platform_info"):
+		var info = main.get_platform_info()
+		subtitle.text = "Benchmark Suite v1.0 | %s" % info
+	else:
+		# Fallback: create temporary detector
+		var platform_detector = PlatformDetector.new()
+		platform_detector.initialize()
+		
+		var cpu_name = platform_detector.get_cpu_name()
+		var is_rpi = platform_detector.is_raspberry_pi()
+		
+		if is_rpi:
+			subtitle.text = "Benchmark Suite v1.0 | Raspberry Pi"
+		elif cpu_name != "Unknown CPU":
+			subtitle.text = "Benchmark Suite v1.0 | %s" % cpu_name
+		else:
+			subtitle.text = "Benchmark Suite v1.0"
+		
+		platform_detector.free()
+
+func _on_model_showcase_pressed():
+	print("[MainMenu] Launching Model Showcase...")
+	load_scene_threaded("res://scenes/model_showcase.tscn")
+
+func _on_gpu_basics_pressed():
+	print("[MainMenu] Launching GPU Basics...")
+	load_scene_threaded("res://scenes/benchmarks/01_gpu_basics.tscn")
+
+func _on_full_suite_pressed():
+	# Currently disabled - reserved for future implementation
+	print("[MainMenu] Full Suite not yet implemented")
+
+func _on_exit_pressed():
+	print("[MainMenu] Exiting...")
+	get_tree().quit()
+
+func load_scene_threaded(scene_path: String):
+	"""Load a scene asynchronously with loading screen"""
+	if is_loading:
+		return
+	
+	is_loading = true
+	target_scene_path = scene_path
+	
+	# Create threaded loader
+	loader = preload("res://scripts/utils/threaded_loader.gd").new()
+	add_child(loader)
+	
+	# Queue scene for loading
+	loader.queue_resource(scene_path)
+	
+	# Show loading screen
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Loading benchmark...")
+	
+	# Disable buttons during loading
+	model_showcase_button.disabled = true
+	gpu_basics_button.disabled = true
+	exit_button.disabled = true
+
+func _process(_delta):
+	"""Update loading progress"""
+	if not is_loading or not loader:
+		return
+	
+	# Update loader progress
+	loader.update_progress()
+	
+	# Get progress
+	var progress = loader.get_overall_progress()
+	var percent = progress * 100.0
+	
+	# Update loading screen
+	if loading_screen:
+		loading_screen.update_progress(percent, "Loading benchmark... %.0f%%" % percent)
+	
+	# Check if loading is complete
+	if loader.is_loading_complete():
+		var scene = loader.get_resource(target_scene_path)
+		
+		if scene:
+			print("[MainMenu] Scene loaded successfully, transitioning...")
+			# Cleanup loader
+			loader.queue_free()
+			loader = null
+			
+			# Change to loaded scene
+			get_tree().change_scene_to_packed(scene)
+		else:
+			push_error("[MainMenu] Failed to load scene: %s" % target_scene_path)
+			# Reset state
+			is_loading = false
+			if loading_screen:
+				loading_screen.visible = false
+			model_showcase_button.disabled = false
+			gpu_basics_button.disabled = false
+			exit_button.disabled = false
+			if loader:
+				loader.queue_free()
+				loader = null
+
+func _input(event):
+	# Allow Escape to quit from main menu (but not during loading)
+	if event.is_action_pressed("ui_cancel") and not is_loading:
+		_on_exit_pressed()
+

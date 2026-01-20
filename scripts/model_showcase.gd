@@ -66,6 +66,10 @@ var second_sample_index = 0
 var frame_count = 0
 var last_memory_report = 0.0
 
+# Threaded loading state for returning to menu
+var is_returning_to_menu = false
+var menu_loader = null
+
 func _ready():
 	print("\n========================================")
 	print("[ModelShowcase] Starting 1-Minute Benchmark")
@@ -184,30 +188,50 @@ func _ready():
 	print("[ModelShowcase] Benchmark started - 60 second timer begins")
 
 func run_warmup_phase():
-	"""Comprehensive 10-second warmup phase like 3DMark"""
+	"""Comprehensive warmup phase with threaded resource loading"""
 	print("\n========================================")
-	print("[Warmup] Starting 10-second warmup phase")
+	print("[Warmup] Starting warmup phase with threaded loading")
 	print("========================================\n")
 	
 	var warmup_start = Time.get_ticks_msec()
 	
-	# Step 1: Preload all assets (0-20%)
-	if loading_screen:
-		loading_screen.update_progress(0.0, "Loading HDR environment...")
+	# Create threaded loader
+	var loader = preload("res://scripts/utils/threaded_loader.gd").new()
+	add_child(loader)
 	
+	# Phase 1: Queue and load assets asynchronously (0-60%)
+	if loading_screen:
+		loading_screen.update_progress(0.0, "Queueing resources...")
+	
+	# Queue HDR environment for threaded loading
 	var hdr_path = "res://art/model-test/sunflowers_puresky_2k.hdr"
 	if ResourceLoader.exists(hdr_path):
-		var hdr_texture = load(hdr_path)
-		print("[Warmup] HDR texture loaded")
+		loader.queue_resource(hdr_path)
+	
 	await get_tree().process_frame
 	
+	# Poll loading progress until complete
 	if loading_screen:
-		loading_screen.update_progress(20.0, "Preloading materials...")
-	await get_tree().process_frame
+		loading_screen.update_progress(5.0, "Loading HDR environment...")
 	
-	# Step 2: Pre-compile all shaders (20-50%)
+	while not loader.is_loading_complete():
+		loader.update_progress()
+		var progress = loader.get_overall_progress()
+		var scaled_progress = 5.0 + (progress * 55.0)  # Scale to 5-60%
+		
+		if loading_screen:
+			loading_screen.update_progress(scaled_progress, "Loading HDR environment... %.0f%%" % (progress * 100.0))
+		
+		await get_tree().process_frame
+	
+	# Get loaded HDR texture
+	var hdr_texture = loader.get_resource(hdr_path)
+	if hdr_texture:
+		print("[Warmup] HDR texture loaded successfully")
+	
+	# Phase 2: Pre-compile all shaders (60-80%)
 	if loading_screen:
-		loading_screen.update_progress(20.0, "Compiling shaders...")
+		loading_screen.update_progress(60.0, "Compiling shaders...")
 	
 	if env and env.environment:
 		# Glow shader
@@ -219,7 +243,7 @@ func run_warmup_phase():
 		print("[Warmup] Glow shader compiled")
 		
 		if loading_screen:
-			loading_screen.update_progress(30.0, "Compiling SSR shaders...")
+			loading_screen.update_progress(65.0, "Compiling SSR shaders...")
 		
 		# SSR shader
 		var original_ssr = env.environment.ssr_enabled
@@ -228,7 +252,7 @@ func run_warmup_phase():
 		print("[Warmup] SSR shader compiled")
 		
 		if loading_screen:
-			loading_screen.update_progress(40.0, "Compiling SSAO shaders...")
+			loading_screen.update_progress(70.0, "Compiling SSAO shaders...")
 		
 		# SSAO shader
 		var original_ssao = env.environment.ssao_enabled
@@ -236,13 +260,13 @@ func run_warmup_phase():
 		await get_tree().process_frame
 		print("[Warmup] SSAO shader compiled")
 		
+		if loading_screen:
+			loading_screen.update_progress(75.0, "Compiling shadow shaders...")
+		
 		# Restore states
 		env.environment.glow_enabled = original_glow
 		env.environment.ssr_enabled = original_ssr
 		env.environment.ssao_enabled = original_ssao
-	
-	if loading_screen:
-		loading_screen.update_progress(50.0, "Compiling shadow shaders...")
 	
 	# Shadow shader
 	if light:
@@ -251,9 +275,12 @@ func run_warmup_phase():
 		print("[Warmup] Shadow shader compiled")
 		light.shadow_enabled = false
 	
-	# Step 3: Warmup particle system (50-60%)
 	if loading_screen:
-		loading_screen.update_progress(50.0, "Warming up particle system...")
+		loading_screen.update_progress(80.0, "Shaders compiled")
+	
+	# Phase 3: Warmup particle system and stabilize (80-100%)
+	if loading_screen:
+		loading_screen.update_progress(80.0, "Warming up particle system...")
 	
 	if particles:
 		# Create particle material
@@ -289,37 +316,66 @@ func run_warmup_phase():
 		particles.emitting = false
 	
 	if loading_screen:
-		loading_screen.update_progress(60.0, "Stabilizing systems...")
+		loading_screen.update_progress(85.0, "Stabilizing systems...")
 	
-	# Step 4: Let systems stabilize (60-100%)
-	# Run for remaining time to reach 10 seconds total
+	# Let systems stabilize for a minimum duration
 	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
-	var remaining = WARMUP_DURATION - elapsed
+	var min_warmup_time = 3.0  # Minimum 3 seconds for thermal stabilization
+	var remaining = max(0.0, min_warmup_time - elapsed)
 	
-	print("[Warmup] Stabilization phase: %.1fs" % remaining)
-	
-	var stabilize_start = Time.get_ticks_msec()
-	while remaining > 0:
-		await get_tree().process_frame
+	if remaining > 0:
+		print("[Warmup] Stabilization phase: %.1fs" % remaining)
 		
-		elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
-		remaining = WARMUP_DURATION - elapsed
-		
-		# Update progress bar
-		var progress = 60.0 + (40.0 * (1.0 - (remaining / (WARMUP_DURATION * 0.4))))
-		if loading_screen:
-			loading_screen.update_progress(progress, "Stabilizing systems...")
-			loading_screen.update_timer(max(0.0, remaining))
+		var stabilize_start = Time.get_ticks_msec()
+		while remaining > 0:
+			await get_tree().process_frame
+			
+			var stabilize_elapsed = (Time.get_ticks_msec() - stabilize_start) / 1000.0
+			remaining = min_warmup_time - elapsed - stabilize_elapsed
+			
+			# Update progress bar (85-100%)
+			var progress = 85.0 + (15.0 * (stabilize_elapsed / min_warmup_time))
+			if loading_screen:
+				loading_screen.update_progress(min(100.0, progress), "Stabilizing systems...")
+				loading_screen.update_timer(max(0.0, remaining))
 	
 	if loading_screen:
 		loading_screen.update_progress(100.0, "Ready!")
 	
 	await get_tree().process_frame
 	
-	print("\n[Warmup] Complete - systems stable")
+	# Cleanup loader
+	loader.queue_free()
+	
+	var total_time = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	print("\n[Warmup] Complete - systems stable (%.1fs)" % total_time)
 	print("========================================\n")
 
 func _process(delta):
+	# Handle threaded loading for returning to menu
+	if is_returning_to_menu and menu_loader:
+		menu_loader.update_progress()
+		var progress = menu_loader.get_overall_progress()
+		var percent = progress * 100.0
+		
+		if loading_screen:
+			loading_screen.visible = true
+			loading_screen.update_progress(percent, "Returning to menu... %.0f%%" % percent)
+		
+		if menu_loader.is_loading_complete():
+			var scene = menu_loader.get_resource("res://scenes/main.tscn")
+			if scene:
+				menu_loader.queue_free()
+				menu_loader = null
+				get_tree().change_scene_to_packed(scene)
+			else:
+				push_error("[ModelShowcase] Failed to load main menu scene")
+				is_returning_to_menu = false
+				if menu_loader:
+					menu_loader.queue_free()
+					menu_loader = null
+		return
+	
 	# Don't process anything during warmup
 	if not warmup_complete:
 		return
@@ -708,6 +764,12 @@ func finish_showcase():
 	
 	# Stop audio
 	audio.stop()
+	
+	# Wait a moment before returning to menu
+	await get_tree().create_timer(2.0).timeout
+	
+	print("\n[ModelShowcase] Returning to main menu...")
+	_load_menu_threaded()
 
 func print_phase_results():
 	print("Performance Summary:")
@@ -828,8 +890,27 @@ func export_results():
 		print("\n✗ Failed to export results")
 
 func _input(event):
-	# Allow ESC to exit early
-	if event.is_action_pressed("ui_cancel"):
+	# Allow ESC to exit early (but not during loading)
+	if event.is_action_pressed("ui_cancel") and not is_returning_to_menu:
 		print("\n[ModelShowcase] Cancelled by user")
-		get_tree().change_scene_to_file("res://scenes/main.tscn")
+		_load_menu_threaded()
+
+func _load_menu_threaded():
+	"""Load main menu scene asynchronously with loading screen"""
+	if is_returning_to_menu:
+		return
+	
+	is_returning_to_menu = true
+	
+	# Create threaded loader
+	menu_loader = preload("res://scripts/utils/threaded_loader.gd").new()
+	add_child(menu_loader)
+	
+	# Queue scene for loading
+	menu_loader.queue_resource("res://scenes/main.tscn")
+	
+	# Show loading screen
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Returning to menu...")
 
