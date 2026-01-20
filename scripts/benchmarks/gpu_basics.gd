@@ -11,8 +11,15 @@ var benchmark_duration = 60.0
 var perf_monitor: PerformanceMonitor
 var platform_detector
 
-# Metrics tracking
-var metrics = []
+# Metrics tracking (dictionary of arrays for performance)
+var metrics = {
+	"time": [],
+	"fps": [],
+	"frame_time": [],
+	"cpu": [],
+	"temp": [],
+	"gpu": []
+}
 var current_test_name = "Initializing..."
 
 # Threaded loading state
@@ -49,9 +56,15 @@ func _ready():
 		platform_detector.initialize()
 		print("[GPUBasics] Standalone systems created")
 	
-	# Pre-allocate metrics array (60 seconds @ 60 FPS = ~3600 samples)
-	metrics.resize(3600)
-	metrics.clear()
+	# Pre-allocate metrics arrays (60 seconds @ 60 FPS = ~3600 samples)
+	print("[GPUBasics] Pre-allocating arrays for optimal performance...")
+	var expected_samples = 3600  # 60s @ 60 FPS
+	
+	for key in metrics.keys():
+		metrics[key].resize(expected_samples)
+		metrics[key].clear()
+	
+	print("[GPUBasics] Array pre-allocation complete")
 	
 	# Create C++ controller
 	cpp_controller = GPUBasicsScene.new()
@@ -108,15 +121,13 @@ func _process(delta):
 		var temp = perf_monitor.get_temperature() if perf_monitor else 0.0
 		var gpu_usage = perf_monitor.get_gpu_usage() if perf_monitor else 0.0
 		
-		# Store metrics
-		metrics.push_back({
-			"time": benchmark_timer,
-			"fps": fps,
-			"frame_time": frame_time,
-			"cpu": cpu_usage,
-			"temp": temp,
-			"gpu": gpu_usage
-		})
+		# Store metrics (use push_back on pre-allocated arrays)
+		metrics["time"].push_back(benchmark_timer)
+		metrics["fps"].push_back(fps)
+		metrics["frame_time"].push_back(frame_time)
+		metrics["cpu"].push_back(cpu_usage)
+		metrics["temp"].push_back(temp)
+		metrics["gpu"].push_back(gpu_usage)
 		
 		# Update UI overlay (every 3 frames to reduce overhead)
 		if metrics_overlay and Engine.get_process_frames() % 3 == 0:
@@ -136,6 +147,9 @@ func _finish_benchmark():
 	if cpp_controller:
 		cpp_controller.stop_test()
 	
+	# Allow GC to run gently before export
+	await get_tree().process_frame
+	
 	# Calculate and export results
 	_export_results()
 	
@@ -147,23 +161,16 @@ func _finish_benchmark():
 
 func _export_results():
 	"""Calculate statistics and export results to JSON"""
-	if metrics.is_empty():
+	if metrics["fps"].is_empty():
 		print("[GPUBasics] No metrics to export")
 		return
 	
-	# Calculate statistics
-	var fps_data = []
-	var frame_time_data = []
-	var cpu_data = []
-	var temp_data = []
-	var gpu_data = []
-	
-	for sample in metrics:
-		fps_data.push_back(sample["fps"])
-		frame_time_data.push_back(sample["frame_time"])
-		cpu_data.push_back(sample["cpu"])
-		temp_data.push_back(sample["temp"])
-		gpu_data.push_back(sample["gpu"])
+	# Get direct references to metric arrays (no copying needed!)
+	var fps_data = metrics["fps"]
+	var frame_time_data = metrics["frame_time"]
+	var cpu_data = metrics["cpu"]
+	var temp_data = metrics["temp"]
+	var gpu_data = metrics["gpu"]
 	
 	# Calculate averages
 	var avg_fps = _calculate_average(fps_data)
@@ -200,7 +207,7 @@ func _export_results():
 		"version": "1.0",
 		"timestamp": Time.get_datetime_string_from_system(),
 		"duration": benchmark_duration,
-		"sample_count": metrics.size(),
+		"sample_count": metrics["fps"].size(),
 		"metrics": {
 			"avg_fps": avg_fps,
 			"min_fps": min_fps,
