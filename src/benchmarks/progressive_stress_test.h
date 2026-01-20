@@ -30,9 +30,9 @@ class ProgressiveStressTest : public Node3D {
   int peak_load_achieved;
   float peak_load_fps;
 
-  // Performance thresholds for ramping
-  static constexpr float RAMP_UP_FPS_THRESHOLD = 25.0f;
-  static constexpr float RAMP_DOWN_FPS_THRESHOLD = 15.0f;
+  // Performance thresholds for ramping (stricter for better performance)
+  static constexpr float RAMP_UP_FPS_THRESHOLD = 50.0f;
+  static constexpr float RAMP_DOWN_FPS_THRESHOLD = 40.0f;
 
   // Debug flag
   static bool verbose_logging;

@@ -7,6 +7,10 @@ var benchmark_running = false
 var benchmark_timer = 0.0
 var benchmark_duration = 60.0
 
+# Performance monitoring batching
+var perf_update_timer = 0.0
+const PERF_UPDATE_INTERVAL = 0.1  # 100ms = 10 times/sec instead of 60
+
 # Performance monitoring
 var perf_monitor: PerformanceMonitor
 var platform_detector
@@ -21,6 +25,11 @@ var metrics = {
 	"gpu": []
 }
 var current_test_name = "Initializing..."
+
+# Cached performance values (updated every PERF_UPDATE_INTERVAL)
+var cached_cpu_usage = 0.0
+var cached_temp = 0.0
+var cached_gpu_usage = 0.0
 
 # Threaded loading state
 var is_loading = false
@@ -110,16 +119,23 @@ func _process(delta):
 	if benchmark_running:
 		benchmark_timer += delta
 		
-		# Update performance monitor
-		if perf_monitor:
-			perf_monitor.update(delta)
+		# Batch performance monitor updates (10 times/sec instead of 60)
+		perf_update_timer += delta
+		if perf_update_timer >= PERF_UPDATE_INTERVAL:
+			if perf_monitor:
+				perf_monitor.update(perf_update_timer)
+				# Update cached values
+				cached_cpu_usage = perf_monitor.get_cpu_usage()
+				cached_temp = perf_monitor.get_temperature()
+				cached_gpu_usage = perf_monitor.get_gpu_usage()
+			perf_update_timer = 0.0
 		
-		# Collect metrics
+		# Collect metrics (use cached performance values)
 		var fps = Engine.get_frames_per_second()
 		var frame_time = delta * 1000.0
-		var cpu_usage = perf_monitor.get_cpu_usage() if perf_monitor else 0.0
-		var temp = perf_monitor.get_temperature() if perf_monitor else 0.0
-		var gpu_usage = perf_monitor.get_gpu_usage() if perf_monitor else 0.0
+		var cpu_usage = cached_cpu_usage
+		var temp = cached_temp
+		var gpu_usage = cached_gpu_usage
 		
 		# Store metrics (use push_back on pre-allocated arrays)
 		metrics["time"].push_back(benchmark_timer)

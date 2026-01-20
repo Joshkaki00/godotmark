@@ -12,8 +12,8 @@ GPUBasicsScene::GPUBasicsScene()
       camera_angle(0.0f),
       camera_speed(0.5f) {
   // Set progressive stress test parameters
-  set_max_load(100000);    // Max 100,000 triangles
-  set_ramp_rate(1000.0f);  // 1000 triangles/second
+  set_max_load(50000);     // Max 50,000 triangles (reduced from 100K)
+  set_ramp_rate(500.0f);   // 500 triangles/second (gentler ramp)
 }
 
 GPUBasicsScene::~GPUBasicsScene() { cleanup_load(); }
