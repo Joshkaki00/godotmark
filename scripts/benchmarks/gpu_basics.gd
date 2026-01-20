@@ -18,8 +18,15 @@ var current_test_name = "Initializing..."
 # Threaded loading state
 var is_loading = false
 var loader = null
-@onready var loading_screen = $"../LoadingScreen"
-@onready var metrics_overlay = $"../MetricsOverlay"
+
+# UI references (parent nodes, since script is on GPUBasicsController)
+var loading_screen
+var metrics_overlay
+
+func _enter_tree():
+	# Get UI nodes from parent
+	loading_screen = get_parent().get_node_or_null("LoadingScreen")
+	metrics_overlay = get_parent().get_node_or_null("MetricsOverlay")
 
 func _ready():
 	print("\n========================================")
@@ -55,7 +62,8 @@ func _ready():
 	benchmark_running = true
 	current_test_name = "GPU Stress Test"
 	
-	# Initialize metrics overlay
+	# Wait a frame for overlay to initialize, then update test name
+	await get_tree().process_frame
 	if metrics_overlay:
 		metrics_overlay.update_test(current_test_name)
 	
@@ -96,9 +104,9 @@ func _process(delta):
 		# Collect metrics
 		var fps = Engine.get_frames_per_second()
 		var frame_time = delta * 1000.0
-		var cpu_usage = perf_monitor.read_cpu_usage() if perf_monitor else 0.0
+		var cpu_usage = perf_monitor.get_cpu_usage() if perf_monitor else 0.0
 		var temp = perf_monitor.get_temperature() if perf_monitor else 0.0
-		var gpu_usage = perf_monitor.read_gpu_usage() if perf_monitor else 0.0
+		var gpu_usage = perf_monitor.get_gpu_usage() if perf_monitor else 0.0
 		
 		# Store metrics
 		metrics.push_back({

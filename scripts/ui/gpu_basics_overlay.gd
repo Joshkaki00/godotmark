@@ -1,21 +1,33 @@
 extends Control
 ## Real-time metrics overlay for GPU Basics benchmark
 
-@onready var fps_label = $Panel/MarginContainer/VBoxContainer/FPSLabel
-@onready var frame_time_label = $Panel/MarginContainer/VBoxContainer/FrameTimeLabel
-@onready var cpu_label = $Panel/MarginContainer/VBoxContainer/CPULabel
-@onready var temp_label = $Panel/MarginContainer/VBoxContainer/TempLabel
-@onready var gpu_label = $Panel/MarginContainer/VBoxContainer/GPULabel
-@onready var test_label = $Panel/MarginContainer/VBoxContainer/TestLabel
-@onready var progress_bar = $Panel/MarginContainer/VBoxContainer/ProgressBar
-@onready var timeline_label = $Panel/MarginContainer/VBoxContainer/TimelineLabel
+var fps_label
+var frame_time_label
+var cpu_label
+var temp_label
+var gpu_label
+var test_label
+var progress_bar
+var timeline_label
 
 func _ready():
+	# Get node references
+	fps_label = $Panel/MarginContainer/VBoxContainer/FPSLabel
+	frame_time_label = $Panel/MarginContainer/VBoxContainer/FrameTimeLabel
+	cpu_label = $Panel/MarginContainer/VBoxContainer/CPULabel
+	temp_label = $Panel/MarginContainer/VBoxContainer/TempLabel
+	gpu_label = $Panel/MarginContainer/VBoxContainer/GPULabel
+	test_label = $Panel/MarginContainer/VBoxContainer/TestLabel
+	progress_bar = $Panel/MarginContainer/VBoxContainer/ProgressBar
+	timeline_label = $Panel/MarginContainer/VBoxContainer/TimelineLabel
+	
 	# Ensure we're always on top
 	set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
 
 func update_metrics(fps: float, frame_time: float, cpu_usage: float, temp: float, gpu_usage: float):
 	"""Update performance metrics with color-coded FPS"""
+	if not fps_label:
+		return
 	
 	# Color-coded FPS (green >30, yellow 20-30, red <20)
 	var fps_color = Color.GREEN if fps >= 30 else (Color.YELLOW if fps >= 20 else Color.RED)
@@ -29,10 +41,14 @@ func update_metrics(fps: float, frame_time: float, cpu_usage: float, temp: float
 
 func update_test(test_name: String):
 	"""Update current test display"""
+	if not test_label:
+		return
 	test_label.text = "Test: %s" % test_name
 
 func update_progress(current_time: float, total_time: float):
 	"""Update progress bar and timeline"""
+	if not progress_bar:
+		return
 	progress_bar.value = (current_time / total_time) * 100
 	var mins = int(current_time / 60)
 	var secs = int(current_time) % 60
