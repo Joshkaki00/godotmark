@@ -30,6 +30,10 @@ GPUBasicsScene::~GPUBasicsScene() {
 }
 
 void GPUBasicsScene::_bind_methods() {
+  // Bind start_test override so GDScript calls our version
+  ClassDB::bind_method(D_METHOD("start_test", "test_duration"),
+                       &GPUBasicsScene::start_test, DEFVAL(60.0f));
+  
   ClassDB::bind_method(D_METHOD("set_triangles_per_object", "count"),
                        &GPUBasicsScene::set_triangles_per_object);
   ClassDB::bind_method(D_METHOD("get_triangles_per_object"),
