@@ -26,10 +26,15 @@ GPUBasicsScene::GPUBasicsScene()
 GPUBasicsScene::~GPUBasicsScene() {
   cleanup_load();
 
-  // NOTE: Objects in object_pool are added as children via add_child()
-  // Godot's reference counting automatically frees them during scene destruction
-  // We just need to clear our vector to avoid dangling pointers
+  // Clear object pool (Godot handles child node cleanup)
   object_pool.clear();
+  
+  // Explicitly clear template vectors to release Ref<> counted resources
+  // This ensures ArrayMesh and StandardMaterial3D reference counts decrement
+  mesh_templates.clear();
+  material_templates.clear();
+  
+  UtilityFunctions::print("[GPUBasicsScene] Destructor: All resources released");
 }
 
 void GPUBasicsScene::_bind_methods() {

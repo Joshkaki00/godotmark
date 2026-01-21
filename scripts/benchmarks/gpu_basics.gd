@@ -167,28 +167,72 @@ func run_warmup_phase():
 	
 	print("[Warmup] Object pool created: %d objects" % target_pool_size)
 	
-	# Phase 3: Thermal stabilization (70-100%)
+	# Phase 3: Force shader compilation (70-85%)
 	if loading_screen:
-		loading_screen.update_progress(70.0, "Thermal stabilization...")
+		loading_screen.update_progress(70.0, "Compiling shaders...")
+	
+	# Show first 10-20 objects to force shader compilation
+	var test_objects_count = min(20, target_pool_size)
+	cpp_controller.set_active_objects(test_objects_count)
+	await get_tree().process_frame
+	print("[Warmup] Test objects visible - forcing shader compilation")
+	
+	# Render 10 test frames to ensure all GPU resources created
+	for i in range(10):
+		if loading_screen:
+			var progress = 70.0 + (i / 10.0) * 15.0  # 70-85%
+			loading_screen.update_progress(progress, "Rendering test frames... %d/10" % (i+1))
+		await get_tree().process_frame
+	
+	print("[Warmup] GPU shaders compiled and buffers created")
+	
+	# Hide test objects
+	cpp_controller.set_active_objects(0)
+	await get_tree().process_frame
+	
+	if loading_screen:
+		loading_screen.update_progress(85.0, "Shaders compiled")
+	
+	# Phase 4: Extended thermal stabilization (85-100%)
+	if loading_screen:
+		loading_screen.update_progress(85.0, "Thermal stabilization...")
 	
 	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
-	var min_warmup_time = 5.0  # 5 seconds for Pi 5
-	var remaining = max(0.0, min_warmup_time - elapsed)
+	var min_warmup_time = 5.0  # Match Model Showcase
 	
-	if remaining > 0:
-		print("[Warmup] Stabilization phase: %.1fs" % remaining)
+	# Extended stabilization with temperature monitoring
+	var stable_frames_count = 0
+	var required_stable_frames = 60  # 1 second @ 60 FPS
+	
+	while stable_frames_count < required_stable_frames:
+		await get_tree().process_frame
 		
-		var stabilize_start = Time.get_ticks_msec()
+		if perf_monitor:
+			perf_monitor.update(0.016)
+			var temp = perf_monitor.get_temperature()
+			
+			# Consider stable if temp is reasonable for Pi 5
+			if temp > 0 and temp < 75.0:
+				stable_frames_count += 1
+			else:
+				stable_frames_count += 1  # Count up anyway
+		else:
+			stable_frames_count += 1
+		
+		var progress = 85.0 + (15.0 * (stable_frames_count / float(required_stable_frames)))
+		if loading_screen:
+			loading_screen.update_progress(progress, "Stabilizing... %d%%" % int(progress))
+	
+	# Ensure minimum time elapsed
+	elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	var remaining = max(0.0, min_warmup_time - elapsed)
+	if remaining > 0:
+		print("[Warmup] Additional stabilization: %.1fs" % remaining)
+		var wait_start = Time.get_ticks_msec()
 		while remaining > 0:
 			await get_tree().process_frame
-			
-			var stabilize_elapsed = (Time.get_ticks_msec() - stabilize_start) / 1000.0
-			remaining = min_warmup_time - elapsed - stabilize_elapsed
-			
-			# Update progress bar (70-100%)
-			var progress = 70.0 + (30.0 * (stabilize_elapsed / min_warmup_time))
-			if loading_screen:
-				loading_screen.update_progress(min(100.0, progress), "Stabilizing systems...")
+			var wait_elapsed = (Time.get_ticks_msec() - wait_start) / 1000.0
+			remaining = min_warmup_time - elapsed - wait_elapsed
 	
 	if loading_screen:
 		loading_screen.update_progress(100.0, "Ready!")
