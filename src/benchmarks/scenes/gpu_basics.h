@@ -19,6 +19,9 @@ class GPUBasicsScene : public ProgressiveStressTest {
   std::vector<MeshInstance3D*> object_pool;
   int active_object_count;
   bool pool_initialized;
+  
+  int pool_target_size;  // Target pool size for lazy allocation
+  int pool_batch_size;   // Objects to create per batch
 
   // Shared resources (created once, reused across all objects)
   std::vector<Ref<ArrayMesh>> mesh_templates;
@@ -37,7 +40,6 @@ class GPUBasicsScene : public ProgressiveStressTest {
   Ref<StandardMaterial3D> create_test_material();
 
   // Pool management
-  void initialize_object_pool(int pool_size);
   void set_active_objects(int count);
 
  protected:
@@ -57,6 +59,11 @@ class GPUBasicsScene : public ProgressiveStressTest {
 
   // Template initialization (deferred from _ready to warmup)
   void initialize_templates();
+
+  // Lazy pool allocation (called from GDScript warmup)
+  void allocate_pool_batch(int batch_size);
+  int get_pool_size() const;
+  int get_pool_target_size() const;
 
   // Configuration
   void set_triangles_per_object(int count);

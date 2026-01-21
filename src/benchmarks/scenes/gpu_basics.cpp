@@ -12,10 +12,15 @@ GPUBasicsScene::GPUBasicsScene()
       camera_angle(0.0f),
       camera_speed(0.5f),
       active_object_count(0),
-      pool_initialized(false) {
+      pool_initialized(false),
+      pool_target_size(0),
+      pool_batch_size(50) {  // 50 objects per batch
   // Set progressive stress test parameters
   set_max_load(100000);    // Max 100,000 triangles
   set_ramp_rate(1000.0f);  // 1000 triangles/second
+  
+  // Calculate target pool size
+  pool_target_size = get_max_load() / triangles_per_object;  // 1000 objects
 }
 
 GPUBasicsScene::~GPUBasicsScene() {
@@ -37,6 +42,14 @@ void GPUBasicsScene::_bind_methods() {
   // Bind initialize_templates for warmup phase
   ClassDB::bind_method(D_METHOD("initialize_templates"),
                        &GPUBasicsScene::initialize_templates);
+  
+  // Bind lazy pool allocation methods
+  ClassDB::bind_method(D_METHOD("allocate_pool_batch", "batch_size"),
+                       &GPUBasicsScene::allocate_pool_batch);
+  ClassDB::bind_method(D_METHOD("get_pool_size"),
+                       &GPUBasicsScene::get_pool_size);
+  ClassDB::bind_method(D_METHOD("get_pool_target_size"),
+                       &GPUBasicsScene::get_pool_target_size);
   
   ClassDB::bind_method(D_METHOD("set_triangles_per_object", "count"),
                        &GPUBasicsScene::set_triangles_per_object);
@@ -97,23 +110,24 @@ void GPUBasicsScene::initialize_templates() {
 
 void GPUBasicsScene::start_test(float test_duration) {
   UtilityFunctions::print("[GPUBasicsScene] start_test() called");
-  UtilityFunctions::print("  pool_initialized = ", pool_initialized);
   
-  // Initialize object pool on first start (not in _ready to avoid blocking)
-  if (!pool_initialized) {
-    int max_objects = get_max_load() / triangles_per_object;
-    UtilityFunctions::print("[GPUBasicsScene] Initializing object pool: ",
-                            max_objects, " objects...");
-    initialize_object_pool(max_objects);
-    pool_initialized = true;
-    UtilityFunctions::print("[GPUBasicsScene] Pool initialized - ", 
-                            object_pool.size(), " objects in pool");
+  // Check if pool is complete
+  if (object_pool.size() < pool_target_size) {
+    UtilityFunctions::print("[GPUBasicsScene] WARNING: Pool not fully initialized! ",
+                            object_pool.size(), "/", pool_target_size);
+    // Complete initialization synchronously as fallback
+    int remaining = pool_target_size - object_pool.size();
+    allocate_pool_batch(remaining);
   }
-
-  UtilityFunctions::print("[GPUBasicsScene] Calling parent start_test()");
+  
+  if (!pool_initialized) {
+    pool_initialized = true;
+    UtilityFunctions::print("[GPUBasicsScene] Pool ready - ", 
+                            object_pool.size(), " objects");
+  }
+  
   // Call parent start_test
   ProgressiveStressTest::start_test(test_duration);
-  UtilityFunctions::print("[GPUBasicsScene] is_running = ", get_is_running());
 }
 
 void GPUBasicsScene::apply_load(int load) {
@@ -137,19 +151,26 @@ void GPUBasicsScene::cleanup_load() {
   set_active_objects(0);
 }
 
-void GPUBasicsScene::initialize_object_pool(int pool_size) {
-  object_pool.reserve(pool_size);
-
-  for (int i = 0; i < pool_size; i++) {
+void GPUBasicsScene::allocate_pool_batch(int batch_size) {
+  int current_size = object_pool.size();
+  int objects_to_create = std::min(batch_size, pool_target_size - current_size);
+  
+  if (objects_to_create <= 0) {
+    UtilityFunctions::print("[GPUBasicsScene] Pool already at target size: ", current_size);
+    return;
+  }
+  
+  for (int i = 0; i < objects_to_create; i++) {
     MeshInstance3D* instance = memnew(MeshInstance3D);
-
+    int pool_index = current_size + i;
+    
     // Assign mesh from templates (cycle through)
-    instance->set_mesh(mesh_templates[i % mesh_templates.size()]);
-
+    instance->set_mesh(mesh_templates[pool_index % mesh_templates.size()]);
+    
     // Assign material from templates
     instance->set_surface_override_material(
-        0, material_templates[i % material_templates.size()]);
-
+        0, material_templates[pool_index % material_templates.size()]);
+    
     // Random position in sphere
     float theta = UtilityFunctions::randf() * Math_PI * 2.0f;
     float phi = UtilityFunctions::randf() * Math_PI;
@@ -157,23 +178,22 @@ void GPUBasicsScene::initialize_object_pool(int pool_size) {
     Vector3 pos(r * sin(phi) * cos(theta), r * sin(phi) * sin(theta),
                 r * cos(phi));
     instance->set_position(pos);
-
+    
     // Random rotation
     Vector3 rot(UtilityFunctions::randf() * Math_PI * 2.0f,
                 UtilityFunctions::randf() * Math_PI * 2.0f,
                 UtilityFunctions::randf() * Math_PI * 2.0f);
     instance->set_rotation(rot);
-
+    
     // Add to scene (but hide initially)
     add_child(instance);
     instance->set_visible(false);
-
+    
     object_pool.push_back(instance);
   }
-
-  active_object_count = 0;
-  UtilityFunctions::print("[GPUBasicsScene] Object pool initialized: ",
-                          pool_size, " objects created");
+  
+  UtilityFunctions::print("[GPUBasicsScene] Pool batch allocated: ", objects_to_create,
+                          " objects (", object_pool.size(), "/", pool_target_size, ")");
 }
 
 void GPUBasicsScene::set_active_objects(int count) {
@@ -256,4 +276,14 @@ int GPUBasicsScene::get_total_triangles() const {
   return active_object_count * triangles_per_object;
 }
 
-int GPUBasicsScene::get_object_count() const { return active_object_count; }
+int GPUBasicsScene::get_object_count() const { 
+  return active_object_count; 
+}
+
+int GPUBasicsScene::get_pool_size() const {
+  return object_pool.size();
+}
+
+int GPUBasicsScene::get_pool_target_size() const {
+  return pool_target_size;
+}

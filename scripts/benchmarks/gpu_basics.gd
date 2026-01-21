@@ -132,18 +132,30 @@ func run_warmup_phase():
 	if loading_screen:
 		loading_screen.update_progress(30.0, "Templates ready")
 	
-	# Phase 2: Render test frames (30-70%)
+	# Phase 2: Lazy object pool allocation + shader compilation (30-70%)
 	if loading_screen:
-		loading_screen.update_progress(30.0, "Compiling shaders...")
+		loading_screen.update_progress(30.0, "Creating object pool...")
 	
-	# Render 20 frames to compile all shaders and create GPU buffers
-	for i in range(20):
+	var target_pool_size = cpp_controller.get_pool_target_size()
+	var batch_size = 50  # Create 50 objects per frame
+	
+	# Allocate pool gradually while rendering test frames
+	var batches_needed = ceil(float(target_pool_size) / float(batch_size))
+	for i in range(int(batches_needed)):
+		# Allocate batch
+		cpp_controller.allocate_pool_batch(batch_size)
+		
+		# Update progress
+		var pool_progress = (float(cpp_controller.get_pool_size()) / float(target_pool_size)) * 40.0
+		var progress = 30.0 + pool_progress  # 30-70%
 		if loading_screen:
-			var progress = 30.0 + (i * 2.0)  # 30-70%
-			loading_screen.update_progress(progress, "Rendering test frames... %d/20" % (i+1))
+			loading_screen.update_progress(progress, 
+				"Creating objects... %d/%d" % [cpp_controller.get_pool_size(), target_pool_size])
+		
+		# Render frame to process GPU uploads
 		await get_tree().process_frame
 	
-	print("[Warmup] Test frames rendered - shaders compiled")
+	print("[Warmup] Object pool created: %d objects" % target_pool_size)
 	
 	# Phase 3: Thermal stabilization (70-100%)
 	if loading_screen:
