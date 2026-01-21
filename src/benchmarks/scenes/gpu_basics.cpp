@@ -34,6 +34,10 @@ void GPUBasicsScene::_bind_methods() {
   ClassDB::bind_method(D_METHOD("start_test", "test_duration"),
                        &GPUBasicsScene::start_test, DEFVAL(60.0f));
   
+  // Bind initialize_templates for warmup phase
+  ClassDB::bind_method(D_METHOD("initialize_templates"),
+                       &GPUBasicsScene::initialize_templates);
+  
   ClassDB::bind_method(D_METHOD("set_triangles_per_object", "count"),
                        &GPUBasicsScene::set_triangles_per_object);
   ClassDB::bind_method(D_METHOD("get_triangles_per_object"),
@@ -46,21 +50,7 @@ void GPUBasicsScene::_bind_methods() {
 
 void GPUBasicsScene::_ready() {
   ProgressiveStressTest::_ready();
-
-  // Create 5 mesh templates (reused across all objects)
-  UtilityFunctions::print("[GPUBasicsScene] Creating mesh templates...");
-  for (int i = 0; i < 5; i++) {
-    mesh_templates.push_back(create_procedural_mesh(triangles_per_object));
-  }
-
-  // Create 5 material templates
-  UtilityFunctions::print("[GPUBasicsScene] Creating material templates...");
-  for (int i = 0; i < 5; i++) {
-    material_templates.push_back(create_test_material());
-  }
-
-  UtilityFunctions::print("[GPUBasicsScene] Ready - Templates created");
-  UtilityFunctions::print("  (Object pool will be created on first start_test call)");
+  UtilityFunctions::print("[GPUBasicsScene] Ready (templates deferred to warmup)");
 }
 
 void GPUBasicsScene::_process(double delta) {
@@ -81,6 +71,28 @@ void GPUBasicsScene::_process(double delta) {
       log_timer = 0.0f;
     }
   }
+}
+
+void GPUBasicsScene::initialize_templates() {
+  // Guard against double initialization
+  if (!mesh_templates.empty()) {
+    UtilityFunctions::print("[GPUBasicsScene] Templates already initialized, skipping");
+    return;
+  }
+  
+  UtilityFunctions::print("[GPUBasicsScene] Creating mesh templates...");
+  for (int i = 0; i < 5; i++) {
+    mesh_templates.push_back(create_procedural_mesh(triangles_per_object));
+  }
+  
+  UtilityFunctions::print("[GPUBasicsScene] Creating material templates...");
+  for (int i = 0; i < 5; i++) {
+    material_templates.push_back(create_test_material());
+  }
+  
+  UtilityFunctions::print("[GPUBasicsScene] Templates initialized: ",
+                          mesh_templates.size(), " meshes, ",
+                          material_templates.size(), " materials");
 }
 
 void GPUBasicsScene::start_test(float test_duration) {

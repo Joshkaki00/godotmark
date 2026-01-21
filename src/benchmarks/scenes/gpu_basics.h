@@ -55,6 +55,9 @@ class GPUBasicsScene : public ProgressiveStressTest {
   virtual void apply_load(int load) override;
   virtual void cleanup_load() override;
 
+  // Template initialization (deferred from _ready to warmup)
+  void initialize_templates();
+
   // Configuration
   void set_triangles_per_object(int count);
   int get_triangles_per_object() const;

@@ -116,13 +116,21 @@ func run_warmup_phase():
 	
 	var warmup_start = Time.get_ticks_msec()
 	
-	# Phase 1: C++ scene already created (cpp_controller) - just wait for it (0-30%)
+	# Phase 1: Initialize templates spread across frames (0-30%)
 	if loading_screen:
-		loading_screen.update_progress(5.0, "Initializing GPU scene...")
+		loading_screen.update_progress(5.0, "Creating mesh templates...")
 	
-	# cpp_controller is already added as child and ready
-	await get_tree().process_frame
-	print("[Warmup] C++ scene initialized")
+	# Call C++ to create templates (spread across 5 frames)
+	for i in range(5):
+		await get_tree().process_frame
+		if i == 0:
+			# First frame: create all templates at once
+			cpp_controller.initialize_templates()
+			print("[Warmup] Templates initialized")
+		# Additional frames for GPU to process uploads
+	
+	if loading_screen:
+		loading_screen.update_progress(30.0, "Templates ready")
 	
 	# Phase 2: Render test frames (30-70%)
 	if loading_screen:
