@@ -80,18 +80,21 @@ func _ready():
 	
 	await get_tree().process_frame
 	
-	# Run warmup phase
-	await run_warmup_phase()
-	
-	# Hide loading screen
-	if loading_screen:
-		loading_screen.visible = false
-	
-	warmup_complete = true
-	
-	# Create C++ controller
+	# Create C++ controller BEFORE warmup (so we only create it once)
 	cpp_controller = GPUBasicsScene.new()
 	add_child(cpp_controller)
+	cpp_controller.visible = false  # Hide during warmup
+	await get_tree().process_frame
+	
+	# Run warmup phase (uses cpp_controller, doesn't create a temp one)
+	await run_warmup_phase()
+	
+	# Hide loading screen, show controller
+	if loading_screen:
+		loading_screen.visible = false
+	cpp_controller.visible = true
+	
+	warmup_complete = true
 	
 	# Start benchmark (60 seconds)
 	cpp_controller.start_test(benchmark_duration)
@@ -113,15 +116,13 @@ func run_warmup_phase():
 	
 	var warmup_start = Time.get_ticks_msec()
 	
-	# Phase 1: Create C++ scene early for preloading (0-30%)
+	# Phase 1: C++ scene already created (cpp_controller) - just wait for it (0-30%)
 	if loading_screen:
-		loading_screen.update_progress(5.0, "Creating GPU scene...")
+		loading_screen.update_progress(5.0, "Initializing GPU scene...")
 	
-	var temp_controller = GPUBasicsScene.new()
-	temp_controller.visible = false  # Hide during warmup - no visual rendering
-	add_child(temp_controller)
+	# cpp_controller is already added as child and ready
 	await get_tree().process_frame
-	print("[Warmup] C++ scene created")
+	print("[Warmup] C++ scene initialized")
 	
 	# Phase 2: Render test frames (30-70%)
 	if loading_screen:
@@ -164,9 +165,7 @@ func run_warmup_phase():
 	
 	await get_tree().process_frame
 	
-	# Clean up temp controller
-	temp_controller.stop_test()
-	temp_controller.queue_free()
+	# No cleanup needed - we're using the actual cpp_controller
 	
 	var total_time = (Time.get_ticks_msec() - warmup_start) / 1000.0
 	print("\n[Warmup] Complete - systems stable (%.1fs)" % total_time)
