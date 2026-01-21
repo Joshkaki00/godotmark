@@ -60,6 +60,10 @@ void GPUBasicsScene::_bind_methods() {
   ClassDB::bind_method(D_METHOD("get_pool_target_size"),
                        &GPUBasicsScene::get_pool_target_size);
   
+  // Bind pool management for shader precompilation
+  ClassDB::bind_method(D_METHOD("set_active_objects", "count"),
+                       &GPUBasicsScene::set_active_objects);
+  
   ClassDB::bind_method(D_METHOD("set_triangles_per_object", "count"),
                        &GPUBasicsScene::set_triangles_per_object);
   ClassDB::bind_method(D_METHOD("get_triangles_per_object"),

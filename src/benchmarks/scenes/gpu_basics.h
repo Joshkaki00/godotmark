@@ -39,9 +39,6 @@ class GPUBasicsScene : public ProgressiveStressTest {
   Ref<ArrayMesh> create_procedural_mesh(int triangle_count);
   Ref<StandardMaterial3D> create_test_material();
 
-  // Pool management
-  void set_active_objects(int count);
-
  protected:
   static void _bind_methods();
 
@@ -67,6 +64,9 @@ class GPUBasicsScene : public ProgressiveStressTest {
   void allocate_pool_batch(int batch_size);
   int get_pool_size() const;
   int get_pool_target_size() const;
+  
+  // Pool management (called from GDScript warmup for shader precompilation)
+  void set_active_objects(int count);
 
   // Configuration
   void set_triangles_per_object(int count);
