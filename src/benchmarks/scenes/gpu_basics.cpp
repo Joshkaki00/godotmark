@@ -27,8 +27,9 @@ GPUBasicsScene::~GPUBasicsScene() {
   cleanup_load();
 
   // Delete all pooled objects
+  // NOTE: Godot automatically removes children before destructor runs,
+  // so we only need to free the memory
   for (MeshInstance3D* instance : object_pool) {
-    remove_child(instance);
     memdelete(instance);
   }
   object_pool.clear();
