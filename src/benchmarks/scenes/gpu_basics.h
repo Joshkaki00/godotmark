@@ -57,8 +57,11 @@ class GPUBasicsScene : public ProgressiveStressTest {
   virtual void apply_load(int load) override;
   virtual void cleanup_load() override;
 
-  // Template initialization (deferred from _ready to warmup)
-  void initialize_templates();
+  // Incremental template creation (one per frame during warmup)
+  void create_single_mesh_template();
+  void create_single_material_template();
+  int get_mesh_template_count() const;
+  int get_material_template_count() const;
 
   // Lazy pool allocation (called from GDScript warmup)
   void allocate_pool_batch(int batch_size);

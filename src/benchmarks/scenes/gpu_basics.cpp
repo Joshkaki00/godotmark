@@ -39,9 +39,15 @@ void GPUBasicsScene::_bind_methods() {
   ClassDB::bind_method(D_METHOD("start_test", "test_duration"),
                        &GPUBasicsScene::start_test, DEFVAL(60.0f));
   
-  // Bind initialize_templates for warmup phase
-  ClassDB::bind_method(D_METHOD("initialize_templates"),
-                       &GPUBasicsScene::initialize_templates);
+  // Bind incremental template creation methods
+  ClassDB::bind_method(D_METHOD("create_single_mesh_template"),
+                       &GPUBasicsScene::create_single_mesh_template);
+  ClassDB::bind_method(D_METHOD("create_single_material_template"),
+                       &GPUBasicsScene::create_single_material_template);
+  ClassDB::bind_method(D_METHOD("get_mesh_template_count"),
+                       &GPUBasicsScene::get_mesh_template_count);
+  ClassDB::bind_method(D_METHOD("get_material_template_count"),
+                       &GPUBasicsScene::get_material_template_count);
   
   // Bind lazy pool allocation methods
   ClassDB::bind_method(D_METHOD("allocate_pool_batch", "batch_size"),
@@ -86,26 +92,34 @@ void GPUBasicsScene::_process(double delta) {
   }
 }
 
-void GPUBasicsScene::initialize_templates() {
-  // Guard against double initialization
-  if (!mesh_templates.empty()) {
-    UtilityFunctions::print("[GPUBasicsScene] Templates already initialized, skipping");
+void GPUBasicsScene::create_single_mesh_template() {
+  if (mesh_templates.size() >= 5) {
+    UtilityFunctions::print("[GPUBasicsScene] WARNING: Already have 5 mesh templates");
     return;
   }
   
-  UtilityFunctions::print("[GPUBasicsScene] Creating mesh templates...");
-  for (int i = 0; i < 5; i++) {
-    mesh_templates.push_back(create_procedural_mesh(triangles_per_object));
+  mesh_templates.push_back(create_procedural_mesh(triangles_per_object));
+  UtilityFunctions::print("[GPUBasicsScene] Mesh template created (", 
+                          mesh_templates.size(), "/5)");
+}
+
+void GPUBasicsScene::create_single_material_template() {
+  if (material_templates.size() >= 5) {
+    UtilityFunctions::print("[GPUBasicsScene] WARNING: Already have 5 material templates");
+    return;
   }
   
-  UtilityFunctions::print("[GPUBasicsScene] Creating material templates...");
-  for (int i = 0; i < 5; i++) {
-    material_templates.push_back(create_test_material());
-  }
-  
-  UtilityFunctions::print("[GPUBasicsScene] Templates initialized: ",
-                          mesh_templates.size(), " meshes, ",
-                          material_templates.size(), " materials");
+  material_templates.push_back(create_test_material());
+  UtilityFunctions::print("[GPUBasicsScene] Material template created (",
+                          material_templates.size(), "/5)");
+}
+
+int GPUBasicsScene::get_mesh_template_count() const {
+  return mesh_templates.size();
+}
+
+int GPUBasicsScene::get_material_template_count() const {
+  return material_templates.size();
 }
 
 void GPUBasicsScene::start_test(float test_duration) {

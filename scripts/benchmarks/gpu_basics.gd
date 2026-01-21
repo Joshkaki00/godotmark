@@ -116,21 +116,31 @@ func run_warmup_phase():
 	
 	var warmup_start = Time.get_ticks_msec()
 	
-	# Phase 1: Initialize templates spread across frames (0-30%)
+	# Phase 1: Create mesh templates incrementally (0-15%)
 	if loading_screen:
-		loading_screen.update_progress(5.0, "Creating mesh templates...")
+		loading_screen.update_progress(0.0, "Creating mesh templates...")
 	
-	# Call C++ to create templates (spread across 5 frames)
 	for i in range(5):
+		cpp_controller.create_single_mesh_template()
+		if loading_screen:
+			var progress = (float(i + 1) / 5.0) * 15.0  # 0-15%
+			loading_screen.update_progress(progress, "Mesh templates... %d/5" % (i + 1))
 		await get_tree().process_frame
-		if i == 0:
-			# First frame: create all templates at once
-			cpp_controller.initialize_templates()
-			print("[Warmup] Templates initialized")
-		# Additional frames for GPU to process uploads
 	
+	print("[Warmup] Mesh templates created: %d" % cpp_controller.get_mesh_template_count())
+	
+	# Phase 1b: Create material templates incrementally (15-30%)
 	if loading_screen:
-		loading_screen.update_progress(30.0, "Templates ready")
+		loading_screen.update_progress(15.0, "Creating materials...")
+	
+	for i in range(5):
+		cpp_controller.create_single_material_template()
+		if loading_screen:
+			var progress = 15.0 + (float(i + 1) / 5.0) * 15.0  # 15-30%
+			loading_screen.update_progress(progress, "Materials... %d/5" % (i + 1))
+		await get_tree().process_frame
+	
+	print("[Warmup] Material templates created: %d" % cpp_controller.get_material_template_count())
 	
 	# Phase 2: Lazy object pool allocation + shader compilation (30-70%)
 	if loading_screen:
