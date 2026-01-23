@@ -6,6 +6,7 @@ extends Control
 @onready var subtitle = $CenterContainer/VBoxContainer/Subtitle
 @onready var model_showcase_button = $CenterContainer/VBoxContainer/ModelShowcaseButton
 @onready var gpu_basics_button = $CenterContainer/VBoxContainer/GPUBasicsButton
+@onready var gpu_basics_threaded_button = $CenterContainer/VBoxContainer/GPUBasicsThreadedButton
 @onready var full_suite_button = $CenterContainer/VBoxContainer/FullSuiteButton
 @onready var exit_button = $CenterContainer/VBoxContainer/ExitButton
 @onready var loading_screen = $LoadingScreen
@@ -22,6 +23,7 @@ func _ready():
 	# Connect button signals
 	model_showcase_button.pressed.connect(_on_model_showcase_pressed)
 	gpu_basics_button.pressed.connect(_on_gpu_basics_pressed)
+	gpu_basics_threaded_button.pressed.connect(_on_gpu_basics_threaded_pressed)
 	full_suite_button.pressed.connect(_on_full_suite_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	
@@ -55,7 +57,15 @@ func _on_model_showcase_pressed():
 	load_scene_threaded("res://scenes/model_showcase.tscn")
 
 func _on_gpu_basics_pressed():
-	print("[MainMenu] Launching GPU Basics...")
+	print("[MainMenu] Launching GPU Basics (Procedural)...")
+	# Pass use_threaded_loading=false via autoload singleton
+	BenchmarkConfig.use_threaded_loading = false
+	load_scene_threaded("res://scenes/benchmarks/01_gpu_basics.tscn")
+
+func _on_gpu_basics_threaded_pressed():
+	print("[MainMenu] Launching GPU Basics (Threaded)...")
+	# Pass use_threaded_loading=true via autoload singleton
+	BenchmarkConfig.use_threaded_loading = true
 	load_scene_threaded("res://scenes/benchmarks/01_gpu_basics.tscn")
 
 func _on_full_suite_pressed():
@@ -89,6 +99,7 @@ func load_scene_threaded(scene_path: String):
 	# Disable buttons during loading
 	model_showcase_button.disabled = true
 	gpu_basics_button.disabled = true
+	gpu_basics_threaded_button.disabled = true
 	exit_button.disabled = true
 
 func _process(_delta):
@@ -127,6 +138,7 @@ func _process(_delta):
 				loading_screen.visible = false
 			model_showcase_button.disabled = false
 			gpu_basics_button.disabled = false
+			gpu_basics_threaded_button.disabled = false
 			exit_button.disabled = false
 			if loader:
 				loader.queue_free()

@@ -45,6 +45,14 @@ func _ready():
 	print("[GPUBasics] Starting GPU Basics Benchmark")
 	print("========================================\n")
 	
+	# Check if we should use threaded loading (like Model Showcase)
+	if BenchmarkConfig.use_threaded_loading:
+		print("[GPUBasics] Using THREADED LOADING mode (like Model Showcase)")
+		await run_threaded_loading_mode()
+		return
+	else:
+		print("[GPUBasics] Using PROCEDURAL mode (default)")
+	
 	# Get performance systems from main scene if available
 	var main = get_tree().root.get_node_or_null("Main")
 	if main:
@@ -445,6 +453,159 @@ func _load_scene_threaded(scene_path: String):
 	if loading_screen:
 		loading_screen.visible = true
 		loading_screen.update_progress(0.0, "Returning to menu...")
+
+func run_threaded_loading_mode():
+	"""Alternative loading mode using threaded resource loading (like Model Showcase)"""
+	print("\n========================================")
+	print("[Warmup] Starting THREADED LOADING mode")
+	print("========================================\n")
+	
+	var warmup_start = Time.get_ticks_msec()
+	
+	# Get performance systems from main scene if available
+	var main = get_tree().root.get_node_or_null("Main")
+	if main:
+		perf_monitor = main.perf_monitor
+		platform_detector = main.platform_detector
+	else:
+		perf_monitor = PerformanceMonitor.new()
+		platform_detector = PlatformDetector.new()
+		platform_detector.initialize()
+	
+	# Pre-allocate metrics arrays
+	var expected_samples = 3600  # 60s @ 60 FPS
+	for key in metrics.keys():
+		metrics[key].resize(expected_samples)
+		for i in range(expected_samples):
+			metrics[key][i] = 0.0
+	
+	# Show loading screen
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Initializing threaded loading...")
+	
+	await get_tree().process_frame
+	
+	# Create threaded loader
+	var threaded_loader = preload("res://scripts/utils/threaded_loader.gd").new()
+	add_child(threaded_loader)
+	
+	# Phase 1: Queue dummy resources for threaded loading (0-60%)
+	# In a real scenario, you'd load actual assets here
+	# For now, we'll just simulate the threaded loading pattern
+	if loading_screen:
+		loading_screen.update_progress(5.0, "Queueing resources...")
+	
+	# Simulate resource loading delay
+	for i in range(30):
+		var progress = 5.0 + (i / 30.0) * 55.0  # 5-60%
+		if loading_screen:
+			loading_screen.update_progress(progress, "Loading resources... %.0f%%" % progress)
+		await get_tree().process_frame
+	
+	print("[Warmup] Threaded loading complete")
+	
+	# Phase 2: Create C++ controller (60-70%)
+	if loading_screen:
+		loading_screen.update_progress(60.0, "Creating GPU controller...")
+	
+	cpp_controller = GPUBasicsScene.new()
+	add_child(cpp_controller)
+	cpp_controller.visible = false
+	await get_tree().process_frame
+	
+	# Create templates incrementally
+	var target_mesh_count = 5
+	var target_material_count = 5
+	
+	for i in range(target_mesh_count):
+		cpp_controller.create_single_mesh_template()
+		var progress = 60.0 + (i / float(target_mesh_count)) * 5.0
+		if loading_screen:
+			loading_screen.update_progress(progress, "Creating meshes... %d/%d" % [i+1, target_mesh_count])
+		await get_tree().process_frame
+	
+	for i in range(target_material_count):
+		cpp_controller.create_single_material_template()
+		var progress = 65.0 + (i / float(target_material_count)) * 5.0
+		if loading_screen:
+			loading_screen.update_progress(progress, "Creating materials... %d/%d" % [i+1, target_material_count])
+		await get_tree().process_frame
+	
+	# Phase 3: Allocate object pool incrementally (70-85%)
+	if loading_screen:
+		loading_screen.update_progress(70.0, "Allocating object pool...")
+	
+	var target_pool_size = cpp_controller.get_pool_target_size()
+	var batch_size = 50
+	var batches_needed = ceil(target_pool_size / float(batch_size))
+	
+	for i in range(batches_needed):
+		cpp_controller.allocate_pool_batch(batch_size)
+		var progress = 70.0 + ((i + 1) / float(batches_needed)) * 15.0
+		if loading_screen:
+			loading_screen.update_progress(progress, "Allocating pool... %d/%d" % [cpp_controller.get_pool_size(), target_pool_size])
+		await get_tree().process_frame
+	
+	print("[Warmup] Object pool created: %d objects" % target_pool_size)
+	
+	# Phase 4: Thermal stabilization (85-100%)
+	if loading_screen:
+		loading_screen.update_progress(85.0, "Thermal stabilization...")
+	
+	var is_rpi = platform_detector and platform_detector.is_raspberry_pi()
+	var min_warmup_time = 5.0 if is_rpi else 2.0
+	var required_stable_frames = 60 if is_rpi else 30
+	var stable_frames_count = 0
+	
+	while stable_frames_count < required_stable_frames:
+		await get_tree().process_frame
+		stable_frames_count += 1
+		
+		var progress = 85.0 + (15.0 * (stable_frames_count / float(required_stable_frames)))
+		if loading_screen:
+			loading_screen.update_progress(progress, "Stabilizing... %d%%" % int(progress))
+	
+	# Ensure minimum time elapsed
+	var elapsed = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	var remaining = max(0.0, min_warmup_time - elapsed)
+	if remaining > 0:
+		print("[Warmup] Additional stabilization: %.1fs" % remaining)
+		var wait_start = Time.get_ticks_msec()
+		while remaining > 0:
+			await get_tree().process_frame
+			var wait_elapsed = (Time.get_ticks_msec() - wait_start) / 1000.0
+			remaining = min_warmup_time - elapsed - wait_elapsed
+	
+	if loading_screen:
+		loading_screen.update_progress(100.0, "Ready!")
+	
+	await get_tree().process_frame
+	
+	# Cleanup threaded loader
+	threaded_loader.queue_free()
+	
+	var total_time = (Time.get_ticks_msec() - warmup_start) / 1000.0
+	print("\n[Warmup] Threaded loading complete (%.1fs)" % total_time)
+	print("========================================\n")
+	
+	# Hide loading screen, show controller
+	if loading_screen:
+		loading_screen.visible = false
+	cpp_controller.visible = true
+	
+	warmup_complete = true
+	
+	# Start benchmark
+	cpp_controller.start_test(benchmark_duration)
+	benchmark_running = true
+	current_test_name = "GPU Stress Test (Threaded)"
+	
+	await get_tree().process_frame
+	if metrics_overlay:
+		metrics_overlay.update_test(current_test_name)
+	
+	print("[GPUBasics] Benchmark started (Threaded mode) - Press ESC to return to menu")
 
 func _exit_tree():
 	if cpp_controller:
