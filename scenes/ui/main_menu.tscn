@@ -59,22 +59,6 @@ theme_override_colors/font_hover_color = Color(0.9, 0.9, 1, 1)
 theme_override_font_sizes/font_size = 18
 text = "Model Showcase"
 
-[node name="GPUBasicsButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 50)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "GPU Basics (Procedural)"
-
-[node name="GPUBasicsThreadedButton" type="Button" parent="CenterContainer/VBoxContainer"]
-custom_minimum_size = Vector2(300, 50)
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_colors/font_hover_color = Color(0.9, 0.9, 1, 1)
-theme_override_font_sizes/font_size = 18
-text = "GPU Basics (Threaded)"
-
 [node name="FullSuiteButton" type="Button" parent="CenterContainer/VBoxContainer"]
 custom_minimum_size = Vector2(300, 50)
 layout_mode = 2

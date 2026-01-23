@@ -267,9 +267,9 @@ godotmark/
 
 ---
 
-## 🧪 Benchmark Scenes (Roadmap)
+## 🧪 Benchmark Scenes
 
-1. ✅ **GPU Basics** - Geometry and PBR materials
+1. ✅ **Model Showcase** - 3D model rendering with PBR materials
 2. 🚧 **Physics Simulation** - Jolt Physics stress test
 3. 🚧 **Particle Systems** - GPU particle effects
 4. 🚧 **Lighting & Shadows** - Dynamic lights + shadowmaps

@@ -43,7 +43,7 @@ class BenchmarkOrchestrator : public Node {
   virtual void _process(double delta) override;
 
   // Main workflow
-  void run_benchmark(const String& scene_name = "gpu_basics");
+  void run_benchmark(const String& scene_name = "model_showcase");
   void stop_benchmark();
 
   // System access

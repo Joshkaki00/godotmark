@@ -11,7 +11,7 @@ BenchmarkOrchestrator::~BenchmarkOrchestrator() {}
 void BenchmarkOrchestrator::_bind_methods() {
   ClassDB::bind_method(D_METHOD("run_benchmark", "scene_name"),
                        &BenchmarkOrchestrator::run_benchmark,
-                       DEFVAL("gpu_basics"));
+                       DEFVAL("model_showcase"));
   ClassDB::bind_method(D_METHOD("stop_benchmark"),
                        &BenchmarkOrchestrator::stop_benchmark);
 

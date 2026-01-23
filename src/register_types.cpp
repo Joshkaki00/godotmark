@@ -10,7 +10,6 @@
 #include "benchmark_orchestrator.h"
 #include "benchmarks/adaptive_quality_manager.h"
 #include "benchmarks/progressive_stress_test.h"
-#include "benchmarks/scenes/gpu_basics.h"
 #include "performance/performance_monitor.h"
 #include "platform/platform_detector.h"
 #include "results/results_exporter.h"
@@ -34,9 +33,6 @@ void initialize_godotmark_module(ModuleInitializationLevel p_level) {
 
   // Phase 3: Progressive Stress Testing
   ClassDB::register_class<ProgressiveStressTest>();
-
-  // Phase 3: GPU Basics Scene
-  ClassDB::register_class<GPUBasicsScene>();
 
   // Phase 4: Results Export
   ClassDB::register_class<ResultsExporter>();
