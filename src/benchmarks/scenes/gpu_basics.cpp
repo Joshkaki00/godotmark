@@ -13,6 +13,7 @@ GPUBasicsScene::GPUBasicsScene()
       camera_speed(0.5f),
       active_object_count(0),
       pool_initialized(false),
+      pool_added_to_scene(false),
       pool_target_size(0),
       pool_batch_size(50) {  // 50 objects per batch
   // Set progressive stress test parameters
@@ -26,7 +27,16 @@ GPUBasicsScene::GPUBasicsScene()
 GPUBasicsScene::~GPUBasicsScene() {
   cleanup_load();
 
-  // Clear object pool (Godot handles child node cleanup)
+  // If objects never added to scene tree, we must free them manually
+  if (!pool_added_to_scene) {
+    UtilityFunctions::print("[GPUBasicsScene] Freeing ", object_pool.size(), 
+                            " objects not added to scene tree");
+    for (MeshInstance3D* instance : object_pool) {
+      memdelete(instance);
+    }
+  }
+  // Otherwise Godot handles cleanup via scene tree
+  
   object_pool.clear();
   
   // Explicitly clear template vectors to release Ref<> counted resources
@@ -141,6 +151,17 @@ void GPUBasicsScene::start_test(float test_duration) {
     allocate_pool_batch(remaining);
   }
   
+  // Add pool objects to scene tree if not already added
+  if (!pool_added_to_scene) {
+    UtilityFunctions::print("[GPUBasicsScene] Adding ", object_pool.size(), 
+                            " objects to scene tree...");
+    for (MeshInstance3D* instance : object_pool) {
+      add_child(instance);
+    }
+    pool_added_to_scene = true;
+    UtilityFunctions::print("[GPUBasicsScene] All objects added to scene tree");
+  }
+  
   if (!pool_initialized) {
     pool_initialized = true;
     UtilityFunctions::print("[GPUBasicsScene] Pool ready - ", 
@@ -206,8 +227,8 @@ void GPUBasicsScene::allocate_pool_batch(int batch_size) {
                 UtilityFunctions::randf() * Math_PI * 2.0f);
     instance->set_rotation(rot);
     
-    // Add to scene (but hide initially)
-    add_child(instance);
+    // Don't add to scene tree yet - defer until benchmark starts
+    // This prevents GPU buffer uploads during warmup
     instance->set_visible(false);
     
     object_pool.push_back(instance);

@@ -19,6 +19,7 @@ class GPUBasicsScene : public ProgressiveStressTest {
   std::vector<MeshInstance3D*> object_pool;
   int active_object_count;
   bool pool_initialized;
+  bool pool_added_to_scene;  // Track if pool objects are in scene tree
   
   int pool_target_size;  // Target pool size for lazy allocation
   int pool_batch_size;   // Objects to create per batch
