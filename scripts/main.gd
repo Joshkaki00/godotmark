@@ -12,6 +12,10 @@ func _ready():
 	print("[GodotMark] Initializing...")
 	print("========================================\n")
 	
+	# Print version information
+	Version.print_version_info()
+	print("")
+	
 	# Load and apply settings first
 	load_and_apply_settings()
 	

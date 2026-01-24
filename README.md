@@ -1,6 +1,6 @@
 # GodotMark - 3D Gaming Benchmark for ARM SBCs
 
-**Open-source benchmark for Raspberry Pi, Orange Pi, Rock 5B, and other ARM single-board computers**
+**Version 0.0.1-alpha** | Open-source benchmark for Raspberry Pi, Orange Pi, Rock 5B, and other ARM single-board computers
 
 Built with **Godot 4.4**, **C++ GDExtension**, and **Jolt Physics**
 

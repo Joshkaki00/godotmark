@@ -37,7 +37,7 @@ func update_system_info():
 	var main = get_tree().root.get_node_or_null("Main")
 	if main and main.has_method("get_platform_info"):
 		var info = main.get_platform_info()
-		subtitle.text = "Benchmark Suite v1.0 | %s" % info
+		subtitle.text = "v%s | %s" % [Version.get_version_string(), info]
 	else:
 		# Fallback: create temporary detector
 		var platform_detector = PlatformDetector.new()
@@ -47,11 +47,11 @@ func update_system_info():
 		var is_rpi = platform_detector.is_raspberry_pi()
 		
 		if is_rpi:
-			subtitle.text = "Benchmark Suite v1.0 | Raspberry Pi"
+			subtitle.text = "v%s | Raspberry Pi" % Version.get_version_string()
 		elif cpu_model != "Unknown CPU" and cpu_model != "":
-			subtitle.text = "Benchmark Suite v1.0 | %s" % cpu_model
+			subtitle.text = "v%s | %s" % [Version.get_version_string(), cpu_model]
 		else:
-			subtitle.text = "Benchmark Suite v1.0"
+			subtitle.text = "v%s" % Version.get_version_string()
 		
 		# Note: PlatformDetector is RefCounted, so it's automatically freed
 
