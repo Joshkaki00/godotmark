@@ -719,86 +719,226 @@ func setup_phase_1():
 
 func initialize_object_pools():
 	"""Initialize object pools for all 87 nature models across 3 zones"""
-	print("\n[ObjectPools] Initializing object pools...")
+	print("\n[ObjectPools] Initializing object pools with real nature assets...")
 	
-	# Beach Zone (20 models)
-	# Placeholder for future model loading:
-	# - Coast rocks (6 types)
-	# - Coast sand (2 types)
-	# - Boulders (3 types)
-	# - Coastal plants (9 types)
+	# Beach Zone Models (20 coastal models)
+	var beach_models = [
+		# Coast rocks and formations
+		"coast_rocks_02_2k.gltf",
+		"coast_rocks_03_2k.gltf",
+		"coast_land_rocks_04_2k.gltf",
+		"coast_line_02_2k.gltf",
+		"boulder_01_2k.gltf",
+		"stone_01_2k.gltf",
+		# Coast sand and ground
+		"coast_sand_01_2k.gltf",
+		"coast_sand_02_2k.gltf",
+		"coast_sand_rocks_02_2k.gltf",
+		# Coastal plants
+		"grass_bermuda_01_2k.gltf",
+		"crystalline_iceplant_2k.gltf",
+		"cheiridopsis_succulent_2k.gltf",
+		"othonna_cerarioides_2k.gltf",
+		"sand_rocks_small_01_2k.gltf",
+		# Small coastal vegetation
+		"shrub_01_2k.gltf",
+		"shrub_02_2k.gltf",
+		"flower_empodium_2k.gltf",
+		"flower_gazania_2k.gltf",
+		"flower_heliophila_2k.gltf",
+		"weed_plant_02_2k.gltf"
+	]
+	
+	# Forest Zone Models (50 forest models)
+	var forest_models = [
+		# Large trees (canopy)
+		"fir_tree_01_2k.gltf",
+		"island_tree_01_2k.gltf",
+		"island_tree_02_2k.gltf",
+		"island_tree_03_2k.gltf",
+		"jacaranda_tree_2k.gltf",
+		"tree_small_02_2k.gltf",
+		# Saplings (mid-layer)
+		"fir_sapling_2k.gltf",
+		"fir_sapling_medium_2k.gltf",
+		"pine_sapling_small_2k.gltf",
+		# Ground plants
+		"fern_02_2k.gltf",
+		"anthurium_botany_01_2k.gltf",
+		"calathea_orbifolia_01_2k.gltf",
+		"celandine_01_2k.gltf",
+		"dandelion_01_2k.gltf",
+		"nettle_plant_2k.gltf",
+		"periwinkle_plant_2k.gltf",
+		"pachira_aquatica_01_2k.gltf",
+		# Grass varieties
+		"grass_medium_01_2k.gltf",
+		"grass_medium_02_2k.gltf",
+		# Flowers
+		"flower_stinkkruid_2k.gltf",
+		"flower_ursinia_2k.gltf",
+		# Forest floor coverage
+		"forest_floor_2k.gltf",
+		"forest_ground_04_2k.gltf",
+		"forest_leaves_02_2k.gltf",
+		"forest_leaves_03_2k.gltf",
+		"forrest_ground_01_2k.gltf",
+		"forrest_ground_03_2k.gltf",
+		"leaves_forest_ground_2k.gltf",
+		"moss_01_2k.gltf",
+		"park_dirt_2k.gltf",
+		# Ground materials
+		"brown_mud_2k.gltf",
+		"brown_mud_02_2k.gltf",
+		"brown_mud_03_2k.gltf",
+		"brown_mud_dry_2k.gltf",
+		"burned_ground_01_2k.gltf",
+		"red_dirt_mud_01_2k.gltf",
+		# Roots and debris
+		"root_cluster_01_2k.gltf",
+		"root_cluster_02_2k.gltf",
+		"single_root_2k.gltf",
+		"pine_roots_2k.gltf",
+		"bark_debris_01_2k.gltf",
+		"dry_branches_medium_01_2k.gltf",
+		# Stumps
+		"tree_stump_01_2k.gltf",
+		"tree_stump_02_2k.gltf",
+		# Shrubs
+		"shrub_03_2k.gltf",
+		"shrub_04_2k.gltf",
+		"searsia_burchellii_2k.gltf",
+		"searsia_lucida_2k.gltf",
+		"wild_rooibos_bush_2k.gltf"
+	]
+	
+	# Cliff Zone Models (17 rocky/hardy models)
+	var cliff_models = [
+		# Rock faces (vertical cliffs)
+		"rock_face_01_2k.gltf",
+		"rock_face_02_2k.gltf",
+		"rock_face_03_2k.gltf",
+		"namaqualand_cliff_02_2k.gltf",
+		"mountainside_2k.gltf",
+		"rocky_trail_2k.gltf",
+		# Large boulders
+		"namaqualand_boulder_02_2k.gltf",
+		"namaqualand_boulder_03_2k.gltf",
+		"moon_rock_01_2k.gltf",
+		"rock_moss_set_01_2k.gltf",
+		"rock_moss_set_02_2k.gltf",
+		# Hardy plants (cliff vegetation)
+		"quiver_tree_01_2k.gltf",
+		"quiver_tree_02_2k.gltf",
+		"dead_quiver_trunk_2k.gltf",
+		"dead_tree_trunk_2k.gltf",
+		"dead_tree_trunk_02_2k.gltf",
+		# Additional cliff elements
+		"dead_tree_trunk_02_2k.gltf"
+	]
+	
+	# Load Beach Zone models
 	object_pools["beach"] = []
-	for i in range(20):
-		var placeholder = create_placeholder_object("beach_%d" % i)
-		if placeholder:
-			beach_zone.add_child(placeholder)
-			object_pools["beach"].append(placeholder)
-			placeholder.visible = false  # Initially hidden
+	var beach_zone_size = Vector2(30, 20)  # 30m wide, 20m deep
+	var beach_z_start = 30.0  # Start at +30 to +50 on Z axis
 	
-	# Forest Zone (50 models)
-	# Placeholder for future model loading:
-	# - Large trees (10)
-	# - Saplings (8)
-	# - Ground plants (15)
-	# - Forest floor (10)
-	# - Shrubs (7)
+	for i in range(beach_models.size()):
+		var model_path = "res://art/nature-benchmark/" + beach_models[i]
+		var instance = load_and_position_model(model_path, "beach", i, beach_models.size(), beach_zone_size, beach_z_start)
+		if instance:
+			beach_zone.add_child(instance)
+			object_pools["beach"].append(instance)
+			instance.visible = false
+	
+	# Load Forest Zone models
 	object_pools["forest"] = []
-	for i in range(50):
-		var placeholder = create_placeholder_object("forest_%d" % i)
-		if placeholder:
-			forest_zone.add_child(placeholder)
-			object_pools["forest"].append(placeholder)
-			placeholder.visible = false  # Initially hidden
+	var forest_zone_size = Vector2(40, 60)  # 40m wide, 60m deep
+	var forest_z_start = -30.0  # Center around 0, from -30 to +30
 	
-	# Cliff Zone (17 models)
-	# Placeholder for future model loading:
-	# - Rock faces (3)
-	# - Boulders (5)
-	# - Hardy plants (9)
+	for i in range(forest_models.size()):
+		var model_path = "res://art/nature-benchmark/" + forest_models[i]
+		var instance = load_and_position_model(model_path, "forest", i, forest_models.size(), forest_zone_size, forest_z_start)
+		if instance:
+			forest_zone.add_child(instance)
+			object_pools["forest"].append(instance)
+			instance.visible = false
+	
+	# Load Cliff Zone models
 	object_pools["cliff"] = []
-	for i in range(17):
-		var placeholder = create_placeholder_object("cliff_%d" % i)
-		if placeholder:
-			cliff_zone.add_child(placeholder)
-			object_pools["cliff"].append(placeholder)
-			placeholder.visible = false  # Initially hidden
+	var cliff_zone_size = Vector2(25, 15)  # 25m wide, 15m deep
+	var cliff_z_start = -50.0  # Start at -50 to -65 on Z axis
+	
+	for i in range(cliff_models.size()):
+		var model_path = "res://art/nature-benchmark/" + cliff_models[i]
+		var instance = load_and_position_model(model_path, "cliff", i, cliff_models.size(), cliff_zone_size, cliff_z_start)
+		if instance:
+			cliff_zone.add_child(instance)
+			object_pools["cliff"].append(instance)
+			instance.visible = false
 	
 	total_objects_loaded = object_pools["beach"].size() + object_pools["forest"].size() + object_pools["cliff"].size()
 	
-	print("[ObjectPools] Initialized %d objects (Beach: %d, Forest: %d, Cliff: %d)" % [
+	print("[ObjectPools] Initialized %d real nature models (Beach: %d, Forest: %d, Cliff: %d)" % [
 		total_objects_loaded,
 		object_pools["beach"].size(),
 		object_pools["forest"].size(),
 		object_pools["cliff"].size()
 	])
 
-func create_placeholder_object(name_str: String) -> Node3D:
-	"""Create a placeholder object (simple mesh) for testing"""
-	# Create a simple CSG sphere as placeholder
-	var mesh_instance = MeshInstance3D.new()
-	mesh_instance.name = name_str
+func load_and_position_model(model_path: String, zone: String, index: int, total: int, zone_size: Vector2, z_start: float) -> Node3D:
+	"""Load a glTF model and position it within its zone (0.5 acre = ~2000 sq meters total)"""
+	if not ResourceLoader.exists(model_path):
+		push_warning("[ObjectPools] Model not found: %s" % model_path)
+		return null
 	
-	# Create a simple sphere mesh
-	var sphere_mesh = SphereMesh.new()
-	sphere_mesh.radius = 0.5
-	sphere_mesh.height = 1.0
-	mesh_instance.mesh = sphere_mesh
+	var packed_scene = load(model_path) as PackedScene
+	if not packed_scene:
+		push_warning("[ObjectPools] Failed to load: %s" % model_path)
+		return null
 	
-	# Create a simple material with random color based on zone
-	var material = StandardMaterial3D.new()
-	if "beach" in name_str:
-		material.albedo_color = Color(0.9, 0.8, 0.6)  # Sandy color
-		mesh_instance.position = Vector3(randf_range(-15, 15), 0, randf_range(35, 45))
-	elif "forest" in name_str:
-		material.albedo_color = Color(0.3, 0.6, 0.3)  # Green color
-		mesh_instance.position = Vector3(randf_range(-20, 20), 0, randf_range(-10, 10))
-	elif "cliff" in name_str:
-		material.albedo_color = Color(0.5, 0.5, 0.5)  # Gray color
-		mesh_instance.position = Vector3(randf_range(-15, 15), 0, randf_range(-45, -35))
+	var instance = packed_scene.instantiate() as Node3D
+	if not instance:
+		push_warning("[ObjectPools] Failed to instantiate: %s" % model_path)
+		return null
 	
-	mesh_instance.set_surface_override_material(0, material)
+	# Position models in a grid pattern within their zone
+	var cols = ceil(sqrt(total))
+	var row = int(index / cols)
+	var col = index % int(cols)
 	
-	return mesh_instance
+	# Calculate position with some randomization for natural look
+	var x_spacing = zone_size.x / cols
+	var z_spacing = zone_size.y / ceil(total / cols)
+	
+	var x_pos = (col * x_spacing) - (zone_size.x / 2.0) + randf_range(-x_spacing * 0.3, x_spacing * 0.3)
+	var z_pos = z_start + (row * z_spacing) + randf_range(-z_spacing * 0.3, z_spacing * 0.3)
+	
+	# Y position based on zone type
+	var y_pos = 0.0
+	if zone == "cliff":
+		y_pos = randf_range(1.0, 4.0)  # Elevated on cliff
+	elif zone == "forest":
+		y_pos = randf_range(0.0, 0.5)  # Slight variation
+	else:  # beach
+		y_pos = 0.0  # At sea level
+	
+	instance.position = Vector3(x_pos, y_pos, z_pos)
+	
+	# Random rotation for natural variety
+	instance.rotation.y = randf_range(0, TAU)
+	
+	# Scale variation based on model type (inferred from name)
+	var scale_factor = 1.0
+	if "tree" in model_path.to_lower() or "trunk" in model_path.to_lower():
+		scale_factor = randf_range(0.8, 1.2)  # Trees vary more
+	elif "rock" in model_path.to_lower() or "boulder" in model_path.to_lower():
+		scale_factor = randf_range(0.7, 1.3)  # Rocks vary significantly
+	else:
+		scale_factor = randf_range(0.9, 1.1)  # Small plants less variation
+	
+	instance.scale = Vector3.ONE * scale_factor
+	
+	return instance
 
 func return_to_menu():
 	"""Return to main menu with threaded loading"""
