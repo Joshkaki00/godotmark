@@ -961,8 +961,8 @@ func transition_to_phase_4():
 		print("  - Skipped (Low/Potato quality)")
 
 func start_fadeout():
-	print("\n[Phase 5.5] Fade to Black (55-60s)")
-	print("  - Syncing with audio fade-out")
+	print("\n[Finale] Fade to Black (171-176s)")
+	print("  - Beginning 5-second finale fade")
 
 func transition_to_phase_5():
 	print("\n[Phase 5] Midnight Calm (117-146s)")
@@ -1002,23 +1002,6 @@ func transition_to_phase_6():
 		particles.emitting = rain_intensity > 0.05
 	
 	print("  ✓ Final phase active - approaching dawn")
-		
-		# Add depth of field
-		if camera.attributes == null:
-			var cam_attr = CameraAttributesPractical.new()
-			cam_attr.dof_blur_far_enabled = true
-			cam_attr.dof_blur_far_distance = 8.0
-			cam_attr.dof_blur_far_transition = 2.0
-			camera.attributes = cam_attr
-		else:
-			if camera.attributes is CameraAttributesPractical:
-				camera.attributes.dof_blur_far_enabled = true
-				camera.attributes.dof_blur_far_distance = 8.0
-				camera.attributes.dof_blur_far_transition = 2.0
-		
-		print("  âœ“ Maximum effects enabled")
-	else:
-		print("  - Reduced effects (Medium/Low/Potato quality)")
 
 func finish_showcase():
 	print("\n========================================")
