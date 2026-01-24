@@ -53,7 +53,6 @@ surface_material_override/0 = SubResource("StandardMaterial3D_Ground")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
-fov = 75.0
 script = ExtResource("2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -74,12 +73,10 @@ process_material = SubResource("ParticleProcessMaterial_Rain")
 draw_pass_1 = SubResource("QuadMesh_Rain")
 
 [node name="BeachZone" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="ForestZone" type="Node3D" parent="."]
 
 [node name="CliffZone" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")
