@@ -487,11 +487,11 @@ func trigger_phase_transition(phase_num: int):
 	
 	print("\n[Phase %d] Transition triggered at %.1fs" % [phase_num, timeline])
 	
-	# Start fade-to-black transition (non-blocking)
-	fade_to_black(1.0)
+	# Start fade-to-black transition (non-blocking, 3 seconds)
+	fade_to_black(3.0)
 	
-	# Wait a moment before applying changes (so fade is visible)
-	await get_tree().create_timer(0.5).timeout
+	# Wait until fade is halfway before applying changes
+	await get_tree().create_timer(1.5).timeout
 	
 	# Update object density
 	set_object_density(phase_densities[phase_key])
@@ -511,8 +511,8 @@ func trigger_phase_transition(phase_num: int):
 	if metrics_overlay and phase_num <= phase_names.size():
 		metrics_overlay.update_phase(phase_num, phase_names[phase_num])
 	
-	# Fade back in (non-blocking)
-	fade_from_black(1.0)
+	# Fade back in (non-blocking, 3 seconds)
+	fade_from_black(3.0)
 
 func apply_time_of_day(phase_key: String):
 	if not time_of_day_states.has(phase_key):
