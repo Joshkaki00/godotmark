@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="5"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_Ground"]
-size = Vector2(100, 100)
+size = Vector2(20, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Ground"]
 albedo_color = Color(0.3, 0.25, 0.2, 1)
@@ -24,7 +24,7 @@ fog_density = 1.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_Rain"]
 emission_shape = 3
-emission_box_extents = Vector3(50, 0.5, 10)
+emission_box_extents = Vector3(10, 0.5, 8)
 direction = Vector3(0, -1, 0)
 spread = 5.0
 initial_velocity_min = 5.0
@@ -52,8 +52,8 @@ mesh = SubResource("PlaneMesh_Ground")
 surface_material_override/0 = SubResource("StandardMaterial3D_Ground")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 5, 15)
-fov = 65.0
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)
+fov = 75.0
 script = ExtResource("2")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
@@ -65,21 +65,21 @@ directional_shadow_mode = 0
 environment = SubResource("Environment_1")
 
 [node name="RainParticles" type="GPUParticles3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, 0)
 emitting = false
 amount = 100
 lifetime = 2.0
-visibility_aabb = AABB(-50, -15, -10, 100, 30, 20)
+visibility_aabb = AABB(-10, -8, -8, 20, 16, 16)
 process_material = SubResource("ParticleProcessMaterial_Rain")
 draw_pass_1 = SubResource("QuadMesh_Rain")
 
 [node name="BeachZone" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 40)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="ForestZone" type="Node3D" parent="."]
 
 [node name="CliffZone" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -40)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")

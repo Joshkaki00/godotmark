@@ -13,7 +13,7 @@ All placeholder objects have been replaced with **actual Poly Haven glTF models*
 - **Coastal Plants**: grass_bermuda_01, crystalline_iceplant, cheiridopsis_succulent, othonna_cerarioides, sand_rocks_small_01
 - **Vegetation**: shrub_01/02, flower_empodium, flower_gazania, flower_heliophila, weed_plant_02
 
-**Zone Size**: 30m × 20m at Z +30 to +50
+**Zone Size**: 6m × 4m at Z +2 to +6 (scaled for camera view)
 
 #### Forest Zone (50 Models)
 - **Large Trees (Canopy)**: fir_tree_01, island_tree_01/02/03, jacaranda_tree, tree_small_02
@@ -27,36 +27,60 @@ All placeholder objects have been replaced with **actual Poly Haven glTF models*
 - **Stumps**: tree_stump_01/02
 - **Shrubs**: shrub_03/04, searsia_burchellii/lucida, wild_rooibos_bush
 
-**Zone Size**: 40m × 60m at Z -30 to +30
+**Zone Size**: 8m × 8m at Z -4 to +4 (island center)
 
 #### Cliff Zone (17 Models)
 - **Rock Faces (Vertical)**: rock_face_01/02/03, namaqualand_cliff_02, mountainside, rocky_trail
 - **Large Boulders**: namaqualand_boulder_02/03, moon_rock_01, rock_moss_set_01/02
 - **Hardy Plants**: quiver_tree_01/02, dead_quiver_trunk, dead_tree_trunk (2 variants)
 
-**Zone Size**: 25m × 15m at Z -50 to -65
+**Zone Size**: 5m × 3m at Z -6 to -9 (back of island)
 
-### Island Layout (0.5 Acres ≈ 2000 sq meters)
+### Island Layout (Compact Scale - Fit in Camera View)
 
-**Total Dimensions**: ~100m × 20m elongated island
+**UPDATED: Island now scaled to Model Showcase dimensions**
+
+**Total Dimensions**: ~20m × 17m compact island centered at origin
 
 ```
-         CLIFF ZONE
-         (Z: -50 to -65)
+         CLIFF ZONE (Elevated)
+         (Z: -6 to -9)
+         Y: 0.3-0.8m
+              ↑
               |
-         FOREST ZONE
-         (Z: -30 to +30)
+         FOREST ZONE (Center)
+         (Z: -4 to +4)
+         Y: 0.05-0.2m
+              ↑
               |
-         BEACH ZONE
-         (Z: +30 to +50)
+         BEACH ZONE (Front)
+         (Z: +2 to +6)
+         Y: -0.05 to +0.05m
+              ↓
+           (Viewer)
 ```
 
 **Terrain Features**:
-- ✅ Ground plane (100m × 100m) with natural brown color
-- ✅ Elevation variation: Beach (Y=0) → Forest (Y=0-0.5) → Cliff (Y=1-4)
+- ✅ Ground plane (20m × 20m) with natural brown color
+- ✅ Elevation variation: Beach (Y≈0) → Forest (Y≈0.1) → Cliff (Y≈0.5)
 - ✅ Grid-based positioning with randomization for natural appearance
 - ✅ Random rotation (Y-axis) for each model
-- ✅ Scale variation based on model type (trees: 0.8-1.2x, rocks: 0.7-1.3x, plants: 0.9-1.1x)
+- ✅ **Scale reduced to 0.3x base** to fit in camera frame
+- ✅ All models scaled appropriately (trees: 0.24-0.36x, rocks: 0.21-0.39x, plants: 0.27-0.33x)
+
+**Camera Positioning** (Similar to Model Showcase):
+- Initial: (0, 2, 5) looking at (0, 0.3, 4) - Close front view
+- Phase 1-2: Orbiting beach area at 1.5-2.5m height
+- Phase 3-4: Moving through forest at 2-3.5m height
+- Phase 5: Cliff angles at 3.5-4m height
+- Phase 6: Pull back to (0, 7, 8) for full island overview
+- Finale: Hold at overview position during 5s fade
+
+**Scale Comparison**:
+- Model Showcase: Objects at origin, camera 0.5-1.5m away
+- Nature Island: Compact island at origin, camera 2-8m away (larger scene)
+- Original plan: 100m × 100m area (TOO LARGE - not in frame)
+- **New compact**: 20m × 20m area (properly framed)
 
 ### Weather System Enhancements
 
@@ -66,8 +90,9 @@ All placeholder objects have been replaced with **actual Poly Haven glTF models*
 - ✅ Initial velocity: 5-7 m/s
 - ✅ Quad mesh particles (0.02m × 0.5m)
 - ✅ Semi-transparent blue-white color
-- ✅ Emission box: 50m wide × 10m deep
+- ✅ Emission box: 10m wide × 8m deep (scaled to island)
 - ✅ 2-second lifetime
+- ✅ Positioned at Y=5m above island
 - ✅ Quality-based particle count:
   - Potato: 0 particles (disabled)
   - Low: 50 particles
@@ -166,16 +191,18 @@ All placeholder objects have been replaced with **actual Poly Haven glTF models*
 
 ### Technical Details
 
-**Island Scale**: 0.5 acres = ~2023 square meters
-- Beach: 30m × 20m = 600 sq m
-- Forest: 40m × 60m = 2400 sq m (overlaps with other zones)
-- Cliff: 25m × 15m = 375 sq m
+**Island Scale**: Compact 20m × 17m centered at origin
+- Beach: 6m × 4m = 24 sq m
+- Forest: 8m × 8m = 64 sq m (overlaps with other zones)
+- Cliff: 5m × 3m = 15 sq m
+- **Total visible area**: ~20m × 20m ground plane
 
 **Model Distribution**:
 - Models positioned in grid with ±30% randomization
-- Y-elevation varies by zone
+- Y-elevation varies by zone (beach ≈0m, forest ≈0.1m, cliff ≈0.5m)
 - Random Y-rotation (0-360°)
-- Scale variation for natural appearance
+- **Base scale 0.3x** to fit camera view (trees: 0.24-0.36x, rocks: 0.21-0.39x)
+- Similar scale approach to Model Showcase (close camera, small scene)
 
 **Weather Integration**:
 - Rain automatically enabled at Phase 3 (58s)

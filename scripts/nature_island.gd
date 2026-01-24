@@ -837,10 +837,11 @@ func initialize_object_pools():
 		"dead_tree_trunk_02_2k.gltf"
 	]
 	
-	# Load Beach Zone models
+	# Load Beach Zone models - COMPACT ISLAND SCALE
+	# Island is centered at origin, scaled to fit in camera view (similar to Model Showcase scale)
 	object_pools["beach"] = []
-	var beach_zone_size = Vector2(30, 20)  # 30m wide, 20m deep
-	var beach_z_start = 30.0  # Start at +30 to +50 on Z axis
+	var beach_zone_size = Vector2(6, 4)  # 6m wide, 4m deep (scaled down 5x)
+	var beach_z_start = 2.0  # Start at Z +2 to +6
 	
 	for i in range(beach_models.size()):
 		var model_path = "res://art/nature-benchmark/" + beach_models[i]
@@ -850,10 +851,10 @@ func initialize_object_pools():
 			object_pools["beach"].append(instance)
 			instance.visible = false
 	
-	# Load Forest Zone models
+	# Load Forest Zone models - CENTER OF ISLAND
 	object_pools["forest"] = []
-	var forest_zone_size = Vector2(40, 60)  # 40m wide, 60m deep
-	var forest_z_start = -30.0  # Center around 0, from -30 to +30
+	var forest_zone_size = Vector2(8, 8)  # 8m wide, 8m deep (scaled down 5x)
+	var forest_z_start = -4.0  # Center: Z -4 to +4
 	
 	for i in range(forest_models.size()):
 		var model_path = "res://art/nature-benchmark/" + forest_models[i]
@@ -863,10 +864,10 @@ func initialize_object_pools():
 			object_pools["forest"].append(instance)
 			instance.visible = false
 	
-	# Load Cliff Zone models
+	# Load Cliff Zone models - BACK OF ISLAND
 	object_pools["cliff"] = []
-	var cliff_zone_size = Vector2(25, 15)  # 25m wide, 15m deep
-	var cliff_z_start = -50.0  # Start at -50 to -65 on Z axis
+	var cliff_zone_size = Vector2(5, 3)  # 5m wide, 3m deep (scaled down 5x)
+	var cliff_z_start = -6.0  # Start at Z -6 to -9
 	
 	for i in range(cliff_models.size()):
 		var model_path = "res://art/nature-benchmark/" + cliff_models[i]
@@ -913,28 +914,31 @@ func load_and_position_model(model_path: String, zone: String, index: int, total
 	var x_pos = (col * x_spacing) - (zone_size.x / 2.0) + randf_range(-x_spacing * 0.3, x_spacing * 0.3)
 	var z_pos = z_start + (row * z_spacing) + randf_range(-z_spacing * 0.3, z_spacing * 0.3)
 	
-	# Y position based on zone type
+	# Y position based on zone type - create height variation for island terrain
 	var y_pos = 0.0
 	if zone == "cliff":
-		y_pos = randf_range(1.0, 4.0)  # Elevated on cliff
+		y_pos = randf_range(0.3, 0.8)  # Elevated on cliff (scaled down)
 	elif zone == "forest":
-		y_pos = randf_range(0.0, 0.5)  # Slight variation
+		y_pos = randf_range(0.05, 0.2)  # Slight elevation
 	else:  # beach
-		y_pos = 0.0  # At sea level
+		y_pos = randf_range(-0.05, 0.05)  # At sea level with slight variation
 	
 	instance.position = Vector3(x_pos, y_pos, z_pos)
 	
 	# Random rotation for natural variety
 	instance.rotation.y = randf_range(0, TAU)
 	
-	# Scale variation based on model type (inferred from name)
-	var scale_factor = 1.0
+	# Scale variation - REDUCE OVERALL SCALE to fit compact island
+	# Base scale is reduced to 0.3x to fit in camera view
+	var base_scale = 0.3
+	var scale_factor = base_scale
+	
 	if "tree" in model_path.to_lower() or "trunk" in model_path.to_lower():
-		scale_factor = randf_range(0.8, 1.2)  # Trees vary more
+		scale_factor = base_scale * randf_range(0.8, 1.2)  # Trees vary more
 	elif "rock" in model_path.to_lower() or "boulder" in model_path.to_lower():
-		scale_factor = randf_range(0.7, 1.3)  # Rocks vary significantly
+		scale_factor = base_scale * randf_range(0.7, 1.3)  # Rocks vary significantly
 	else:
-		scale_factor = randf_range(0.9, 1.1)  # Small plants less variation
+		scale_factor = base_scale * randf_range(0.9, 1.1)  # Small plants less variation
 	
 	instance.scale = Vector3.ONE * scale_factor
 	

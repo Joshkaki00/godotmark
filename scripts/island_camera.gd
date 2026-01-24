@@ -4,40 +4,41 @@ extends Camera3D
 ## Each phase focuses on different island zones
 
 # Camera keyframes for 6 phases (time, position, look_at)
-# Island layout: Beach (+Z), Forest (center), Cliff (-Z)
+# Island is now COMPACT and centered at origin (similar to Model Showcase scale)
+# Island layout: Beach (Z +2 to +6), Forest (Z -4 to +4), Cliff (Z -6 to -9)
 var keyframes = [
-	# Phase 1: Beach Dawn (0-29s) - Low angle, coastal view
-	{"time": 0.0, "position": Vector3(10, 2, 40), "look_at": Vector3(0, 0, 35)},
-	{"time": 14.5, "position": Vector3(-8, 3, 38), "look_at": Vector3(0, 0, 35)},
-	{"time": 29.0, "position": Vector3(5, 2.5, 42), "look_at": Vector3(0, 0, 35)},
+	# Phase 1: Beach Dawn (0-29s) - Low angle, coastal view from front
+	{"time": 0.0, "position": Vector3(3, 1.5, 8), "look_at": Vector3(0, 0.3, 4)},
+	{"time": 14.5, "position": Vector3(-2.5, 1.8, 7.5), "look_at": Vector3(0, 0.3, 4)},
+	{"time": 29.0, "position": Vector3(2, 1.6, 8.5), "look_at": Vector3(0, 0.3, 4)},
 	
-	# Phase 2: Coastal Morning (29-58s) - Transition from beach to forest
-	{"time": 29.0, "position": Vector3(12, 3, 25), "look_at": Vector3(0, 1, 15)},
-	{"time": 43.5, "position": Vector3(-10, 4, 20), "look_at": Vector3(0, 2, 10)},
-	{"time": 58.0, "position": Vector3(8, 3.5, 22), "look_at": Vector3(0, 1, 12)},
+	# Phase 2: Coastal Morning (29-58s) - Transition from beach to forest edge
+	{"time": 29.0, "position": Vector3(4, 2, 5), "look_at": Vector3(0, 0.5, 2)},
+	{"time": 43.5, "position": Vector3(-3.5, 2.5, 4.5), "look_at": Vector3(0, 0.6, 1)},
+	{"time": 58.0, "position": Vector3(3, 2.2, 5.5), "look_at": Vector3(0, 0.5, 1.5)},
 	
-	# Phase 3: Forest Midday + Rain (58-87s) - Deep in forest, looking up
-	{"time": 58.0, "position": Vector3(5, 2, 5), "look_at": Vector3(0, 4, 0)},
-	{"time": 72.5, "position": Vector3(-6, 3, -2), "look_at": Vector3(0, 5, 0)},
-	{"time": 87.0, "position": Vector3(7, 2.5, 3), "look_at": Vector3(0, 4.5, 0)},
+	# Phase 3: Forest Midday + Rain (58-87s) - Inside forest, medium height
+	{"time": 58.0, "position": Vector3(2.5, 2, 2), "look_at": Vector3(0, 1, 0)},
+	{"time": 72.5, "position": Vector3(-2.8, 2.5, 1), "look_at": Vector3(0, 1.2, 0)},
+	{"time": 87.0, "position": Vector3(2.2, 2.3, 2.5), "look_at": Vector3(0, 1, 0)},
 	
 	# Phase 4: Forest Afternoon (87-116s) - Mid-forest, canopy views
-	{"time": 87.0, "position": Vector3(-10, 4, 0), "look_at": Vector3(0, 3, 0)},
-	{"time": 101.5, "position": Vector3(8, 5, -5), "look_at": Vector3(0, 3, 0)},
-	{"time": 116.0, "position": Vector3(-9, 4.5, 2), "look_at": Vector3(0, 3, 0)},
+	{"time": 87.0, "position": Vector3(-3, 3, 1), "look_at": Vector3(0, 1, 0)},
+	{"time": 101.5, "position": Vector3(3.5, 3.5, 0), "look_at": Vector3(0, 1, 0)},
+	{"time": 116.0, "position": Vector3(-3, 3.2, 1.5), "look_at": Vector3(0, 1, 0)},
 	
-	# Phase 5: Cliff Dusk + Fog (116-145s) - Dramatic cliff angles
-	{"time": 116.0, "position": Vector3(15, 6, -35), "look_at": Vector3(0, 4, -40)},
-	{"time": 130.5, "position": Vector3(-12, 8, -38), "look_at": Vector3(0, 5, -40)},
-	{"time": 145.0, "position": Vector3(10, 7, -36), "look_at": Vector3(0, 4.5, -40)},
+	# Phase 5: Cliff Dusk + Fog (116-145s) - Dramatic cliff angles at back
+	{"time": 116.0, "position": Vector3(4, 3.5, -5), "look_at": Vector3(0, 1, -7)},
+	{"time": 130.5, "position": Vector3(-3.5, 4, -5.5), "look_at": Vector3(0, 1.2, -7)},
+	{"time": 145.0, "position": Vector3(3.5, 3.8, -5.2), "look_at": Vector3(0, 1, -7)},
 	
-	# Phase 6: Island Night (145-171s) - Pull back for island overview
-	{"time": 145.0, "position": Vector3(20, 10, 15), "look_at": Vector3(0, 2, 0)},
-	{"time": 158.0, "position": Vector3(-18, 12, 10), "look_at": Vector3(0, 2, 0)},
-	{"time": 171.0, "position": Vector3(0, 15, 20), "look_at": Vector3(0, 2, 0)},
+	# Phase 6: Island Night (145-171s) - Pull back for full island overview
+	{"time": 145.0, "position": Vector3(6, 5, 6), "look_at": Vector3(0, 0.5, 0)},
+	{"time": 158.0, "position": Vector3(-5.5, 6, 5.5), "look_at": Vector3(0, 0.5, 0)},
+	{"time": 171.0, "position": Vector3(0, 7, 8), "look_at": Vector3(0, 0.5, 0)},
 	
-	# Finale (171-176s) - Hold final position during fade
-	{"time": 176.0, "position": Vector3(0, 15, 20), "look_at": Vector3(0, 2, 0)},
+	# Finale (171-176s) - Hold final position during fade to black
+	{"time": 176.0, "position": Vector3(0, 7, 8), "look_at": Vector3(0, 0.5, 0)},
 ]
 
 var island_node: Node3D
