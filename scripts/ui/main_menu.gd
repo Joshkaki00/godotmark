@@ -48,7 +48,7 @@ func update_system_info():
 		else:
 			subtitle.text = "Benchmark Suite v1.0"
 		
-		platform_detector.free()
+		# Note: PlatformDetector is RefCounted, so it's automatically freed
 
 func _on_model_showcase_pressed():
 	print("[MainMenu] Launching Model Showcase...")
