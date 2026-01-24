@@ -12,6 +12,7 @@
 @onready var fade_overlay = $FadeOverlay
 @onready var metrics_overlay = $MetricsOverlay
 @onready var loading_screen = $LoadingScreen
+@onready var multimesh_manager = $Island/MultiMeshContainer
 
 # Performance monitoring
 var perf_monitor: PerformanceMonitor
@@ -375,6 +376,19 @@ func run_warmup_phase():
 	light.visible = false
 	if particles:
 		particles.visible = false
+	
+	# Phase 3b: Initialize MultiMesh system (85-90%)
+	if loading_screen:
+		loading_screen.update_progress(85.0, "Creating MultiMesh instances...")
+	
+	if multimesh_manager:
+		multimesh_manager.initialize_meshes()
+		print("[Warmup] MultiMesh system initialized")
+	
+	await get_tree().process_frame
+	
+	if loading_screen:
+		loading_screen.update_progress(90.0, "MultiMesh instances created")
 	
 	if loading_screen:
 		loading_screen.update_progress(90.0, "Systems ready...")
@@ -861,6 +875,10 @@ func fade_and_transition_to_phase_6():
 func setup_phase_1():
 	print("\n[Phase 1] Dawn Awakening (0-29s)")
 	print("  - Basic geometry, dawn lighting, clear weather")
+	
+	# Show all MultiMesh instances
+	if multimesh_manager:
+		multimesh_manager.set_all_visible(true)
 	
 	# Disable all advanced features
 	light.shadow_enabled = false
