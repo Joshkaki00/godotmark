@@ -31,18 +31,26 @@ Successfully implemented comprehensive UI sound effects for all menu interaction
 **File**: `scripts/ui/ui_audio_manager.gd`
 
 **Features**:
-- Manages all UI sound effects through dedicated AudioStreamPlayer nodes
-- Integrates with SettingsManager for volume control
-- Automatically updates volumes when audio settings change
-- Respects master volume, SFX volume, and mute settings
+- **Sound Pooling**: 3 AudioStreamPlayer instances per sound type for responsive overlapping sounds
+- **Smart Playback**: Uses available player or interrupts oldest sound to ensure every action plays
+- **Hover Spam Prevention**: 50ms cooldown on hover sounds to prevent audio clutter
+- **Volume Integration**: Integrates with SettingsManager for volume control
+- **Real-time Updates**: Automatically updates volumes when audio settings change
+- **Mute Support**: Respects master volume, SFX volume, and mute settings
 
 **Sound Mapping**:
-- `play_hover()` → `ui select.ogg` (button hover)
-- `play_click()` → `simple_ui_click_sound.ogg` (general clicks)
-- `play_confirm()` → `ui confirm.ogg` (confirmations)
-- `play_back()` → `ui return.ogg` (back/cancel)
-- `play_error()` → `ui_wrong_button4.ogg` (errors/disabled actions)
-- `play_select()` → alias for `play_click()` (dropdowns/tabs)
+- `play_hover()` → `ui select.ogg` (button hover, with cooldown)
+- `play_click()` → `simple_ui_click_sound.ogg` (general clicks, always plays)
+- `play_confirm()` → `ui confirm.ogg` (confirmations, always plays)
+- `play_back()` → `ui return.ogg` (back/cancel, always plays)
+- `play_error()` → `ui_wrong_button4.ogg` (errors/disabled actions, always plays)
+- `play_select()` → alias for `play_click()` (dropdowns/tabs, always plays)
+
+**Responsiveness Guarantees**:
+- Every button press plays immediately (no checks that prevent playback)
+- If all players in a pool are busy, the oldest sound is interrupted
+- Hover sounds have 50ms cooldown to prevent spam from rapid mouse movement
+- All other sounds (click, confirm, back, error) have no restrictions
 
 **Volume Calculation**:
 - Combines master volume (0-100%) and SFX volume (0-100%)
@@ -169,9 +177,12 @@ UIAudioManager="*res://scripts/ui/ui_audio_manager.gd"
 ## Performance Notes
 
 - All audio streams are preloaded at startup (minimal memory footprint)
-- AudioStreamPlayer nodes created once and reused
+- **Sound pooling**: 3 players per sound type (15 total AudioStreamPlayer nodes)
+- **Memory efficient**: Reuses existing players rather than creating/destroying
+- **CPU efficient**: Pool lookup is O(n) with n=3, negligible overhead
 - Volume calculations are lightweight (simple multiplication + conversion)
 - No audio is played during critical performance sections (benchmarks)
+- Hover cooldown prevents excessive play() calls from rapid mouse movement
 
 ## Future Enhancements
 
@@ -193,8 +204,8 @@ UIAudioManager="*res://scripts/ui/ui_audio_manager.gd"
 
 1. **Boot Splash Format**: Only PNG is supported (not JPG, SVG, etc.)
 2. **No Audio Bus Hierarchy**: Currently uses Master bus only
-3. **Hover Sound Spam**: Rapid mouse movement may trigger multiple sounds
-4. **No Sound Pooling**: Each sound type has single player (can't overlap)
+3. **Hover Cooldown**: 50ms delay between hover sounds (intentional to prevent spam)
+4. **Pool Size**: Fixed at 3 players per sound type (configurable via POOL_SIZE constant)
 
 ## Accessibility
 
