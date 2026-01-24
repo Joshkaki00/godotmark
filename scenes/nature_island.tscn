@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=10 format=3 uid="uid://c12lb2bvfyy80"]
 
-[ext_resource type="Script" path="res://scripts/nature_island.gd" id="1"]
-[ext_resource type="Script" path="res://scripts/island_camera.gd" id="2"]
+[ext_resource type="Script" uid="uid://cjvebyiu7pbd3" path="res://scripts/nature_island.gd" id="1"]
+[ext_resource type="Script" uid="uid://s7325ah637li" path="res://scripts/island_camera.gd" id="2"]
 [ext_resource type="AudioStream" uid="uid://dm13tujsp2rb7" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="5"]
@@ -13,24 +13,23 @@ ambient_light_source = 2
 ambient_light_color = Color(0.4, 0.5, 0.7, 1)
 ambient_light_energy = 0.3
 tonemap_mode = 2
-fog_enabled = false
 fog_mode = 1
+fog_density = 1.0
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_Rain"]
+emission_shape = 3
+emission_box_extents = Vector3(50, 0.5, 10)
 direction = Vector3(0, -1, 0)
 spread = 5.0
 initial_velocity_min = 5.0
 initial_velocity_max = 7.0
-gravity = Vector3(0, -9.8, 0)
 scale_min = 0.05
 scale_max = 0.1
-emission_shape = 3
-emission_box_extents = Vector3(50, 0.5, 10)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Rain"]
 transparency = 1
-albedo_color = Color(0.7, 0.7, 0.9, 0.3)
 shading_mode = 0
+albedo_color = Color(0.7, 0.7, 0.9, 0.3)
 
 [sub_resource type="QuadMesh" id="QuadMesh_Rain"]
 material = SubResource("StandardMaterial3D_Rain")
@@ -49,7 +48,6 @@ script = ExtResource("2")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.866025, -0.25, 0.433013, 0, 0.866025, 0.5, -0.5, -0.433013, 0.75, 0, 10, 0)
 light_energy = 0.4
-shadow_enabled = false
 directional_shadow_mode = 0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

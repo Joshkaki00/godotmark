@@ -447,6 +447,7 @@ func _process(delta):
 	# Update metrics overlay
 	if metrics_overlay:
 		metrics_overlay.update_metrics(fps, frame_time, cpu_usage, temp, gpu_usage)
+		metrics_overlay.update_progress(timeline, BENCHMARK_DURATION)
 	
 	# Phase transitions
 	if timeline >= phase_start_times["phase_2"] and not phase_triggered[2]:
