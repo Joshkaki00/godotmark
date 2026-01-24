@@ -6,6 +6,12 @@
 [ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="5"]
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_Ground"]
+size = Vector2(100, 100)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Ground"]
+albedo_color = Color(0.3, 0.25, 0.2, 1)
+
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
 background_color = Color(0.3, 0.4, 0.6, 1)
@@ -34,12 +40,6 @@ albedo_color = Color(0.7, 0.7, 0.9, 0.3)
 [sub_resource type="QuadMesh" id="QuadMesh_Rain"]
 material = SubResource("StandardMaterial3D_Rain")
 size = Vector2(0.02, 0.5)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_Ground"]
-size = Vector2(100, 100)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Ground"]
-albedo_color = Color(0.3, 0.25, 0.2, 1)
 
 [node name="NatureIsland" type="Node3D"]
 script = ExtResource("1")
