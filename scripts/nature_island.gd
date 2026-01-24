@@ -942,7 +942,124 @@ func load_and_position_model(model_path: String, zone: String, index: int, total
 	
 	instance.scale = Vector3.ONE * scale_factor
 	
+	# Add physics collision
+	add_collision_to_model(instance, zone)
+	
+	# Enhance PBR materials
+	enhance_model_materials(instance, zone)
+	
+	# Apply wind shader to vegetation
+	apply_wind_shader_to_vegetation(instance)
+	
 	return instance
+
+func add_collision_to_model(node: Node3D, zone: String) -> void:
+	"""Add StaticBody3D with auto-generated convex collision shapes"""
+	for child in node.get_children():
+		if child is MeshInstance3D:
+			var mesh_inst = child as MeshInstance3D
+			if mesh_inst.mesh:
+				# Create StaticBody3D
+				var static_body = StaticBody3D.new()
+				static_body.name = "CollisionBody"
+				
+				# Create collision shape from mesh (convex for performance)
+				var collision_shape = CollisionShape3D.new()
+				var shape = mesh_inst.mesh.create_convex_shape()
+				collision_shape.shape = shape
+				
+				# Add to tree
+				static_body.add_child(collision_shape)
+				mesh_inst.add_child(static_body)
+				
+				# Set collision layers (layer 2 = environment)
+				static_body.collision_layer = 2
+				static_body.collision_mask = 0  # Don't detect anything (static scenery)
+		
+		# Recurse for nested meshes
+		add_collision_to_model(child, zone)
+
+func enhance_model_materials(node: Node3D, zone: String) -> void:
+	"""Enhance PBR properties based on zone type"""
+	if node is MeshInstance3D:
+		var mesh_inst = node as MeshInstance3D
+		if mesh_inst.mesh:
+			for surface_idx in range(mesh_inst.mesh.get_surface_count()):
+				var mat = mesh_inst.mesh.surface_get_material(surface_idx)
+				if mat is StandardMaterial3D:
+					var enhanced_mat = mat.duplicate() as StandardMaterial3D
+					
+					# Zone-specific PBR tweaks
+					if zone == "beach":
+						# Beach materials: more reflective, wet sand
+						enhanced_mat.metallic = 0.1
+						enhanced_mat.roughness = 0.6
+						enhanced_mat.rim_enabled = true
+						enhanced_mat.rim = 0.3
+					elif zone == "forest":
+						# Forest: organic, less reflective
+						enhanced_mat.metallic = 0.0
+						enhanced_mat.roughness = 0.8
+						enhanced_mat.ao_enabled = true
+						enhanced_mat.ao_light_affect = 0.5
+					elif zone == "cliff":
+						# Cliff: rocky, sharp, exposed
+						enhanced_mat.metallic = 0.05
+						enhanced_mat.roughness = 0.9
+					
+					# Universal enhancements
+					enhanced_mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
+					
+					mesh_inst.set_surface_override_material(surface_idx, enhanced_mat)
+	
+	# Recurse to children
+	for child in node.get_children():
+		enhance_model_materials(child, zone)
+
+func apply_wind_shader_to_vegetation(node: Node3D) -> void:
+	"""Apply wind shader to plants, grass, trees"""
+	var model_name = node.name.to_lower()
+	var is_vegetation = (
+		"grass" in model_name or "plant" in model_name or 
+		"tree" in model_name or "fern" in model_name or
+		"shrub" in model_name or "flower" in model_name or
+		"sapling" in model_name
+	)
+	
+	if is_vegetation and node is MeshInstance3D:
+		var mesh_inst = node as MeshInstance3D
+		if mesh_inst.mesh:
+			var wind_shader = load("res://shaders/wind_vegetation.gdshader")
+			if wind_shader:
+				var shader_mat = ShaderMaterial.new()
+				shader_mat.shader = wind_shader
+				
+				# Copy existing textures from original material
+				var original_mat = mesh_inst.get_surface_override_material(0)
+				if not original_mat:
+					original_mat = mesh_inst.mesh.surface_get_material(0)
+				
+				if original_mat is StandardMaterial3D:
+					shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+					shader_mat.set_shader_parameter("normal_texture", original_mat.normal_texture)
+					shader_mat.set_shader_parameter("roughness_texture", original_mat.roughness_texture)
+				
+				# Set wind parameters based on plant type
+				if "grass" in model_name:
+					shader_mat.set_shader_parameter("wind_strength", 0.5)
+					shader_mat.set_shader_parameter("wind_speed", 2.0)
+				elif "tree" in model_name:
+					shader_mat.set_shader_parameter("wind_strength", 0.2)
+					shader_mat.set_shader_parameter("wind_speed", 0.8)
+				else:
+					shader_mat.set_shader_parameter("wind_strength", 0.3)
+					shader_mat.set_shader_parameter("wind_speed", 1.5)
+				
+				mesh_inst.set_surface_override_material(0, shader_mat)
+	
+	# Recurse to children
+	for child in node.get_children():
+		apply_wind_shader_to_vegetation(child)
 
 func return_to_menu():
 	"""Return to main menu with threaded loading"""
