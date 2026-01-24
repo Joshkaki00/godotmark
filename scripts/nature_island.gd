@@ -777,7 +777,8 @@ func create_placeholder_object(name_str: String) -> Node3D:
 	
 	# Create a simple sphere mesh
 	var sphere_mesh = SphereMesh.new()
-	sphere_mesh.radii = Vector3(0.5, 0.5, 0.5)
+	sphere_mesh.radius = 0.5
+	sphere_mesh.height = 1.0
 	mesh_instance.mesh = sphere_mesh
 	
 	# Create a simple material with random color based on zone
