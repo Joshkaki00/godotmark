@@ -1,6 +1,6 @@
 [gd_scene load_steps=50 format=3 uid="uid://c8k70anx4ow3f"]
 
-[ext_resource type="Script" uid="uid://d2v8cwogf5gtd" path="res://scripts/nature_island.gd" id="2"]
+[ext_resource type="Script" uid="uid://cjvebyiu7pbd3" path="res://scripts/nature_island.gd" id="2"]
 [ext_resource type="Script" uid="uid://bhhc8dg27adb6" path="res://scripts/island_camera.gd" id="3"]
 [ext_resource type="AudioStream" uid="uid://dm13tujsp2rb7" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="5"]
