@@ -451,19 +451,19 @@ func _process(delta):
 	# Phase transitions
 	if timeline >= phase_start_times["phase_2"] and not phase_triggered[2]:
 		phase_triggered[2] = true
-		trigger_phase_transition(2)
+		call_deferred("trigger_phase_transition", 2)
 	elif timeline >= phase_start_times["phase_3"] and not phase_triggered[3]:
 		phase_triggered[3] = true
-		trigger_phase_transition(3)
+		call_deferred("trigger_phase_transition", 3)
 	elif timeline >= phase_start_times["phase_4"] and not phase_triggered[4]:
 		phase_triggered[4] = true
-		trigger_phase_transition(4)
+		call_deferred("trigger_phase_transition", 4)
 	elif timeline >= phase_start_times["phase_5"] and not phase_triggered[5]:
 		phase_triggered[5] = true
-		trigger_phase_transition(5)
+		call_deferred("trigger_phase_transition", 5)
 	elif timeline >= phase_start_times["phase_6"] and not phase_triggered[6]:
 		phase_triggered[6] = true
-		trigger_phase_transition(6)
+		call_deferred("trigger_phase_transition", 6)
 	
 	# Trigger finale fade at 171 seconds (5 seconds before end)
 	if timeline >= FINALE_FADE_START and not finale_started:
@@ -486,10 +486,6 @@ func trigger_phase_transition(phase_num: int):
 	
 	print("\n[Phase %d] Transition triggered at %.1fs" % [phase_num, timeline])
 	
-	# Fade to black
-	fade_to_black(1.0)  # 1 second fade out
-	await get_tree().create_timer(1.0).timeout
-	
 	# Update object density
 	set_object_density(phase_densities[phase_key])
 	
@@ -507,9 +503,6 @@ func trigger_phase_transition(phase_num: int):
 	var phase_names = ["", "Beach Dawn", "Coastal Morning", "Forest Midday", "Forest Afternoon", "Cliff Dusk", "Island Night"]
 	if metrics_overlay and phase_num <= phase_names.size():
 		metrics_overlay.update_phase(phase_num, phase_names[phase_num])
-	
-	# Fade back in
-	fade_from_black(1.0)  # 1 second fade in
 
 func apply_time_of_day(phase_key: String):
 	if not time_of_day_states.has(phase_key):
