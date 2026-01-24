@@ -1,4 +1,4 @@
-[gd_scene load_steps=50 format=3 uid="uid://c8k70anx4ow3f"]
+[gd_scene load_steps=120 format=3 uid="uid://c8k70anx4ow3f"]
 
 [ext_resource type="Script" uid="uid://cjvebyiu7pbd3" path="res://scripts/nature_island.gd" id="2"]
 [ext_resource type="Script" uid="uid://bhhc8dg27adb6" path="res://scripts/island_camera.gd" id="3"]
@@ -25,6 +25,70 @@
 [ext_resource type="PackedScene" path="res://art/nature-benchmark/dead_tree_trunk_02_2k.gltf" id="23"]
 [ext_resource type="PackedScene" path="res://art/nature-benchmark/pine_sapling_small_2k.gltf" id="24"]
 [ext_resource type="PackedScene" path="res://art/nature-benchmark/fir_sapling_2k.gltf" id="25"]
+
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/jacaranda_tree_2k.gltf" id="26"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/quiver_tree_01_2k.gltf" id="27"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/quiver_tree_02_2k.gltf" id="28"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/tree_small_02_2k.gltf" id="29"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/dead_quiver_trunk_2k.gltf" id="30"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/dead_tree_trunk_2k.gltf" id="31"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/tree_stump_02_2k.gltf" id="32"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/rock_face_01_2k.gltf" id="33"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/rock_face_02_2k.gltf" id="34"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/rock_face_03_2k.gltf" id="35"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/namaqualand_cliff_02_2k.gltf" id="36"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/mountainside_2k.gltf" id="37"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/namaqualand_boulder_02_2k.gltf" id="38"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/namaqualand_boulder_03_2k.gltf" id="39"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/moon_rock_01_2k.gltf" id="40"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/stone_01_2k.gltf" id="41"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/grass_bermuda_01_2k.gltf" id="42"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/grass_medium_02_2k.gltf" id="43"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/nettle_plant_2k.gltf" id="44"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/periwinkle_plant_2k.gltf" id="45"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/weed_plant_02_2k.gltf" id="46"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/anthurium_botany_01_2k.gltf" id="47"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/calathea_orbifolia_01_2k.gltf" id="48"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/pachira_aquatica_01_2k.gltf" id="49"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/celandine_01_2k.gltf" id="50"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/flower_empodium_2k.gltf" id="51"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/flower_heliophila_2k.gltf" id="52"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/flower_stinkkruid_2k.gltf" id="53"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/flower_ursinia_2k.gltf" id="54"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/cheiridopsis_succulent_2k.gltf" id="55"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/crystalline_iceplant_2k.gltf" id="56"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/othonna_cerarioides_2k.gltf" id="57"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/searsia_burchellii_2k.gltf" id="58"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/searsia_lucida_2k.gltf" id="59"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/wild_rooibos_bush_2k.gltf" id="60"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/bark_debris_01_2k.gltf" id="61"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/dry_branches_medium_01_2k.gltf" id="62"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/root_cluster_01_2k.gltf" id="63"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/root_cluster_02_2k.gltf" id="64"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/single_root_2k.gltf" id="65"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/pine_roots_2k.gltf" id="66"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/moss_01_2k.gltf" id="67"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/coast_line_02_2k.gltf" id="68"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/coast_land_rocks_04_2k.gltf" id="69"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/sand_rocks_small_01_2k.gltf" id="70"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/rocky_trail_2k.gltf" id="71"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/fir_sapling_medium_2k.gltf" id="72"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/shrub_03_2k.gltf" id="73"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/shrub_04_2k.gltf" id="74"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/rock_moss_set_02_2k.gltf" id="75"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/coast_sand_02_2k.gltf" id="76"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forest_floor_2k.gltf" id="77"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forest_ground_04_2k.gltf" id="78"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forrest_ground_01_2k.gltf" id="79"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forrest_ground_03_2k.gltf" id="80"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/brown_mud_2k.gltf" id="81"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/brown_mud_02_2k.gltf" id="82"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/brown_mud_03_2k.gltf" id="83"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/brown_mud_dry_2k.gltf" id="84"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/park_dirt_2k.gltf" id="85"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forest_leaves_02_2k.gltf" id="86"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/forest_leaves_03_2k.gltf" id="87"]
+[ext_resource type="PackedScene" path="res://art/nature-benchmark/leaves_forest_ground_2k.gltf" id="88"]
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -251,3 +315,267 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 1)
 
 [node name="FirSapling02" parent="Island/SaplingZone" instance=ExtResource("25")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 4)
+
+[node name="FirSapling03" parent="Island/SaplingZone" instance=ExtResource("72")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -3)
+
+[node name="PineSapling03" parent="Island/SaplingZone" instance=ExtResource("24")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 0, 7)
+
+[node name="EnhancedTreeZone" type="Node3D" parent="Island"]
+
+[node name="Jacaranda01" parent="Island/EnhancedTreeZone" instance=ExtResource("26")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -8)
+
+[node name="Jacaranda02" parent="Island/EnhancedTreeZone" instance=ExtResource("26")]
+transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 1.2, 13, 0, 9)
+
+[node name="QuiverTree01" parent="Island/EnhancedTreeZone" instance=ExtResource("27")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -6)
+
+[node name="QuiverTree02" parent="Island/EnhancedTreeZone" instance=ExtResource("28")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 10)
+
+[node name="QuiverTree03" parent="Island/EnhancedTreeZone" instance=ExtResource("27")]
+transform = Transform3D(0.9, 0, 0, 0, 1, 0, 0, 0, 0.9, 9, 0, 12)
+
+[node name="QuiverTree04" parent="Island/EnhancedTreeZone" instance=ExtResource("28")]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1.1, -10, 0, -12)
+
+[node name="TreeSmall01" parent="Island/EnhancedTreeZone" instance=ExtResource("29")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 10)
+
+[node name="DeadQuiver01" parent="Island/EnhancedTreeZone" instance=ExtResource("30")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -10)
+
+[node name="DeadTrunk01" parent="Island/EnhancedTreeZone" instance=ExtResource("31")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -11)
+
+[node name="TreeStump03" parent="Island/EnhancedTreeZone" instance=ExtResource("32")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 5)
+
+[node name="TreeStump04" parent="Island/EnhancedTreeZone" instance=ExtResource("32")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -13, 0, -5)
+
+[node name="RockFormationZone" type="Node3D" parent="Island"]
+
+[node name="RockFace01" parent="Island/RockFormationZone" instance=ExtResource("33")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -18, 0, 0)
+
+[node name="RockFace02" parent="Island/RockFormationZone" instance=ExtResource("34")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 18, 0, -5)
+
+[node name="RockFace03" parent="Island/RockFormationZone" instance=ExtResource("35")]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 0, 0, 18)
+
+[node name="Cliff01" parent="Island/RockFormationZone" instance=ExtResource("36")]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -15, 0, -15)
+
+[node name="Mountainside01" parent="Island/RockFormationZone" instance=ExtResource("37")]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, -20)
+
+[node name="NameqBoulder01" parent="Island/RockFormationZone" instance=ExtResource("38")]
+transform = Transform3D(1.2, 0, 0, 0, 1, 0, 0, 0, 1.2, 11, 0, -14)
+
+[node name="NameqBoulder02" parent="Island/RockFormationZone" instance=ExtResource("39")]
+transform = Transform3D(1.3, 0, 0, 0, 1, 0, 0, 0, 1.3, -13, 0, 12)
+
+[node name="MoonRock01" parent="Island/RockFormationZone" instance=ExtResource("40")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 13)
+
+[node name="Stone01" parent="Island/RockFormationZone" instance=ExtResource("41")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 11)
+
+[node name="ExpandedVegetationZone" type="Node3D" parent="Island"]
+
+[node name="BermudaGrass01" parent="Island/ExpandedVegetationZone" instance=ExtResource("42")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 9, 0, -6)
+
+[node name="BermudaGrass02" parent="Island/ExpandedVegetationZone" instance=ExtResource("42")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, -11, 0, 9)
+
+[node name="Grass05" parent="Island/ExpandedVegetationZone" instance=ExtResource("43")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 12, 0, 3)
+
+[node name="Nettle01" parent="Island/ExpandedVegetationZone" instance=ExtResource("44")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -7)
+
+[node name="Nettle02" parent="Island/ExpandedVegetationZone" instance=ExtResource("44")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 7)
+
+[node name="Periwinkle01" parent="Island/ExpandedVegetationZone" instance=ExtResource("45")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -8)
+
+[node name="Periwinkle02" parent="Island/ExpandedVegetationZone" instance=ExtResource("45")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 6)
+
+[node name="Weed01" parent="Island/ExpandedVegetationZone" instance=ExtResource("46")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 9)
+
+[node name="Weed02" parent="Island/ExpandedVegetationZone" instance=ExtResource("46")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, -4)
+
+[node name="Anthurium01" parent="Island/ExpandedVegetationZone" instance=ExtResource("47")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2, 0, 8)
+
+[node name="Anthurium02" parent="Island/ExpandedVegetationZone" instance=ExtResource("47")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -5)
+
+[node name="Calathea01" parent="Island/ExpandedVegetationZone" instance=ExtResource("48")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, 4)
+
+[node name="Calathea02" parent="Island/ExpandedVegetationZone" instance=ExtResource("48")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, -6)
+
+[node name="Pachira01" parent="Island/ExpandedVegetationZone" instance=ExtResource("49")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, 11)
+
+[node name="Pachira02" parent="Island/ExpandedVegetationZone" instance=ExtResource("49")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -9)
+
+[node name="FlowerExpansionZone" type="Node3D" parent="Island"]
+
+[node name="Celandine01" parent="Island/FlowerExpansionZone" instance=ExtResource("50")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, 5)
+
+[node name="Celandine02" parent="Island/FlowerExpansionZone" instance=ExtResource("50")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -8)
+
+[node name="Empodium01" parent="Island/FlowerExpansionZone" instance=ExtResource("51")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, 6)
+
+[node name="Heliophila01" parent="Island/FlowerExpansionZone" instance=ExtResource("52")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7, 0, 7)
+
+[node name="Stinkkruid01" parent="Island/FlowerExpansionZone" instance=ExtResource("53")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, -9)
+
+[node name="Ursinia01" parent="Island/FlowerExpansionZone" instance=ExtResource("54")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 0, 10)
+
+[node name="SucculentZone" type="Node3D" parent="Island"]
+
+[node name="Cheiridopsis01" parent="Island/SucculentZone" instance=ExtResource("55")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, -9)
+
+[node name="Cheiridopsis02" parent="Island/SucculentZone" instance=ExtResource("55")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 15, 0, -12)
+
+[node name="Iceplant01" parent="Island/SucculentZone" instance=ExtResource("56")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, -7)
+
+[node name="Iceplant02" parent="Island/SucculentZone" instance=ExtResource("56")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, -11)
+
+[node name="Othonna01" parent="Island/SucculentZone" instance=ExtResource("57")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 0, -10)
+
+[node name="ExoticBushZone" type="Node3D" parent="Island"]
+
+[node name="SearsiaBurchellii01" parent="Island/ExoticBushZone" instance=ExtResource("58")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, 8)
+
+[node name="SearsiaBurchellii02" parent="Island/ExoticBushZone" instance=ExtResource("58")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -7)
+
+[node name="SearsiaLucida01" parent="Island/ExoticBushZone" instance=ExtResource("59")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, -11)
+
+[node name="SearsiaLucida02" parent="Island/ExoticBushZone" instance=ExtResource("59")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 0, 11)
+
+[node name="RoibosBush01" parent="Island/ExoticBushZone" instance=ExtResource("60")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -13)
+
+[node name="DebrisZone" type="Node3D" parent="Island"]
+
+[node name="BarkDebris01" parent="Island/DebrisZone" instance=ExtResource("61")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0, 9)
+
+[node name="BarkDebris02" parent="Island/DebrisZone" instance=ExtResource("61")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -6)
+
+[node name="DryBranches01" parent="Island/DebrisZone" instance=ExtResource("62")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0, 7)
+
+[node name="RootCluster01" parent="Island/DebrisZone" instance=ExtResource("63")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, 4)
+
+[node name="RootCluster02" parent="Island/DebrisZone" instance=ExtResource("64")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 0, -3)
+
+[node name="SingleRoot01" parent="Island/DebrisZone" instance=ExtResource("65")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -5)
+
+[node name="PineRoots01" parent="Island/DebrisZone" instance=ExtResource("66")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 9)
+
+[node name="Moss01" parent="Island/DebrisZone" instance=ExtResource("67")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 6, 0, 2)
+
+[node name="EnhancedCoastalZone" type="Node3D" parent="Island"]
+
+[node name="CoastLine01" parent="Island/EnhancedCoastalZone" instance=ExtResource("68")]
+transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 3, -16, 0, 8)
+
+[node name="CoastLandRocks01" parent="Island/EnhancedCoastalZone" instance=ExtResource("69")]
+transform = Transform3D(2, 0, 0, 0, 1, 0, 0, 0, 2, 16, 0, 12)
+
+[node name="SandRocksSmall01" parent="Island/EnhancedCoastalZone" instance=ExtResource("70")]
+transform = Transform3D(1.5, 0, 0, 0, 1, 0, 0, 0, 1.5, -14, 0, -11)
+
+[node name="RockyTrail01" parent="Island/EnhancedCoastalZone" instance=ExtResource("71")]
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 4, 0, 0, 15)
+
+[node name="CoastSand03" parent="Island/EnhancedCoastalZone" instance=ExtResource("76")]
+transform = Transform3D(3, 0, 0, 0, 1, 0, 0, 0, 3, 15, 0, -13)
+
+[node name="GroundTerrainZone" type="Node3D" parent="Island"]
+
+[node name="ForestFloor01" parent="Island/GroundTerrainZone" instance=ExtResource("77")]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, -5, -0.1, 0)
+
+[node name="ForestGround01" parent="Island/GroundTerrainZone" instance=ExtResource("78")]
+transform = Transform3D(8, 0, 0, 0, 1, 0, 0, 0, 8, 5, -0.1, 5)
+
+[node name="ForrestGround02" parent="Island/GroundTerrainZone" instance=ExtResource("79")]
+transform = Transform3D(8, 0, 0, 0, 1, 0, 0, 0, 8, -7, -0.1, -6)
+
+[node name="ForrestGround03" parent="Island/GroundTerrainZone" instance=ExtResource("80")]
+transform = Transform3D(8, 0, 0, 0, 1, 0, 0, 0, 8, 8, -0.1, -7)
+
+[node name="BrownMud01" parent="Island/GroundTerrainZone" instance=ExtResource("81")]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 6, 10, -0.1, 10)
+
+[node name="BrownMud02" parent="Island/GroundTerrainZone" instance=ExtResource("82")]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 6, -10, -0.1, 8)
+
+[node name="BrownMud03" parent="Island/GroundTerrainZone" instance=ExtResource("83")]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 6, 12, -0.1, -9)
+
+[node name="BrownMudDry01" parent="Island/GroundTerrainZone" instance=ExtResource("84")]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 6, -11, -0.1, -10)
+
+[node name="ParkDirt01" parent="Island/GroundTerrainZone" instance=ExtResource("85")]
+transform = Transform3D(8, 0, 0, 0, 1, 0, 0, 0, 8, 0, -0.1, -10)
+
+[node name="ForestLeaves01" parent="Island/GroundTerrainZone" instance=ExtResource("86")]
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 4, -8, -0.05, 7)
+
+[node name="ForestLeaves02" parent="Island/GroundTerrainZone" instance=ExtResource("87")]
+transform = Transform3D(4, 0, 0, 0, 1, 0, 0, 0, 4, 7, -0.05, -8)
+
+[node name="LeavesGround01" parent="Island/GroundTerrainZone" instance=ExtResource("88")]
+transform = Transform3D(5, 0, 0, 0, 1, 0, 0, 0, 5, -6, -0.05, -9)
+
+[node name="AdditionalShrubs" type="Node3D" parent="Island"]
+
+[node name="Shrub04" parent="Island/AdditionalShrubs" instance=ExtResource("73")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 5)
+
+[node name="Shrub05" parent="Island/AdditionalShrubs" instance=ExtResource("74")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, 6)
+
+[node name="RockMoss02" parent="Island/AdditionalShrubs" instance=ExtResource("75")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 0, -5)
+

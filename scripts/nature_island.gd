@@ -1,6 +1,7 @@
 ﻿extends Node3D
-## Nature Island Benchmark - Progressive Nature Scene  
+## Nature Island Benchmark - 6-Phase Progressive Nature Scene  
 ## Synced to "Forest Glass" (176 seconds)
+## Features day/night cycle, dynamic weather, and all 85 nature assets
 
 
 @onready var camera = $Camera3D
@@ -21,7 +22,7 @@ var current_quality_preset = 2  # Default to Medium
 # Timeline tracking
 var timeline = 0.0
 var phase = 0
-var phase_triggered = [false, false, false, false, false, false, false]
+var phase_triggered = [false, false, false, false, false, false, false, false]  # 0-6 phases + finale
 var fade_started = false
 
 # Warmup tracking
@@ -32,10 +33,11 @@ const WARMUP_DURATION = 10.0  # 10 seconds like 3DMark
 # Phase start times for warmup skip
 var phase_start_times = {
 	"phase_1": 0.0,
-	"phase_2": 12.0,
-	"phase_3": 24.0,
-	"phase_4": 36.0,
-	"phase_5": 48.0
+	"phase_2": 29.0,
+	"phase_3": 58.0,
+	"phase_4": 88.0,
+	"phase_5": 117.0,
+	"phase_6": 146.0
 }
 
 # Particle optimization
@@ -70,9 +72,37 @@ var last_memory_report = 0.0
 var is_returning_to_menu = false
 var menu_loader = null
 
+# Scene transitions
+var is_transitioning = false
+var transition_tween: Tween = null
+const TRANSITION_FADE_DURATION = 1.0  # 1 second fade to black, 1 second from black
+
+# Day/night cycle
+var sun_rotation_speed = 0.0  # Degrees per second
+var current_time_of_day = 0.0  # 0.0 = dawn, 0.25 = noon, 0.5 = dusk, 0.75 = night, 1.0 = dawn
+var sky_colors = {
+	"dawn": Color(0.8, 0.5, 0.3, 1),      # Orange/pink
+	"day": Color(0.4, 0.6, 0.9, 1),       # Blue
+	"dusk": Color(0.9, 0.4, 0.2, 1),      # Deep orange
+	"night": Color(0.05, 0.05, 0.15, 1),  # Dark blue
+}
+var ambient_colors = {
+	"dawn": Color(0.6, 0.5, 0.4, 1),
+	"day": Color(0.6, 0.7, 0.8, 1),
+	"dusk": Color(0.5, 0.3, 0.2, 1),
+	"night": Color(0.1, 0.1, 0.2, 1),
+}
+
+# Weather system
+var weather_state = "clear"  # "clear", "light_rain", "heavy_rain", "storm"
+var rain_intensity = 0.0  # 0.0 to 1.0
+var fog_density = 0.001  # Base fog density
+var target_rain_intensity = 0.0
+
 func _ready():
 	print("\n========================================")
-	print("[ModelShowcase] Starting 1-Minute Benchmark")
+	print("[Nature Island] Starting 176-Second Benchmark")
+	print("6 Phases: Dawn → Day → Dusk → Night → Dawn")
 	print("========================================\n")
 	
 	# Hide everything during warmup - only show loading screen
@@ -105,9 +135,9 @@ func _ready():
 	
 	# Pre-allocate all arrays to prevent GC pauses during benchmark
 	print("[ModelShowcase] Pre-allocating arrays for optimal performance...")
-	var expected_samples = 720  # 12 seconds per phase @ 60 FPS
+	var expected_samples = 1740  # 29 seconds per phase @ 60 FPS
 	
-	for phase_key in ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5"]:
+	for phase_key in ["phase_1", "phase_2", "phase_3", "phase_4", "phase_5", "phase_6"]:
 		metrics[phase_key] = {
 			"fps": [],
 			"frame_times": [],
@@ -491,54 +521,45 @@ func _process(delta):
 	# Update UI overlay every frame for true real-time display
 	if metrics_overlay:
 		metrics_overlay.update_metrics(fps, frame_time, cpu_usage, temp, gpu_usage)
-		metrics_overlay.update_progress(timeline, 60.0)
+		metrics_overlay.update_progress(timeline, 176.0)
 	
 	# Dynamic particle LOD based on performance (check every 10 frames)
 	if particle_lod_enabled and particles.emitting and Engine.get_process_frames() % 10 == 0:
 		optimize_particles_for_performance(fps)
 	
-	# Fade to black at 55 seconds (song fades out)
-	if timeline >= 55.0 and not fade_started:
-		fade_started = true
-		start_fadeout()
+	# Update day/night cycle every frame
+	update_day_night_cycle(delta)
+	
+	# Update weather system every frame
+	update_weather_system(delta)
 	
 	# Update fade overlay
-	if fade_started and timeline < 60.0:
-		var fade_progress = (timeline - 55.0) / 5.0  # 5 second fade
+	if fade_started and timeline < 176.0:
+		var fade_progress = (timeline - 171.0) / 5.0  # 5 second fade
 		if fade_overlay:
 			fade_overlay.color.a = fade_progress
 	
-	# Phase transitions (12-second intervals)
-	if timeline >= 12.0 and not phase_triggered[1]:
+	# Phase transitions (29-second intervals, 6 phases)
+	if timeline >= 29.0 and not phase_triggered[1]:
 		phase_triggered[1] = true
-		phase = 2
-		current_phase_key = "phase_2"
-		transition_to_phase_2()
-		if metrics_overlay:
-			metrics_overlay.update_phase(2, "HDR + Shadows")
-	elif timeline >= 24.0 and not phase_triggered[2]:
+		fade_and_transition_to_phase_2()
+	elif timeline >= 58.0 and not phase_triggered[2]:
 		phase_triggered[2] = true
-		phase = 3
-		current_phase_key = "phase_3"
-		transition_to_phase_3()
-		if metrics_overlay:
-			metrics_overlay.update_phase(3, "Materials + Reflections")
-	elif timeline >= 36.0 and not phase_triggered[3]:
+		fade_and_transition_to_phase_3()
+	elif timeline >= 88.0 and not phase_triggered[3]:
 		phase_triggered[3] = true
-		phase = 4
-		current_phase_key = "phase_4"
-		transition_to_phase_4()
-		if metrics_overlay:
-			metrics_overlay.update_phase(4, "Particles + Glow")
-	elif timeline >= 48.0 and not phase_triggered[4]:
+		fade_and_transition_to_phase_4()
+	elif timeline >= 117.0 and not phase_triggered[4]:
 		phase_triggered[4] = true
-		phase = 5
-		current_phase_key = "phase_5"
-		transition_to_phase_5()
-		if metrics_overlay:
-			metrics_overlay.update_phase(5, "Maximum Complexity")
-	elif timeline >= 60.0 and not phase_triggered[5]:
+		fade_and_transition_to_phase_5()
+	elif timeline >= 146.0 and not phase_triggered[5]:
 		phase_triggered[5] = true
+		fade_and_transition_to_phase_6()
+	elif timeline >= 171.0 and not phase_triggered[6]:
+		phase_triggered[6] = true
+		start_fadeout()  # 5-second fade to black
+	elif timeline >= 176.0 and not phase_triggered[7]:
+		phase_triggered[7] = true
 		finish_showcase()
 
 func optimize_particles_for_performance(current_fps: float):
@@ -641,9 +662,188 @@ func calculate_stability_score(fps_data: Array) -> float:
 	# Convert to 0-100 score (lower std_dev = better)
 	return max(0.0, 100.0 - (std_dev * 2))
 
+func update_day_night_cycle(delta: float):
+	"""Dynamic sun rotation and sky color transitions"""
+	# Map 176 seconds to full day/night cycle
+	# Phase 1 (0-29s): Dawn → Day
+	# Phase 2 (29-58s): Day
+	# Phase 3 (58-88s): Day → Dusk
+	# Phase 4 (88-117s): Dusk → Night
+	# Phase 5 (117-146s): Night
+	# Phase 6 (146-176s): Night → Dawn
+	
+	var cycle_position = timeline / 176.0  # 0.0 to 1.0
+	current_time_of_day = cycle_position
+	
+	# Rotate sun (360 degrees over 176 seconds)
+	var sun_angle = cycle_position * 360.0
+	light.rotation_degrees = Vector3(-90 + sun_angle * 0.5, 45, 0)
+	
+	# Adjust sun intensity based on time
+	if cycle_position < 0.17:  # Dawn (0-29s)
+		light.light_energy = lerp(0.5, 1.5, cycle_position / 0.17)
+		env.environment.background_color = lerp_color(sky_colors.dawn, sky_colors.day, cycle_position / 0.17)
+	elif cycle_position < 0.33:  # Day (29-58s)
+		light.light_energy = 1.5
+		env.environment.background_color = sky_colors.day
+	elif cycle_position < 0.5:  # Day to Dusk (58-88s)
+		var t = (cycle_position - 0.33) / 0.17
+		light.light_energy = lerp(1.5, 0.8, t)
+		env.environment.background_color = lerp_color(sky_colors.day, sky_colors.dusk, t)
+	elif cycle_position < 0.67:  # Dusk to Night (88-117s)
+		var t = (cycle_position - 0.5) / 0.17
+		light.light_energy = lerp(0.8, 0.3, t)
+		env.environment.background_color = lerp_color(sky_colors.dusk, sky_colors.night, t)
+	elif cycle_position < 0.83:  # Night (117-146s)
+		light.light_energy = 0.3
+		env.environment.background_color = sky_colors.night
+	else:  # Night to Dawn (146-176s)
+		var t = (cycle_position - 0.83) / 0.17
+		light.light_energy = lerp(0.3, 0.5, t)
+		env.environment.background_color = lerp_color(sky_colors.night, sky_colors.dawn, t)
+	
+	# Update ambient light
+	var ambient_color = get_interpolated_ambient_color(cycle_position)
+	env.environment.ambient_light_color = ambient_color
+
+func lerp_color(a: Color, b: Color, t: float) -> Color:
+	return Color(
+		lerp(a.r, b.r, t),
+		lerp(a.g, b.g, t),
+		lerp(a.b, b.b, t),
+		lerp(a.a, b.a, t)
+	)
+
+func get_interpolated_ambient_color(cycle_pos: float) -> Color:
+	"""Returns appropriate ambient color based on time of day"""
+	if cycle_pos < 0.17:
+		return lerp_color(ambient_colors.dawn, ambient_colors.day, cycle_pos / 0.17)
+	elif cycle_pos < 0.33:
+		return ambient_colors.day
+	elif cycle_pos < 0.5:
+		return lerp_color(ambient_colors.day, ambient_colors.dusk, (cycle_pos - 0.33) / 0.17)
+	elif cycle_pos < 0.67:
+		return lerp_color(ambient_colors.dusk, ambient_colors.night, (cycle_pos - 0.5) / 0.17)
+	elif cycle_pos < 0.83:
+		return ambient_colors.night
+	else:
+		return lerp_color(ambient_colors.night, ambient_colors.dawn, (cycle_pos - 0.83) / 0.17)
+
+func update_weather_system(delta: float):
+	"""Progressive weather with rain intensity transitions"""
+	# Weather progression over 176 seconds:
+	# Phase 1 (0-29s): Clear
+	# Phase 2 (29-58s): Clear → Light rain
+	# Phase 3 (58-88s): Light rain
+	# Phase 4 (88-117s): Heavy rain
+	# Phase 5 (117-146s): Heavy rain → Clearing
+	# Phase 6 (146-176s): Clear
+	
+	if timeline < 29.0:
+		target_rain_intensity = 0.0
+		weather_state = "clear"
+	elif timeline < 58.0:
+		# Gradual increase
+		target_rain_intensity = (timeline - 29.0) / 29.0 * 0.3  # 0 to 0.3
+		weather_state = "light_rain"
+	elif timeline < 88.0:
+		target_rain_intensity = 0.3
+		weather_state = "light_rain"
+	elif timeline < 117.0:
+		# Increase to heavy
+		target_rain_intensity = 0.3 + (timeline - 88.0) / 29.0 * 0.7  # 0.3 to 1.0
+		weather_state = "heavy_rain"
+	elif timeline < 146.0:
+		# Gradual decrease
+		target_rain_intensity = 1.0 - (timeline - 117.0) / 29.0 * 1.0  # 1.0 to 0.0
+		weather_state = "clearing"
+	else:
+		target_rain_intensity = 0.0
+		weather_state = "clear"
+	
+	# Smooth transition
+	rain_intensity = lerp(rain_intensity, target_rain_intensity, delta * 2.0)
+	
+	# Update particle system
+	if particles:
+		particles.emitting = rain_intensity > 0.05
+		particles.amount = int(lerp(0.0, 1000.0, rain_intensity))
+		
+		# Adjust particle speed based on intensity
+		if particles.process_material:
+			var mat = particles.process_material as ParticleProcessMaterial
+			mat.initial_velocity_min = lerp(2.0, 5.0, rain_intensity)
+			mat.initial_velocity_max = lerp(4.0, 8.0, rain_intensity)
+	
+	# Update fog density
+	fog_density = lerp(0.001, 0.005, rain_intensity)
+	if env and env.environment:
+		env.environment.fog_density = fog_density
+
+func fade_transition():
+	"""Fade to black, wait, fade back"""
+	is_transitioning = true
+	
+	# Fade to black
+	if transition_tween:
+		transition_tween.kill()
+	transition_tween = create_tween()
+	transition_tween.tween_property(fade_overlay, "color:a", 1.0, TRANSITION_FADE_DURATION)
+	await transition_tween.finished
+	
+	# Hold black for 0.5 seconds
+	await get_tree().create_timer(0.5).timeout
+	
+	# Fade from black
+	transition_tween = create_tween()
+	transition_tween.tween_property(fade_overlay, "color:a", 0.0, TRANSITION_FADE_DURATION)
+	await transition_tween.finished
+	
+	is_transitioning = false
+
+func fade_and_transition_to_phase_2():
+	await fade_transition()
+	phase = 2
+	current_phase_key = "phase_2"
+	transition_to_phase_2()
+	if metrics_overlay:
+		metrics_overlay.update_phase(2, "Morning Light")
+
+func fade_and_transition_to_phase_3():
+	await fade_transition()
+	phase = 3
+	current_phase_key = "phase_3"
+	transition_to_phase_3()
+	if metrics_overlay:
+		metrics_overlay.update_phase(3, "Midday Bloom")
+
+func fade_and_transition_to_phase_4():
+	await fade_transition()
+	phase = 4
+	current_phase_key = "phase_4"
+	transition_to_phase_4()
+	if metrics_overlay:
+		metrics_overlay.update_phase(4, "Evening Storm")
+
+func fade_and_transition_to_phase_5():
+	await fade_transition()
+	phase = 5
+	current_phase_key = "phase_5"
+	transition_to_phase_5()
+	if metrics_overlay:
+		metrics_overlay.update_phase(5, "Midnight Calm")
+
+func fade_and_transition_to_phase_6():
+	await fade_transition()
+	phase = 6
+	current_phase_key = "phase_6"
+	transition_to_phase_6()
+	if metrics_overlay:
+		metrics_overlay.update_phase(6, "Dawn Return")
+
 func setup_phase_1():
-	print("\n[Phase 1] Basic PBR (0-12s)")
-	print("  - No shadows, no HDR, no post-processing")
+	print("\n[Phase 1] Dawn Awakening (0-29s)")
+	print("  - Basic geometry, dawn lighting, clear weather")
 	
 	# Disable all advanced features
 	light.shadow_enabled = false
@@ -655,8 +855,8 @@ func setup_phase_1():
 	particles.emitting = false
 
 func transition_to_phase_2():
-	print("\n[Phase 2] HDR Lighting + Shadows (12-24s)")
-	print("  - Enabling HDR environment and shadow casting")
+	print("\n[Phase 2] Morning Light (29-58s)")
+	print("  - HDR environment, shadows, light rain starting")
 	
 	# Yield to allow GC opportunity during transition
 	await get_tree().process_frame
@@ -679,7 +879,8 @@ func transition_to_phase_2():
 		print("  âš  HDR not found, using color background")
 
 func transition_to_phase_3():
-	print("\n[Phase 3] Enhanced Materials + Reflections (24-36s)")
+	print("\n[Phase 3] Midday Bloom (58-88s)")
+	print("  - Enhanced materials, reflections, steady rain")
 	
 	# Yield to allow GC opportunity during transition
 	await get_tree().process_frame
@@ -705,7 +906,8 @@ func transition_to_phase_3():
 		print("  - Skipped (Potato quality)")
 
 func transition_to_phase_4():
-	print("\n[Phase 4] Particles + Glow (36-48s)")
+	print("\n[Phase 4] Evening Storm (88-117s)")
+	print("  - Heavy rain, particles, dusk lighting")
 	
 	# Yield to allow GC opportunity during transition
 	await get_tree().process_frame
@@ -763,7 +965,7 @@ func start_fadeout():
 	print("  - Syncing with audio fade-out")
 
 func transition_to_phase_5():
-	print("\n[Phase 5] Maximum Complexity (48-60s)")
+	print("\n[Phase 5] Midnight Calm (117-146s)")
 	
 	# Yield to allow GC opportunity during transition
 	await get_tree().process_frame
@@ -781,7 +983,25 @@ func transition_to_phase_5():
 		if particles.emitting:
 			var particle_count = max_safe_particles.get(current_quality_preset, 2000)
 			particles.amount = particle_count
-			print("  âœ“ Particle count increased to %d" % particles.amount)
+			print("  ✓ Particle count increased to %d" % particles.amount)
+
+func transition_to_phase_6():
+	print("\n[Phase 6] Dawn Return - Full Island Vista (146-176s)")
+	
+	# Yield to allow GC opportunity
+	await get_tree().process_frame
+	
+	# Keep all effects enabled but start winding down
+	print("  - Maintaining full quality for finale")
+	
+	# Ensure all effects are visible for final showcase
+	if current_quality_preset >= 2:
+		env.environment.glow_enabled = true
+		env.environment.ssr_enabled = true
+		env.environment.ssao_enabled = true
+		particles.emitting = rain_intensity > 0.05
+	
+	print("  ✓ Final phase active - approaching dawn")
 		
 		# Add depth of field
 		if camera.attributes == null:
