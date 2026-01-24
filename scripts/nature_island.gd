@@ -43,11 +43,11 @@ var phase_start_times = {
 # Particle optimization
 var particle_lod_enabled = true
 var max_safe_particles = {
-	0: 100,    # Potato: minimal ambient
-	1: 200,    # Low: light ambient
-	2: 350,    # Medium: moderate ambient
-	3: 500,    # High: more visible
-	4: 700     # Ultra: full effect
+	0: 50,     # Potato: minimal ambient
+	1: 100,    # Low: light ambient
+	2: 200,    # Medium: moderate ambient
+	3: 350,    # High: more visible
+	4: 500     # Ultra: full effect
 }
 
 # Enhanced performance metrics with CPU, GPU and timestamps
@@ -98,6 +98,10 @@ var weather_state = "clear"  # "clear", "light_rain", "heavy_rain", "storm"
 var rain_intensity = 0.0  # 0.0 to 1.0
 var fog_density = 0.001  # Base fog density
 var target_rain_intensity = 0.0
+var last_weather_update = 0.0  # Throttle weather updates
+var last_daynight_update = 0.0  # Throttle day/night updates
+var last_particle_amount = 0  # Cache to avoid updating every frame
+const UPDATE_INTERVAL = 0.1  # Update 10 times per second instead of 60
 
 func _ready():
 	print("\n========================================")
@@ -527,11 +531,15 @@ func _process(delta):
 	if particle_lod_enabled and particles.emitting and Engine.get_process_frames() % 10 == 0:
 		optimize_particles_for_performance(fps)
 	
-	# Update day/night cycle every frame
-	update_day_night_cycle(delta)
+	# Update day/night cycle (throttled to 10 times per second)
+	if timeline - last_daynight_update >= UPDATE_INTERVAL:
+		update_day_night_cycle(delta)
+		last_daynight_update = timeline
 	
-	# Update weather system every frame
-	update_weather_system(delta)
+	# Update weather system (throttled to 10 times per second)
+	if timeline - last_weather_update >= UPDATE_INTERVAL:
+		update_weather_system(delta)
+		last_weather_update = timeline
 	
 	# Update fade overlay
 	if fade_started and timeline < 176.0:
@@ -764,16 +772,25 @@ func update_weather_system(delta: float):
 	# Smooth transition
 	rain_intensity = lerp(rain_intensity, target_rain_intensity, delta * 2.0)
 	
-	# Update particle system
+	# Update particle system (only if amount changed significantly)
 	if particles:
-		particles.emitting = rain_intensity > 0.05
-		particles.amount = int(lerp(0.0, 1000.0, rain_intensity))
+		var should_emit = rain_intensity > 0.05
+		particles.emitting = should_emit
 		
-		# Adjust particle speed based on intensity
-		if particles.process_material:
-			var mat = particles.process_material as ParticleProcessMaterial
-			mat.initial_velocity_min = lerp(2.0, 5.0, rain_intensity)
-			mat.initial_velocity_max = lerp(4.0, 8.0, rain_intensity)
+		# Cap max particles based on quality preset
+		var max_rain_particles = max_safe_particles.get(current_quality_preset, 200)
+		
+		# Only update particle amount if it changed by at least 50 particles
+		var new_amount = max(1, int(lerp(0.0, float(max_rain_particles), rain_intensity)))
+		if abs(new_amount - last_particle_amount) > 50:
+			particles.amount = new_amount
+			last_particle_amount = new_amount
+			
+			# Only update material when particle count changes
+			if particles.process_material and should_emit:
+				var mat = particles.process_material as ParticleProcessMaterial
+				mat.initial_velocity_min = lerp(2.0, 5.0, rain_intensity)
+				mat.initial_velocity_max = lerp(4.0, 8.0, rain_intensity)
 	
 	# Update fog density
 	fog_density = lerp(0.001, 0.005, rain_intensity)
