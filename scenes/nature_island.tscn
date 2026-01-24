@@ -1,35 +1,16 @@
-[gd_scene load_steps=16 format=3 uid="uid://c12lb2bvfyy80"]
+[gd_scene load_steps=12 format=3 uid="uid://c12lb2bvfyy80"]
 
 [ext_resource type="Script" uid="uid://cjvebyiu7pbd3" path="res://scripts/nature_island.gd" id="1"]
 [ext_resource type="Script" uid="uid://s7325ah637li" path="res://scripts/island_camera.gd" id="2"]
 [ext_resource type="AudioStream" uid="uid://dm13tujsp2rb7" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="4"]
 [ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="5"]
-[ext_resource type="Shader" path="res://shaders/water_beach.gdshader" id="6"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_Ground"]
 size = Vector2(20, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_Ground"]
 albedo_color = Color(0.3, 0.25, 0.2, 1)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_Ground"]
-size = Vector3(20, 0.2, 20)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_Water"]
-size = Vector2(8, 6)
-subdivide_width = 32
-subdivide_depth = 32
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_Water"]
-render_priority = 0
-shader = ExtResource("6")
-shader_parameter/water_color = Color(0.05, 0.25, 0.35, 0.85)
-shader_parameter/shallow_color = Color(0.2, 0.5, 0.6, 0.7)
-shader_parameter/wave_speed = 0.4
-shader_parameter/wave_height = 0.03
-shader_parameter/wave_frequency = 4.0
-shader_parameter/foam_edge_distance = 0.5
 
 [sub_resource type="Environment" id="Environment_1"]
 background_mode = 1
@@ -65,23 +46,10 @@ script = ExtResource("1")
 
 [node name="Terrain" type="Node3D" parent="."]
 
-[node name="GroundPlane" type="StaticBody3D" parent="Terrain"]
+[node name="GroundPlane" type="MeshInstance3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
-collision_layer = 1
-collision_mask = 0
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Terrain/GroundPlane"]
 mesh = SubResource("PlaneMesh_Ground")
 surface_material_override/0 = SubResource("StandardMaterial3D_Ground")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Terrain/GroundPlane"]
-shape = SubResource("BoxShape3D_Ground")
-
-[node name="WaterPlane" type="MeshInstance3D" parent="Terrain"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 4)
-mesh = SubResource("PlaneMesh_Water")
-material_override = SubResource("ShaderMaterial_Water")
-cast_shadow = 0
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 2, 5)

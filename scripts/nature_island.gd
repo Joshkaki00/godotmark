@@ -167,19 +167,12 @@ var object_pools = {
 	"forest": [],
 	"cliff": []
 }
-
-# Wind shader reference
-var wind_shader: Shader = null
-
 var total_objects_loaded = 0
 
 func _ready():
 	print("\n========================================")
 	print("[NatureIsland] Starting 2:56 Nature Island Benchmark")
 	print("========================================\n")
-	
-	# Preload wind shader
-	wind_shader = load("res://shaders/wind_vegetation.gdshader")
 	
 	# Hide everything during warmup - only show loading screen
 	terrain.visible = false
@@ -326,33 +319,10 @@ func run_warmup_phase():
 	
 	print("[Warmup] Asset loading complete")
 	
-	# Texture verification phase (60-70%)
-	print("[Warmup] Verifying textures...")
-	if loading_screen:
-		loading_screen.update_progress(60.0, "Verifying textures...")
-	
-	var missing_textures = 0
-	var total_checked = 0
-	
-	for zone_name in ["beach", "forest", "cliff"]:
-		for obj in object_pools[zone_name]:
-			var result = verify_model_textures(obj)
-			missing_textures += result["missing"]
-			total_checked += result["total"]
-			await get_tree().process_frame
-	
-	if missing_textures > 0:
-		push_warning("[Warmup] %d/%d textures missing or not loaded!" % [missing_textures, total_checked])
-	else:
-		print("[Warmup] All %d textures loaded successfully ✓" % total_checked)
-	
-	if loading_screen:
-		loading_screen.update_progress(70.0, "Textures verified")
-	
 	# Pre-compile shaders for all weather states
 	print("[Warmup] Pre-compiling shaders...")
 	if loading_screen:
-		loading_screen.update_progress(70.0, "Compiling shaders...")
+		loading_screen.update_progress(60.0, "Compiling shaders...")
 	
 	await get_tree().process_frame
 	
@@ -972,179 +942,7 @@ func load_and_position_model(model_path: String, zone: String, index: int, total
 	
 	instance.scale = Vector3.ONE * scale_factor
 	
-	# Add physics collision (static bodies for scenery)
-	add_collision_to_model(instance, zone)
-	
-	# Enhance materials with PBR properties
-	enhance_model_materials(instance, zone)
-	
-	# Apply wind animation to vegetation
-	apply_wind_shader_to_vegetation(instance)
-	
 	return instance
-
-func add_collision_to_model(node: Node3D, zone: String) -> void:
-	"""Add StaticBody3D with auto-generated collision shapes"""
-	# Recursively find all MeshInstance3D nodes
-	for child in node.get_children():
-		if child is MeshInstance3D:
-			var mesh_inst = child as MeshInstance3D
-			if mesh_inst.mesh:
-				# Create StaticBody3D as sibling (not child)
-				var static_body = StaticBody3D.new()
-				static_body.name = child.name + "_Collision"
-				
-				# Create collision shape from mesh (convex for performance)
-				var collision_shape = CollisionShape3D.new()
-				var shape = mesh_inst.mesh.create_convex_shape()
-				collision_shape.shape = shape
-				collision_shape.position = child.position
-				collision_shape.rotation = child.rotation
-				collision_shape.scale = child.scale
-				
-				# Add to static body
-				static_body.add_child(collision_shape)
-				
-				# Add to same parent as mesh
-				node.add_child(static_body)
-				
-				# Set collision layers (layer 2 = environment, no mask = static only)
-				static_body.collision_layer = 2
-				static_body.collision_mask = 0
-		
-		# Recurse for nested meshes
-		add_collision_to_model(child, zone)
-
-func enhance_model_materials(node: Node3D, zone: String) -> void:
-	"""Enhance PBR properties based on zone type"""
-	if node is MeshInstance3D:
-		var mesh_inst = node as MeshInstance3D
-		if mesh_inst.mesh:
-			for surface_idx in range(mesh_inst.mesh.get_surface_count()):
-				var mat = mesh_inst.mesh.surface_get_material(surface_idx)
-				if mat is StandardMaterial3D:
-					# Duplicate to avoid modifying the resource
-					var enhanced_mat = mat.duplicate() as StandardMaterial3D
-					
-					# Zone-specific PBR tweaks
-					if zone == "beach":
-						# Beach materials: more reflective, wet appearance
-						enhanced_mat.metallic = 0.15
-						enhanced_mat.roughness = 0.5
-						enhanced_mat.rim_enabled = true
-						enhanced_mat.rim = 0.4
-						enhanced_mat.rim_tint = 0.3
-					elif zone == "forest":
-						# Forest: organic, matte, ambient occlusion
-						enhanced_mat.metallic = 0.0
-						enhanced_mat.roughness = 0.85
-						enhanced_mat.ao_enabled = true
-						enhanced_mat.ao_light_affect = 0.6
-					elif zone == "cliff":
-						# Cliff: rocky, very rough, exposed
-						enhanced_mat.metallic = 0.05
-						enhanced_mat.roughness = 0.95
-					
-					# Universal enhancements
-					enhanced_mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
-					enhanced_mat.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
-					
-					mesh_inst.set_surface_override_material(surface_idx, enhanced_mat)
-	
-	for child in node.get_children():
-		enhance_model_materials(child, zone)
-
-func apply_wind_shader_to_vegetation(node: Node3D) -> void:
-	"""Apply wind shader to plants, grass, trees"""
-	var model_name = node.name.to_lower()
-	var is_vegetation = (
-		"grass" in model_name or "plant" in model_name or 
-		"tree" in model_name or "fern" in model_name or
-		"shrub" in model_name or "flower" in model_name or
-		"leaves" in model_name or "sapling" in model_name
-	)
-	
-	if is_vegetation and node is MeshInstance3D:
-		var mesh_inst = node as MeshInstance3D
-		for surface_idx in range(mesh_inst.mesh.get_surface_count() if mesh_inst.mesh else 0):
-			var shader_mat = ShaderMaterial.new()
-			shader_mat.shader = wind_shader
-			
-			# Copy existing textures from original material
-			var original_mat = mesh_inst.get_surface_override_material(surface_idx)
-			if not original_mat:
-				original_mat = mesh_inst.mesh.surface_get_material(surface_idx)
-			
-			if original_mat is StandardMaterial3D:
-				var std_mat = original_mat as StandardMaterial3D
-				shader_mat.set_shader_parameter("albedo_texture", std_mat.albedo_texture)
-				shader_mat.set_shader_parameter("normal_texture", std_mat.normal_texture)
-				# Try roughness texture or orm texture
-				if std_mat.roughness_texture:
-					shader_mat.set_shader_parameter("roughness_texture", std_mat.roughness_texture)
-				elif std_mat.orm_texture:
-					shader_mat.set_shader_parameter("roughness_texture", std_mat.orm_texture)
-			
-			# Set wind parameters based on plant type
-			if "grass" in model_name:
-				shader_mat.set_shader_parameter("wind_strength", 0.6)
-				shader_mat.set_shader_parameter("wind_speed", 2.5)
-				shader_mat.set_shader_parameter("turbulence", 0.4)
-			elif "tree" in model_name or "trunk" in model_name:
-				shader_mat.set_shader_parameter("wind_strength", 0.15)
-				shader_mat.set_shader_parameter("wind_speed", 0.7)
-				shader_mat.set_shader_parameter("turbulence", 0.1)
-			elif "leaves" in model_name:
-				shader_mat.set_shader_parameter("wind_strength", 0.4)
-				shader_mat.set_shader_parameter("wind_speed", 1.5)
-				shader_mat.set_shader_parameter("turbulence", 0.3)
-			else:
-				shader_mat.set_shader_parameter("wind_strength", 0.3)
-				shader_mat.set_shader_parameter("wind_speed", 1.2)
-				shader_mat.set_shader_parameter("turbulence", 0.2)
-			
-			mesh_inst.set_surface_override_material(surface_idx, shader_mat)
-	
-	for child in node.get_children():
-		apply_wind_shader_to_vegetation(child)
-
-func verify_model_textures(node: Node3D) -> Dictionary:
-	"""Recursively check all MeshInstance3D nodes and verify their textures are loaded"""
-	var stats = {"total": 0, "missing": 0}
-	
-	if node is MeshInstance3D:
-		var mesh_inst = node as MeshInstance3D
-		if mesh_inst.mesh:
-			for surface_idx in range(mesh_inst.mesh.get_surface_count()):
-				var mat = mesh_inst.get_surface_override_material(surface_idx)
-				if not mat:
-					mat = mesh_inst.mesh.surface_get_material(surface_idx)
-				
-				if mat is StandardMaterial3D:
-					var std_mat = mat as StandardMaterial3D
-					# Check all common texture slots
-					var texture_checks = [
-						{"name": "albedo", "tex": std_mat.albedo_texture},
-						{"name": "normal", "tex": std_mat.normal_texture},
-						{"name": "roughness", "tex": std_mat.roughness_texture},
-						{"name": "metallic", "tex": std_mat.metallic_texture},
-						{"name": "orm", "tex": std_mat.orm_texture}
-					]
-					
-					for check in texture_checks:
-						if check.tex:
-							stats.total += 1
-							if not check.tex.get_rid().is_valid():
-								stats.missing += 1
-								push_warning("Missing %s texture for %s" % [check.name, node.name])
-	
-	# Recurse to children
-	for child in node.get_children():
-		var child_stats = verify_model_textures(child)
-		stats.total += child_stats.total
-		stats.missing += child_stats.missing
-	
-	return stats
 
 func return_to_menu():
 	"""Return to main menu with threaded loading"""
