@@ -1,8 +1,8 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=7 format=3 uid="uid://c12lb2bvfyy80"]
 
-[ext_resource type="Script" path="res://scripts/nature_island.gd" id="1"]
-[ext_resource type="AudioStream" uid="uid://b2s2c2rhjh78h" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="2"]
-[ext_resource type="Texture2D" uid="uid://dimlm3b3m2qxe" path="res://art/nature-benchmark/sunflowers_puresky_2k.hdr" id="3"]
+[ext_resource type="Script" uid="uid://cjvebyiu7pbd3" path="res://scripts/nature_island.gd" id="1"]
+[ext_resource type="AudioStream" uid="uid://dm13tujsp2rb7" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="2"]
+[ext_resource type="Texture2D" uid="uid://qri6r33j6cls" path="res://art/nature-benchmark/sunflowers_puresky_2k.hdr" id="3"]
 
 [sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1"]
 panorama = ExtResource("3")
@@ -38,7 +38,6 @@ shadow_blur = 2.0
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 15, 25)
-fov = 75.0
 
 [node name="Terrain" type="Node3D" parent="."]
 
@@ -46,12 +45,9 @@ fov = 75.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 15)
 
 [node name="ForestZone" type="Node3D" parent="Terrain"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
 
 [node name="CliffZone" type="Node3D" parent="Terrain"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -15)
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2")
-autoplay = false
-bus = &"Music"
