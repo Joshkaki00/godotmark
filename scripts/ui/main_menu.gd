@@ -38,13 +38,13 @@ func update_system_info():
 		var platform_detector = PlatformDetector.new()
 		platform_detector.initialize()
 		
-		var cpu_name = platform_detector.get_cpu_name()
+		var cpu_model = platform_detector.get_cpu_model()
 		var is_rpi = platform_detector.is_raspberry_pi()
 		
 		if is_rpi:
 			subtitle.text = "Benchmark Suite v1.0 | Raspberry Pi"
-		elif cpu_name != "Unknown CPU":
-			subtitle.text = "Benchmark Suite v1.0 | %s" % cpu_name
+		elif cpu_model != "Unknown CPU" and cpu_model != "":
+			subtitle.text = "Benchmark Suite v1.0 | %s" % cpu_model
 		else:
 			subtitle.text = "Benchmark Suite v1.0"
 		

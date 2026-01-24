@@ -47,11 +47,11 @@ func initialize_systems():
 func get_platform_info() -> String:
 	"""Get platform info string for display"""
 	if platform_detector:
-		var cpu_name = platform_detector.get_cpu_name()
+		var cpu_model = platform_detector.get_cpu_model()
 		if platform_detector.is_raspberry_pi():
 			return "Raspberry Pi"
-		elif cpu_name != "Unknown CPU":
-			return cpu_name
+		elif cpu_model != "Unknown CPU" and cpu_model != "":
+			return cpu_model
 	return "Unknown Platform"
 
 func check_driver_stack():
