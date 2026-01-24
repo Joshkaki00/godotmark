@@ -6,6 +6,7 @@ extends Control
 @onready var subtitle = $CenterContainer/VBoxContainer/Subtitle
 @onready var model_showcase_button = $CenterContainer/VBoxContainer/ModelShowcaseButton
 @onready var full_suite_button = $CenterContainer/VBoxContainer/FullSuiteButton
+@onready var settings_button = $CenterContainer/VBoxContainer/SettingsButton
 @onready var exit_button = $CenterContainer/VBoxContainer/ExitButton
 @onready var loading_screen = $LoadingScreen
 
@@ -21,6 +22,7 @@ func _ready():
 	# Connect button signals
 	model_showcase_button.pressed.connect(_on_model_showcase_pressed)
 	full_suite_button.pressed.connect(_on_full_suite_pressed)
+	settings_button.pressed.connect(_on_settings_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	
 	print("\n[MainMenu] Ready - Select a benchmark to begin")
@@ -56,6 +58,10 @@ func _on_full_suite_pressed():
 	# Currently disabled - reserved for future implementation
 	print("[MainMenu] Full Suite not yet implemented")
 
+func _on_settings_pressed():
+	print("[MainMenu] Opening Settings...")
+	get_tree().change_scene_to_file("res://scenes/ui/settings_menu.tscn")
+
 func _on_exit_pressed():
 	print("[MainMenu] Exiting...")
 	get_tree().quit()
@@ -82,6 +88,7 @@ func load_scene_threaded(scene_path: String):
 	
 	# Disable buttons during loading
 	model_showcase_button.disabled = true
+	settings_button.disabled = true
 	exit_button.disabled = true
 
 func _process(_delta):
@@ -119,6 +126,7 @@ func _process(_delta):
 			if loading_screen:
 				loading_screen.visible = false
 			model_showcase_button.disabled = false
+			settings_button.disabled = false
 			exit_button.disabled = false
 			if loader:
 				loader.queue_free()

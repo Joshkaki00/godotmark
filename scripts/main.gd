@@ -12,6 +12,9 @@ func _ready():
 	print("[GodotMark] Initializing...")
 	print("========================================\n")
 	
+	# Load and apply settings first
+	load_and_apply_settings()
+	
 	# Initialize C++ systems
 	initialize_systems()
 	
@@ -20,6 +23,12 @@ func _ready():
 		check_driver_stack()
 	
 	print("\n[main.gd] Ready! Main menu loaded.\n")
+
+func load_and_apply_settings():
+	"""Load settings from config file and apply them"""
+	SettingsManager.load_settings()
+	SettingsManager.apply_all_settings()
+	print("[main.gd] Settings loaded and applied")
 
 func initialize_systems():
 	# Platform detection
