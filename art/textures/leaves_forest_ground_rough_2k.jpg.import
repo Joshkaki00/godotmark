@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://budbk63hiufqe"
-path="res://.godot/imported/leaves_forest_ground_rough_2k.jpg-d142de0cc4f7bae7910506bd03639121.ctex"
+path="res://.godot/imported/leaves_forest_ground_rough_2k.jpg-4b0eb42bb5795a10a8cf6cb6ee723acc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/leaves_forest_ground_rough_2k.jpg"
-dest_files=["res://.godot/imported/leaves_forest_ground_rough_2k.jpg-d142de0cc4f7bae7910506bd03639121.ctex"]
+source_file="res://art/nature-benchmark/textures/leaves_forest_ground_rough_2k.jpg"
+dest_files=["res://.godot/imported/leaves_forest_ground_rough_2k.jpg-4b0eb42bb5795a10a8cf6cb6ee723acc.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b2lim5ctd4jl1"
-path="res://.godot/imported/cheiridopsis_succulent_arm_2k.jpg-d50560cf69a738d0b9520f986bd4155a.ctex"
+path="res://.godot/imported/cheiridopsis_succulent_arm_2k.jpg-4ada6682ef074298e3567ccebf0920b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/cheiridopsis_succulent_arm_2k.jpg"
-dest_files=["res://.godot/imported/cheiridopsis_succulent_arm_2k.jpg-d50560cf69a738d0b9520f986bd4155a.ctex"]
+source_file="res://art/nature-benchmark/textures/cheiridopsis_succulent_arm_2k.jpg"
+dest_files=["res://.godot/imported/cheiridopsis_succulent_arm_2k.jpg-4ada6682ef074298e3567ccebf0920b9.ctex"]
 
 [params]
 

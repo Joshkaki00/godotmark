@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://5ysdohik74e7"
-path="res://.godot/imported/rocky_trail_arm_2k.jpg-a2636b944b9f62a62dcddf6d52e15d0f.ctex"
+path="res://.godot/imported/rocky_trail_arm_2k.jpg-995a22366dd33582c56a4bdb75b155c7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/rocky_trail_arm_2k.jpg"
-dest_files=["res://.godot/imported/rocky_trail_arm_2k.jpg-a2636b944b9f62a62dcddf6d52e15d0f.ctex"]
+source_file="res://art/nature-benchmark/textures/rocky_trail_arm_2k.jpg"
+dest_files=["res://.godot/imported/rocky_trail_arm_2k.jpg-995a22366dd33582c56a4bdb75b155c7.ctex"]
 
 [params]
 

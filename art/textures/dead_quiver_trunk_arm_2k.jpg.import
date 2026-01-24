@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bmxdan5lv33nq"
-path="res://.godot/imported/dead_quiver_trunk_arm_2k.jpg-50eb792bc27a832ff6e9d404dc68fb5a.ctex"
+path="res://.godot/imported/dead_quiver_trunk_arm_2k.jpg-270f74acb7910d2111975e270eba2a82.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/dead_quiver_trunk_arm_2k.jpg"
-dest_files=["res://.godot/imported/dead_quiver_trunk_arm_2k.jpg-50eb792bc27a832ff6e9d404dc68fb5a.ctex"]
+source_file="res://art/nature-benchmark/textures/dead_quiver_trunk_arm_2k.jpg"
+dest_files=["res://.godot/imported/dead_quiver_trunk_arm_2k.jpg-270f74acb7910d2111975e270eba2a82.ctex"]
 
 [params]
 

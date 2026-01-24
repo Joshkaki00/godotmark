@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ckxhg5kbjpay1"
-path="res://.godot/imported/coast_rocks_02_nor_gl_2k.jpg-00179db5d7c5875af0009d9e0ff7fdaa.ctex"
+path="res://.godot/imported/coast_rocks_02_nor_gl_2k.jpg-fde2d2f9b5b8a5d52a7b03d19cc93511.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/coast_rocks_02_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/coast_rocks_02_nor_gl_2k.jpg-00179db5d7c5875af0009d9e0ff7fdaa.ctex"]
+source_file="res://art/nature-benchmark/textures/coast_rocks_02_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/coast_rocks_02_nor_gl_2k.jpg-fde2d2f9b5b8a5d52a7b03d19cc93511.ctex"]
 
 [params]
 

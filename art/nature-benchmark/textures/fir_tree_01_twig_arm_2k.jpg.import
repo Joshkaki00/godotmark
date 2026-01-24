@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://crr76b2bch850"
-path="res://.godot/imported/fir_tree_01_twig_arm_2k.jpg-7b4b5d3b07b9b958520a85471b968c97.ctex"
+path="res://.godot/imported/fir_tree_01_twig_arm_2k.jpg-911cd36c1b204194a709c5581a2f8fdf.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/fir_tree_01_twig_arm_2k.jpg"
-dest_files=["res://.godot/imported/fir_tree_01_twig_arm_2k.jpg-7b4b5d3b07b9b958520a85471b968c97.ctex"]
+source_file="res://art/nature-benchmark/textures/fir_tree_01_twig_arm_2k.jpg"
+dest_files=["res://.godot/imported/fir_tree_01_twig_arm_2k.jpg-911cd36c1b204194a709c5581a2f8fdf.ctex"]
 
 [params]
 

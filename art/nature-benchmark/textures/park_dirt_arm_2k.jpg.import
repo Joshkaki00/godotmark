@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://itoadjlwvmor"
-path="res://.godot/imported/park_dirt_arm_2k.jpg-13fdc1f71b724a03ef31a81eb9aeed75.ctex"
+path="res://.godot/imported/park_dirt_arm_2k.jpg-28b4eeb81c23aee0008a308a1c6a6f30.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/park_dirt_arm_2k.jpg"
-dest_files=["res://.godot/imported/park_dirt_arm_2k.jpg-13fdc1f71b724a03ef31a81eb9aeed75.ctex"]
+source_file="res://art/nature-benchmark/textures/park_dirt_arm_2k.jpg"
+dest_files=["res://.godot/imported/park_dirt_arm_2k.jpg-28b4eeb81c23aee0008a308a1c6a6f30.ctex"]
 
 [params]
 

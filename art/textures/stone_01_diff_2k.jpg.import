@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bux2xy4ecspl7"
-path="res://.godot/imported/stone_01_diff_2k.jpg-a313a687a6cec4fc91e897f8e36fb116.ctex"
+path="res://.godot/imported/stone_01_diff_2k.jpg-b26a52bb011ea570bfa4639d35d9a902.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/stone_01_diff_2k.jpg"
-dest_files=["res://.godot/imported/stone_01_diff_2k.jpg-a313a687a6cec4fc91e897f8e36fb116.ctex"]
+source_file="res://art/nature-benchmark/textures/stone_01_diff_2k.jpg"
+dest_files=["res://.godot/imported/stone_01_diff_2k.jpg-b26a52bb011ea570bfa4639d35d9a902.ctex"]
 
 [params]
 

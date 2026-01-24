@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ecc0nt37q2p3"
-path="res://.godot/imported/coast_line_02_nor_gl_2k.jpg-85737557a6111531cce6ca2398e85a16.ctex"
+path="res://.godot/imported/coast_line_02_nor_gl_2k.jpg-017021152df9b1bb52ef33acf8533ee0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/coast_line_02_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/coast_line_02_nor_gl_2k.jpg-85737557a6111531cce6ca2398e85a16.ctex"]
+source_file="res://art/nature-benchmark/textures/coast_line_02_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/coast_line_02_nor_gl_2k.jpg-017021152df9b1bb52ef33acf8533ee0.ctex"]
 
 [params]
 

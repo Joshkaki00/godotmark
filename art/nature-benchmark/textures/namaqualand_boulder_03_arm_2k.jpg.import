@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dbd2rc4kmqvv7"
-path="res://.godot/imported/namaqualand_boulder_03_arm_2k.jpg-50e3d57ac913d0fc846483b6e52ee805.ctex"
+path="res://.godot/imported/namaqualand_boulder_03_arm_2k.jpg-a0d7db264757cbde309160da22a75772.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/namaqualand_boulder_03_arm_2k.jpg"
-dest_files=["res://.godot/imported/namaqualand_boulder_03_arm_2k.jpg-50e3d57ac913d0fc846483b6e52ee805.ctex"]
+source_file="res://art/nature-benchmark/textures/namaqualand_boulder_03_arm_2k.jpg"
+dest_files=["res://.godot/imported/namaqualand_boulder_03_arm_2k.jpg-a0d7db264757cbde309160da22a75772.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvrageyou1xkj"
-path="res://.godot/imported/pine_sapling_small_bark_arm_2k.jpg-02db984fa7586f60ae4a8093d55ec822.ctex"
+path="res://.godot/imported/pine_sapling_small_bark_arm_2k.jpg-93221c19225f594e4dcba3a0d1ae3491.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/pine_sapling_small_bark_arm_2k.jpg"
-dest_files=["res://.godot/imported/pine_sapling_small_bark_arm_2k.jpg-02db984fa7586f60ae4a8093d55ec822.ctex"]
+source_file="res://art/nature-benchmark/textures/pine_sapling_small_bark_arm_2k.jpg"
+dest_files=["res://.godot/imported/pine_sapling_small_bark_arm_2k.jpg-93221c19225f594e4dcba3a0d1ae3491.ctex"]
 
 [params]
 

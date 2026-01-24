@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://drkmrr8xc0fc2"
-path="res://.godot/imported/dandelion_01_arm_2k.jpg-ef6e010640aec39e4f3b186432ce7977.ctex"
+path="res://.godot/imported/dandelion_01_arm_2k.jpg-8323828cee30630b743f4fcff51e8cc1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/dandelion_01_arm_2k.jpg"
-dest_files=["res://.godot/imported/dandelion_01_arm_2k.jpg-ef6e010640aec39e4f3b186432ce7977.ctex"]
+source_file="res://art/nature-benchmark/textures/dandelion_01_arm_2k.jpg"
+dest_files=["res://.godot/imported/dandelion_01_arm_2k.jpg-8323828cee30630b743f4fcff51e8cc1.ctex"]
 
 [params]
 

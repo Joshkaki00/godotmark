@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b67vmq1s8l5uj"
-path="res://.godot/imported/sand_rocks_small_01_diff_2k.jpg-88d2b58a4fcb85162586dca4a19f690a.ctex"
+path="res://.godot/imported/sand_rocks_small_01_diff_2k.jpg-a566d3d91e99f0b7fe27fbd073d13680.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/sand_rocks_small_01_diff_2k.jpg"
-dest_files=["res://.godot/imported/sand_rocks_small_01_diff_2k.jpg-88d2b58a4fcb85162586dca4a19f690a.ctex"]
+source_file="res://art/nature-benchmark/textures/sand_rocks_small_01_diff_2k.jpg"
+dest_files=["res://.godot/imported/sand_rocks_small_01_diff_2k.jpg-a566d3d91e99f0b7fe27fbd073d13680.ctex"]
 
 [params]
 

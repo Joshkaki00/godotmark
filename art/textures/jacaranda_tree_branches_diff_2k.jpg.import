@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://h7twf8i3w7c3"
-path="res://.godot/imported/jacaranda_tree_branches_diff_2k.jpg-7617e7ebf4ac4c9a83f290d8e97ce36c.ctex"
+path="res://.godot/imported/jacaranda_tree_branches_diff_2k.jpg-910b02561e972ce47f1b52b89be012ed.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/jacaranda_tree_branches_diff_2k.jpg"
-dest_files=["res://.godot/imported/jacaranda_tree_branches_diff_2k.jpg-7617e7ebf4ac4c9a83f290d8e97ce36c.ctex"]
+source_file="res://art/nature-benchmark/textures/jacaranda_tree_branches_diff_2k.jpg"
+dest_files=["res://.godot/imported/jacaranda_tree_branches_diff_2k.jpg-910b02561e972ce47f1b52b89be012ed.ctex"]
 
 [params]
 

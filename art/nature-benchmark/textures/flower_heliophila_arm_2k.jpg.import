@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://guykct1y0tp0"
-path="res://.godot/imported/flower_heliophila_arm_2k.jpg-8ae6d2a0adbea31c3d38159139ffa57c.ctex"
+path="res://.godot/imported/flower_heliophila_arm_2k.jpg-7aee87dd7f5a96bf12ffba823902c978.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/flower_heliophila_arm_2k.jpg"
-dest_files=["res://.godot/imported/flower_heliophila_arm_2k.jpg-8ae6d2a0adbea31c3d38159139ffa57c.ctex"]
+source_file="res://art/nature-benchmark/textures/flower_heliophila_arm_2k.jpg"
+dest_files=["res://.godot/imported/flower_heliophila_arm_2k.jpg-7aee87dd7f5a96bf12ffba823902c978.ctex"]
 
 [params]
 

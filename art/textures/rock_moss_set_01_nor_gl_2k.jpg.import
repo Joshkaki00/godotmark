@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://djrsrnwcaygpa"
-path="res://.godot/imported/rock_moss_set_01_nor_gl_2k.jpg-2eb798a527d230a534d50eeb6664c586.ctex"
+path="res://.godot/imported/rock_moss_set_01_nor_gl_2k.jpg-70f107d55d82ebac230bd590366177cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/rock_moss_set_01_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/rock_moss_set_01_nor_gl_2k.jpg-2eb798a527d230a534d50eeb6664c586.ctex"]
+source_file="res://art/nature-benchmark/textures/rock_moss_set_01_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/rock_moss_set_01_nor_gl_2k.jpg-70f107d55d82ebac230bd590366177cd.ctex"]
 
 [params]
 

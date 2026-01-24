@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://s17wln7uu6c"
-path="res://.godot/imported/flower_gazania_diff_2k.jpg-be5a5b8a856e6b4808d54f1a528ae657.ctex"
+path="res://.godot/imported/flower_gazania_diff_2k.jpg-7f2108eb163fc26db8bdc50d5b0201bb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/flower_gazania_diff_2k.jpg"
-dest_files=["res://.godot/imported/flower_gazania_diff_2k.jpg-be5a5b8a856e6b4808d54f1a528ae657.ctex"]
+source_file="res://art/nature-benchmark/textures/flower_gazania_diff_2k.jpg"
+dest_files=["res://.godot/imported/flower_gazania_diff_2k.jpg-7f2108eb163fc26db8bdc50d5b0201bb.ctex"]
 
 [params]
 

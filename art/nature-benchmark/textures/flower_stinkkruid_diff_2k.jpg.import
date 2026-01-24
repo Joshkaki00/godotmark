@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bnf04thkakmi5"
-path="res://.godot/imported/flower_stinkkruid_diff_2k.jpg-9891c7ddc049397f05aacfa595a6c980.ctex"
+path="res://.godot/imported/flower_stinkkruid_diff_2k.jpg-7531ed241b1a9ebdbb1018c094cfed85.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/flower_stinkkruid_diff_2k.jpg"
-dest_files=["res://.godot/imported/flower_stinkkruid_diff_2k.jpg-9891c7ddc049397f05aacfa595a6c980.ctex"]
+source_file="res://art/nature-benchmark/textures/flower_stinkkruid_diff_2k.jpg"
+dest_files=["res://.godot/imported/flower_stinkkruid_diff_2k.jpg-7531ed241b1a9ebdbb1018c094cfed85.ctex"]
 
 [params]
 

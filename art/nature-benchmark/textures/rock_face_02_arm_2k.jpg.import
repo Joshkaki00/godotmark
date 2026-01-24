@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dxd8rjhbhs7vt"
-path="res://.godot/imported/rock_face_02_arm_2k.jpg-cccf5d9fbc036e6a173664741314984d.ctex"
+path="res://.godot/imported/rock_face_02_arm_2k.jpg-cd25bdd522712412eb08c3524f13ddfd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/rock_face_02_arm_2k.jpg"
-dest_files=["res://.godot/imported/rock_face_02_arm_2k.jpg-cccf5d9fbc036e6a173664741314984d.ctex"]
+source_file="res://art/nature-benchmark/textures/rock_face_02_arm_2k.jpg"
+dest_files=["res://.godot/imported/rock_face_02_arm_2k.jpg-cd25bdd522712412eb08c3524f13ddfd.ctex"]
 
 [params]
 

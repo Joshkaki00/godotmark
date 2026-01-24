@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://kxoqiw3h23s8"
-path="res://.godot/imported/bark_debris_01_nor_gl_2k.jpg-ecce71f021d0fa8023404ecbe1216e89.ctex"
+path="res://.godot/imported/bark_debris_01_nor_gl_2k.jpg-e9b7178b5e88f5a81948be76c4cb73da.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/bark_debris_01_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/bark_debris_01_nor_gl_2k.jpg-ecce71f021d0fa8023404ecbe1216e89.ctex"]
+source_file="res://art/nature-benchmark/textures/bark_debris_01_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/bark_debris_01_nor_gl_2k.jpg-e9b7178b5e88f5a81948be76c4cb73da.ctex"]
 
 [params]
 

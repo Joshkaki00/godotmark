@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://duichk46ed22q"
-path="res://.godot/imported/single_root_diff_2k.jpg-d2f592b0a7b3bb99ef443a560154fa34.ctex"
+path="res://.godot/imported/single_root_diff_2k.jpg-0c609f7f673e7a9ae352f91760bb80de.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/single_root_diff_2k.jpg"
-dest_files=["res://.godot/imported/single_root_diff_2k.jpg-d2f592b0a7b3bb99ef443a560154fa34.ctex"]
+source_file="res://art/nature-benchmark/textures/single_root_diff_2k.jpg"
+dest_files=["res://.godot/imported/single_root_diff_2k.jpg-0c609f7f673e7a9ae352f91760bb80de.ctex"]
 
 [params]
 

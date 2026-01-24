@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c22jchsvc5g1p"
-path="res://.godot/imported/water_arm.jpg-0843320ead2a440c47f92d7ec8b4162b.ctex"
+path="res://.godot/imported/water_arm.jpg-ccbc0015d53093fbf7f8ed3434d57a74.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/water_arm.jpg"
-dest_files=["res://.godot/imported/water_arm.jpg-0843320ead2a440c47f92d7ec8b4162b.ctex"]
+source_file="res://art/nature-benchmark/textures/water_arm.jpg"
+dest_files=["res://.godot/imported/water_arm.jpg-ccbc0015d53093fbf7f8ed3434d57a74.ctex"]
 
 [params]
 

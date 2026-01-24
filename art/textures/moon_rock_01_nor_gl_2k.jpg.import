@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c2igl7xv2b2kn"
-path="res://.godot/imported/moon_rock_01_nor_gl_2k.jpg-9d48cd8262b5b6a9a69177c9c03fb1f2.ctex"
+path="res://.godot/imported/moon_rock_01_nor_gl_2k.jpg-3dc85ec9c07b56e989968e22238e0aea.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/moon_rock_01_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/moon_rock_01_nor_gl_2k.jpg-9d48cd8262b5b6a9a69177c9c03fb1f2.ctex"]
+source_file="res://art/nature-benchmark/textures/moon_rock_01_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/moon_rock_01_nor_gl_2k.jpg-3dc85ec9c07b56e989968e22238e0aea.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dw05h1ccgw0g0"
-path="res://.godot/imported/coast_sand_01_diff_2k.jpg-4dafa0a4a2d77ab15bad03020c6cbf7f.ctex"
+path="res://.godot/imported/coast_sand_01_diff_2k.jpg-642713799c6887cd227420a6c3873960.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/coast_sand_01_diff_2k.jpg"
-dest_files=["res://.godot/imported/coast_sand_01_diff_2k.jpg-4dafa0a4a2d77ab15bad03020c6cbf7f.ctex"]
+source_file="res://art/nature-benchmark/textures/coast_sand_01_diff_2k.jpg"
+dest_files=["res://.godot/imported/coast_sand_01_diff_2k.jpg-642713799c6887cd227420a6c3873960.ctex"]
 
 [params]
 

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dm5kkow47ej7e"
-path="res://.godot/imported/fern_02_diff_2k.jpg-36b3a0c6ed1ad66b989dad25e5d458be.ctex"
+path="res://.godot/imported/fern_02_diff_2k.jpg-82dfac1727b4b2e130d5f4b0a2d017b5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/fern_02_diff_2k.jpg"
-dest_files=["res://.godot/imported/fern_02_diff_2k.jpg-36b3a0c6ed1ad66b989dad25e5d458be.ctex"]
+source_file="res://art/nature-benchmark/textures/fern_02_diff_2k.jpg"
+dest_files=["res://.godot/imported/fern_02_diff_2k.jpg-82dfac1727b4b2e130d5f4b0a2d017b5.ctex"]
 
 [params]
 

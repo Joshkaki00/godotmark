@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bvm2wuj0a3ivc"
-path="res://.godot/imported/anthurium_botany_01_nor_gl_2k.jpg-36018db8cc452f92e2a2f49cb35371aa.ctex"
+path="res://.godot/imported/anthurium_botany_01_nor_gl_2k.jpg-9811cf4d2ed3ab1938273f70191be902.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/anthurium_botany_01_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/anthurium_botany_01_nor_gl_2k.jpg-36018db8cc452f92e2a2f49cb35371aa.ctex"]
+source_file="res://art/nature-benchmark/textures/anthurium_botany_01_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/anthurium_botany_01_nor_gl_2k.jpg-9811cf4d2ed3ab1938273f70191be902.ctex"]
 
 [params]
 

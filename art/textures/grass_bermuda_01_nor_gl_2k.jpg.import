@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bxa5kyvmsr3hs"
-path="res://.godot/imported/grass_bermuda_01_nor_gl_2k.jpg-782a226c1e71c810411d8626339f4b40.ctex"
+path="res://.godot/imported/grass_bermuda_01_nor_gl_2k.jpg-0f1b68d5680471c5d0755674d6efebc2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/grass_bermuda_01_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/grass_bermuda_01_nor_gl_2k.jpg-782a226c1e71c810411d8626339f4b40.ctex"]
+source_file="res://art/nature-benchmark/textures/grass_bermuda_01_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/grass_bermuda_01_nor_gl_2k.jpg-0f1b68d5680471c5d0755674d6efebc2.ctex"]
 
 [params]
 

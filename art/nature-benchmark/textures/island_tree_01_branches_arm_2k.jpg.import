@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://x82t016rfcml"
-path="res://.godot/imported/island_tree_01_branches_arm_2k.jpg-e3688e5bbb0af70349964f4ea6a55ccd.ctex"
+path="res://.godot/imported/island_tree_01_branches_arm_2k.jpg-bbf3c6eea851dca928f0402375d73644.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/island_tree_01_branches_arm_2k.jpg"
-dest_files=["res://.godot/imported/island_tree_01_branches_arm_2k.jpg-e3688e5bbb0af70349964f4ea6a55ccd.ctex"]
+source_file="res://art/nature-benchmark/textures/island_tree_01_branches_arm_2k.jpg"
+dest_files=["res://.godot/imported/island_tree_01_branches_arm_2k.jpg-bbf3c6eea851dca928f0402375d73644.ctex"]
 
 [params]
 

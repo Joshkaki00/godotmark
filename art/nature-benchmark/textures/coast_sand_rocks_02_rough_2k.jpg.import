@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://co5kx452ewxtr"
-path="res://.godot/imported/coast_sand_rocks_02_rough_2k.jpg-3562390ea6ab46ced70d8273ab217c97.ctex"
+path="res://.godot/imported/coast_sand_rocks_02_rough_2k.jpg-497ff940c49297ac36a498859cd3e373.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/coast_sand_rocks_02_rough_2k.jpg"
-dest_files=["res://.godot/imported/coast_sand_rocks_02_rough_2k.jpg-3562390ea6ab46ced70d8273ab217c97.ctex"]
+source_file="res://art/nature-benchmark/textures/coast_sand_rocks_02_rough_2k.jpg"
+dest_files=["res://.godot/imported/coast_sand_rocks_02_rough_2k.jpg-497ff940c49297ac36a498859cd3e373.ctex"]
 
 [params]
 

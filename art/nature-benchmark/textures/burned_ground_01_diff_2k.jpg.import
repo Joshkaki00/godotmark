@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://snkwvr6seo2v"
-path="res://.godot/imported/burned_ground_01_diff_2k.jpg-a8a1b6be6bc41581887a114f6b55bd2a.ctex"
+path="res://.godot/imported/burned_ground_01_diff_2k.jpg-cc3ec2e8853d67019a73d12e56e75fda.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/burned_ground_01_diff_2k.jpg"
-dest_files=["res://.godot/imported/burned_ground_01_diff_2k.jpg-a8a1b6be6bc41581887a114f6b55bd2a.ctex"]
+source_file="res://art/nature-benchmark/textures/burned_ground_01_diff_2k.jpg"
+dest_files=["res://.godot/imported/burned_ground_01_diff_2k.jpg-cc3ec2e8853d67019a73d12e56e75fda.ctex"]
 
 [params]
 

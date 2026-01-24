@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ftob0khhdc14"
-path="res://.godot/imported/crystalline_iceplant_diff_2k.jpg-07a12cdfc7f7ba7c9dca6551af7f6fec.ctex"
+path="res://.godot/imported/crystalline_iceplant_diff_2k.jpg-1693177c8ea5388b845c1b5b9f173870.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/crystalline_iceplant_diff_2k.jpg"
-dest_files=["res://.godot/imported/crystalline_iceplant_diff_2k.jpg-07a12cdfc7f7ba7c9dca6551af7f6fec.ctex"]
+source_file="res://art/nature-benchmark/textures/crystalline_iceplant_diff_2k.jpg"
+dest_files=["res://.godot/imported/crystalline_iceplant_diff_2k.jpg-1693177c8ea5388b845c1b5b9f173870.ctex"]
 
 [params]
 

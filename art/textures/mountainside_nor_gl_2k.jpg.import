@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bd1peo7q2toka"
-path="res://.godot/imported/mountainside_nor_gl_2k.jpg-50764b6d09bd003aeffb5e7e72d7357c.ctex"
+path="res://.godot/imported/mountainside_nor_gl_2k.jpg-20f008e1164cb6f925d6393bbf815ae3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/mountainside_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/mountainside_nor_gl_2k.jpg-50764b6d09bd003aeffb5e7e72d7357c.ctex"]
+source_file="res://art/nature-benchmark/textures/mountainside_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/mountainside_nor_gl_2k.jpg-20f008e1164cb6f925d6393bbf815ae3.ctex"]
 
 [params]
 

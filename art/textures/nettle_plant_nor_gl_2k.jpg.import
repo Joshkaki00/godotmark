@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://n1qbri3bqfpc"
-path="res://.godot/imported/nettle_plant_nor_gl_2k.jpg-f4198216e5bd07552d689a6b0fa9a46a.ctex"
+path="res://.godot/imported/nettle_plant_nor_gl_2k.jpg-4e073861b07880bc54f9f570fe770f67.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/nettle_plant_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/nettle_plant_nor_gl_2k.jpg-f4198216e5bd07552d689a6b0fa9a46a.ctex"]
+source_file="res://art/nature-benchmark/textures/nettle_plant_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/nettle_plant_nor_gl_2k.jpg-4e073861b07880bc54f9f570fe770f67.ctex"]
 
 [params]
 

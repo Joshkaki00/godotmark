@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d2i0jurnvjcq1"
-path="res://.godot/imported/flower_empodium_arm_2k.jpg-87c1d4c3d4cf77074705a93fbaccce60.ctex"
+path="res://.godot/imported/flower_empodium_arm_2k.jpg-0c015a3a5a4b16f60099722fc5832171.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/flower_empodium_arm_2k.jpg"
-dest_files=["res://.godot/imported/flower_empodium_arm_2k.jpg-87c1d4c3d4cf77074705a93fbaccce60.ctex"]
+source_file="res://art/nature-benchmark/textures/flower_empodium_arm_2k.jpg"
+dest_files=["res://.godot/imported/flower_empodium_arm_2k.jpg-0c015a3a5a4b16f60099722fc5832171.ctex"]
 
 [params]
 

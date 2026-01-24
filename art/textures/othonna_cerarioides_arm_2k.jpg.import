@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://ckj2da4rlx6tn"
-path="res://.godot/imported/othonna_cerarioides_arm_2k.jpg-35731101fca05cd05b986810467a8acd.ctex"
+path="res://.godot/imported/othonna_cerarioides_arm_2k.jpg-9c8d2d246828d11573970c5dd41fc66a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/othonna_cerarioides_arm_2k.jpg"
-dest_files=["res://.godot/imported/othonna_cerarioides_arm_2k.jpg-35731101fca05cd05b986810467a8acd.ctex"]
+source_file="res://art/nature-benchmark/textures/othonna_cerarioides_arm_2k.jpg"
+dest_files=["res://.godot/imported/othonna_cerarioides_arm_2k.jpg-9c8d2d246828d11573970c5dd41fc66a.ctex"]
 
 [params]
 

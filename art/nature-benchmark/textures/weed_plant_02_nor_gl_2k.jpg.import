@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cx0m56rnov6rm"
-path="res://.godot/imported/weed_plant_02_nor_gl_2k.jpg-2d3cb5083fdc963c43c06806de1a0ab8.ctex"
+path="res://.godot/imported/weed_plant_02_nor_gl_2k.jpg-b0e3b7eedb81bf92b415b7b548f2df93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/weed_plant_02_nor_gl_2k.jpg"
-dest_files=["res://.godot/imported/weed_plant_02_nor_gl_2k.jpg-2d3cb5083fdc963c43c06806de1a0ab8.ctex"]
+source_file="res://art/nature-benchmark/textures/weed_plant_02_nor_gl_2k.jpg"
+dest_files=["res://.godot/imported/weed_plant_02_nor_gl_2k.jpg-b0e3b7eedb81bf92b415b7b548f2df93.ctex"]
 
 [params]
 

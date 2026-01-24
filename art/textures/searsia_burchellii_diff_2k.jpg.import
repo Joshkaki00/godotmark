@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://dc7iiuu4pbtvs"
-path="res://.godot/imported/searsia_burchellii_diff_2k.jpg-2af7df14c015667045d9aea7e775e46d.ctex"
+path="res://.godot/imported/searsia_burchellii_diff_2k.jpg-4c9b5e46a1c3a309bfc3fa1a47da73e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/searsia_burchellii_diff_2k.jpg"
-dest_files=["res://.godot/imported/searsia_burchellii_diff_2k.jpg-2af7df14c015667045d9aea7e775e46d.ctex"]
+source_file="res://art/nature-benchmark/textures/searsia_burchellii_diff_2k.jpg"
+dest_files=["res://.godot/imported/searsia_burchellii_diff_2k.jpg-4c9b5e46a1c3a309bfc3fa1a47da73e6.ctex"]
 
 [params]
 

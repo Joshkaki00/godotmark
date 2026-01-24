@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://todwjd303v3y"
-path="res://.godot/imported/pachira_aquatica_01_leaves_diff_2k.jpg-b48d75a09cfd97fe61ab6812e3733209.ctex"
+path="res://.godot/imported/pachira_aquatica_01_leaves_diff_2k.jpg-ad0471fa8bfb5d1dfa4a46f3c6c8e665.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/pachira_aquatica_01_leaves_diff_2k.jpg"
-dest_files=["res://.godot/imported/pachira_aquatica_01_leaves_diff_2k.jpg-b48d75a09cfd97fe61ab6812e3733209.ctex"]
+source_file="res://art/nature-benchmark/textures/pachira_aquatica_01_leaves_diff_2k.jpg"
+dest_files=["res://.godot/imported/pachira_aquatica_01_leaves_diff_2k.jpg-ad0471fa8bfb5d1dfa4a46f3c6c8e665.ctex"]
 
 [params]
 

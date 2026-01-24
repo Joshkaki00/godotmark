@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://wsepgq56xurx"
-path="res://.godot/imported/namaqualand_cliff_02_diff_2k.jpg-01e5d674411b2fb47ad25106a68fe252.ctex"
+path="res://.godot/imported/namaqualand_cliff_02_diff_2k.jpg-c1355bbc5e61c5397c11652f21c03ce3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/namaqualand_cliff_02_diff_2k.jpg"
-dest_files=["res://.godot/imported/namaqualand_cliff_02_diff_2k.jpg-01e5d674411b2fb47ad25106a68fe252.ctex"]
+source_file="res://art/nature-benchmark/textures/namaqualand_cliff_02_diff_2k.jpg"
+dest_files=["res://.godot/imported/namaqualand_cliff_02_diff_2k.jpg-c1355bbc5e61c5397c11652f21c03ce3.ctex"]
 
 [params]
 

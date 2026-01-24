@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b0v10wr04k282"
-path="res://.godot/imported/brown_mud_rough_2k.jpg-5a2e23727c2bc033594a62300c9f7fa6.ctex"
+path="res://.godot/imported/brown_mud_rough_2k.jpg-c89e3cb0d56f13cf1d13027e6a878b55.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://art/textures/brown_mud_rough_2k.jpg"
-dest_files=["res://.godot/imported/brown_mud_rough_2k.jpg-5a2e23727c2bc033594a62300c9f7fa6.ctex"]
+source_file="res://art/nature-benchmark/textures/brown_mud_rough_2k.jpg"
+dest_files=["res://.godot/imported/brown_mud_rough_2k.jpg-c89e3cb0d56f13cf1d13027e6a878b55.ctex"]
 
 [params]
 
