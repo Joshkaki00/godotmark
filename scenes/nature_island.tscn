@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b8k70anx4ow2e"]
+[gd_scene load_steps=10 format=3 uid="uid://c3nature5island8"]
 
 [ext_resource type="Script" path="res://scripts/nature_island.gd" id="2"]
 [ext_resource type="Script" path="res://scripts/island_camera.gd" id="3"]

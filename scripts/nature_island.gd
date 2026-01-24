@@ -1,6 +1,6 @@
-extends Node3D
-## Nature Island Benchmark - 6-Phase Progressive Nature Scene
-## Synced to "Forest Glass" (176 seconds / 2:56)
+﻿extends Node3D
+## Nature Island Benchmark - Progressive Nature Scene  
+## Synced to "Forest Glass" (176 seconds)
 
 
 @onready var camera = $Camera3D
@@ -76,6 +76,7 @@ func _ready():
 	print("========================================\n")
 	
 	# Hide everything during warmup - only show loading screen
+	
 	camera.current = false
 	light.visible = false
 	particles.visible = false
@@ -169,6 +170,7 @@ func _ready():
 	warmup_complete = true
 	
 	# Show everything now that warmup is complete
+	
 	camera.current = true
 	light.visible = true
 	particles.visible = true
@@ -227,9 +229,9 @@ func run_warmup_phase():
 	if hdr_texture:
 		print("[Warmup] HDR texture loaded successfully")
 	
-	# Phase 1b: Preload all marble bust textures (60-70%)
+	# Phase 1b: Preload all marble  textures (60-70%)
 	if loading_screen:
-		loading_screen.update_progress(60.0, "Loading bust textures...")
+		loading_screen.update_progress(60.0, "Loading  textures...")
 	
 	var texture_paths = [
 		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_diff_2k.jpg",
@@ -252,7 +254,7 @@ func run_warmup_phase():
 		
 		await get_tree().process_frame
 	
-	print("[Warmup] Bust textures loaded successfully")
+	print("[Warmup]  textures loaded successfully")
 	
 	# Phase 2: Pre-compile all shaders (70-85%)
 	if loading_screen:
@@ -300,13 +302,13 @@ func run_warmup_phase():
 		print("[Warmup] Shadow shader compiled")
 		light.shadow_enabled = false
 	
-	# Phase 2b: Force material shader compilation on marble bust (78-80%)
+	# Phase 2b: Force material shader compilation on marble  (78-80%)
 	if loading_screen:
 		loading_screen.update_progress(78.0, "Compiling material shaders...")
 	
-	if bust:
+	if :
 		# Get the mesh instance and its materials
-		var mesh_instance = bust as MeshInstance3D
+		var mesh_instance =  as MeshInstance3D
 		if mesh_instance and mesh_instance.mesh:
 			for surface_idx in range(mesh_instance.mesh.get_surface_count()):
 				var mat = mesh_instance.get_surface_override_material(surface_idx)
@@ -314,12 +316,12 @@ func run_warmup_phase():
 					mat = mesh_instance.mesh.surface_get_material(surface_idx)
 				
 				if mat:
-					# Force shader compilation by making bust visible and rendering it
-					bust.visible = true
+					# Force shader compilation by making  visible and rendering it
+					
 					camera.current = true
 					await get_tree().process_frame
-					print("[Warmup] Bust material shaders compiled")
-					bust.visible = false  # Hide again until benchmark starts
+					print("[Warmup]  material shaders compiled")
+					  # Hide again until benchmark starts
 					break  # Only need to do this once
 	
 	if loading_screen:
@@ -357,7 +359,7 @@ func run_warmup_phase():
 		particles.draw_pass_1 = sphere_mesh
 	
 	# Show everything and render multiple frames to force GPU buffer creation
-	bust.visible = true
+	
 	camera.current = true
 	light.visible = true
 	if particles:
@@ -375,7 +377,7 @@ func run_warmup_phase():
 	print("[Warmup] GPU buffers created - rendered 10 test frames")
 	
 	# Hide everything again until benchmark starts
-	bust.visible = false
+	
 	light.visible = false
 	if particles:
 		particles.visible = false
@@ -692,9 +694,9 @@ func setup_phase_1():
 	env.environment.ssr_enabled = false
 	particles.emitting = false
 	
-	# Ensure bust is visible
-	if bust:
-		bust.visible = true
+	# Ensure  is visible
+	if :
+		
 
 func transition_to_phase_2():
 	print("\n[Phase 2] HDR Lighting + Shadows (12-24s)")
@@ -716,9 +718,9 @@ func transition_to_phase_2():
 		sky.sky_material = sky_material
 		env.environment.background_mode = Environment.BG_SKY
 		env.environment.sky = sky
-		print("  ✓ HDR environment loaded")
+		print("  âœ“ HDR environment loaded")
 	else:
-		print("  ⚠ HDR not found, using color background")
+		print("  âš  HDR not found, using color background")
 
 func transition_to_phase_3():
 	print("\n[Phase 3] Enhanced Materials + Reflections (24-36s)")
@@ -742,7 +744,7 @@ func transition_to_phase_3():
 		env.environment.ssao_intensity = 2.0
 		env.environment.ssao_detail = 0.5
 		
-		print("  ✓ SSR and SSAO enabled")
+		print("  âœ“ SSR and SSAO enabled")
 	else:
 		print("  - Skipped (Potato quality)")
 
@@ -796,7 +798,7 @@ func transition_to_phase_4():
 		particles.amount = particle_count
 		particles.emitting = true
 		
-		print("  ✓ Particles (%d) and glow enabled" % particles.amount)
+		print("  âœ“ Particles (%d) and glow enabled" % particles.amount)
 	else:
 		print("  - Skipped (Low/Potato quality)")
 
@@ -823,7 +825,7 @@ func transition_to_phase_5():
 		if particles.emitting:
 			var particle_count = max_safe_particles.get(current_quality_preset, 2000)
 			particles.amount = particle_count
-			print("  ✓ Particle count increased to %d" % particles.amount)
+			print("  âœ“ Particle count increased to %d" % particles.amount)
 		
 		# Add depth of field
 		if camera.attributes == null:
@@ -838,7 +840,7 @@ func transition_to_phase_5():
 				camera.attributes.dof_blur_far_distance = 8.0
 				camera.attributes.dof_blur_far_transition = 2.0
 		
-		print("  ✓ Maximum effects enabled")
+		print("  âœ“ Maximum effects enabled")
 	else:
 		print("  - Reduced effects (Medium/Low/Potato quality)")
 
@@ -971,14 +973,14 @@ func export_results():
 	if file:
 		file.store_string(JSON.stringify(results, "\t"))
 		file.close()
-		print("\n✓ Results exported to: %s" % filename)
+		print("\nâœ“ Results exported to: %s" % filename)
 		print("  (Location: %s)" % OS.get_user_data_dir())
 		print("\n  Overall Performance:")
 		print("    Avg FPS: %.1f" % results["summary"]["overall_avg_fps"])
 		print("    1%% Low: %.1f" % results["summary"]["overall_percentiles"]["p1"])
 		print("    Stability: %.1f/100" % results["summary"]["stability_score"])
 	else:
-		print("\n✗ Failed to export results")
+		print("\nâœ— Failed to export results")
 
 func _input(event):
 	# Allow ESC to exit early (but not during loading)
