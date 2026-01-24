@@ -229,32 +229,13 @@ func run_warmup_phase():
 	if hdr_texture:
 		print("[Warmup] HDR texture loaded successfully")
 	
-	# Phase 1b: Preload all marble  textures (60-70%)
+	# Phase 1b: Skip texture preloading (island assets have embedded textures)
 	if loading_screen:
-		loading_screen.update_progress(60.0, "Loading  textures...")
+		loading_screen.update_progress(70.0, "Assets loaded...")
 	
-	var texture_paths = [
-		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_diff_2k.jpg",
-		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_nor_gl_2k.jpg",
-		"res://art/model-test/marble_bust_01_2k.gltf/textures/marble_bust_01_rough_2k.jpg"
-	]
+	await get_tree().process_frame
 	
-	for tex_path in texture_paths:
-		if ResourceLoader.exists(tex_path):
-			loader.queue_resource(tex_path)
-	
-	# Poll loading with progress update
-	while not loader.is_loading_complete():
-		loader.update_progress()
-		var progress = loader.get_overall_progress()
-		var scaled_progress = 60.0 + (progress * 10.0)  # 60-70%
-		
-		if loading_screen:
-			loading_screen.update_progress(scaled_progress, "Loading textures... %.0f%%" % (progress * 100.0))
-		
-		await get_tree().process_frame
-	
-	print("[Warmup]  textures loaded successfully")
+	print("[Warmup] Island assets ready (textures embedded in glTF)")
 	
 	# Phase 2: Pre-compile all shaders (70-85%)
 	if loading_screen:
