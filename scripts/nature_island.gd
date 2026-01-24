@@ -542,18 +542,19 @@ func _process(delta):
 		metrics_overlay.update_progress(timeline, 176.0)
 	
 	# Dynamic particle LOD based on performance (check every 10 frames)
-	if particle_lod_enabled and particles.emitting and Engine.get_process_frames() % 10 == 0:
-		optimize_particles_for_performance(fps)
+	# Particle LOD optimization - DISABLED FOR PERFORMANCE
+	# if particle_lod_enabled and particles.emitting and Engine.get_process_frames() % 10 == 0:
+	# 	optimize_particles_for_performance(fps)
 	
-	# Update day/night cycle (throttled to 10 times per second)
-	if timeline - last_daynight_update >= UPDATE_INTERVAL:
-		update_day_night_cycle(delta)
-		last_daynight_update = timeline
+	# Update day/night cycle (throttled to 10 times per second) - DISABLED FOR PERFORMANCE
+	# if timeline - last_daynight_update >= UPDATE_INTERVAL:
+	# 	update_day_night_cycle(delta)
+	# 	last_daynight_update = timeline
 	
-	# Update weather system (throttled to 10 times per second)
-	if timeline - last_weather_update >= UPDATE_INTERVAL:
-		update_weather_system(delta)
-		last_weather_update = timeline
+	# Update weather system (throttled to 10 times per second) - DISABLED FOR PERFORMANCE
+	# if timeline - last_weather_update >= UPDATE_INTERVAL:
+	# 	update_weather_system(delta)
+	# 	last_weather_update = timeline
 	
 	# Update fade overlay
 	if fade_started and timeline < 176.0:
@@ -880,6 +881,11 @@ func setup_phase_1():
 	if multimesh_manager:
 		multimesh_manager.set_all_visible(true)
 	
+	# Disable camera animation to save CPU
+	if camera and camera.has_method("set_process"):
+		camera.set_process(false)
+		print("  - Camera animation disabled for performance")
+	
 	# Disable all advanced features
 	light.shadow_enabled = false
 	env.environment.background_mode = Environment.BG_COLOR
@@ -887,6 +893,7 @@ func setup_phase_1():
 	env.environment.glow_enabled = false
 	env.environment.ssao_enabled = false
 	env.environment.ssr_enabled = false
+	env.environment.fog_enabled = false
 	particles.emitting = false
 
 func transition_to_phase_2():
