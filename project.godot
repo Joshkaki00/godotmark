@@ -14,10 +14,16 @@ config/name="godotmark"
 run/main_scene="res://scenes/main.tscn"
 config/features=PackedStringArray("4.4", "Mobile")
 config/icon="res://icon.svg"
+boot_splash/image="res://art/splash screens/godotmark-splash.png"
+boot_splash/bg_color=Color(0.101961, 0.101961, 0.101961, 1)
+boot_splash/show_image=true
+boot_splash/fullsize=true
+boot_splash/use_filter=true
 
 [autoload]
 
 SettingsManager="*res://scripts/settings_manager.gd"
+UIAudioManager="*res://scripts/ui/ui_audio_manager.gd"
 
 [debug]
 

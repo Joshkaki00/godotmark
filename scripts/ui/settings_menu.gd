@@ -30,6 +30,9 @@ extends Control
 @onready var reset_button = $CenterContainer/MainPanel/VBoxContainer/ButtonsContainer/ResetButton
 @onready var apply_button = $CenterContainer/MainPanel/VBoxContainer/ButtonsContainer/ApplyButton
 
+# Tab container for tab change sounds
+@onready var tab_container = $CenterContainer/MainPanel/VBoxContainer/TabContainer
+
 func _ready():
 	# Populate resolution options
 	for res in SettingsManager.available_resolutions:
@@ -51,6 +54,14 @@ func _ready():
 	# Connect signals
 	connect_signals()
 	
+	# Connect hover sounds for buttons
+	back_button.mouse_entered.connect(_on_button_hover)
+	reset_button.mouse_entered.connect(_on_button_hover)
+	apply_button.mouse_entered.connect(_on_button_hover)
+	
+	# Connect tab change sound
+	tab_container.tab_changed.connect(_on_tab_changed)
+	
 	print("[SettingsMenu] Ready")
 
 func connect_signals():
@@ -70,6 +81,14 @@ func connect_signals():
 	back_button.pressed.connect(_on_back_pressed)
 	reset_button.pressed.connect(_on_reset_pressed)
 	apply_button.pressed.connect(_on_apply_pressed)
+
+func _on_button_hover():
+	"""Play hover sound when mouse enters a button"""
+	UIAudioManager.play_hover()
+
+func _on_tab_changed(_tab: int):
+	"""Play sound when switching tabs"""
+	UIAudioManager.play_select()
 
 func load_current_settings():
 	"""Load current settings from SettingsManager and populate UI"""
@@ -176,6 +195,7 @@ func update_sfx_volume_label(volume: int):
 
 # Button handlers
 func _on_apply_pressed():
+	UIAudioManager.play_confirm()
 	print("[SettingsMenu] Applying settings...")
 	save_ui_to_settings()
 	SettingsManager.save_settings()
@@ -189,11 +209,13 @@ func _on_apply_pressed():
 		# Could add a popup dialog here in the future
 
 func _on_reset_pressed():
+	UIAudioManager.play_click()
 	print("[SettingsMenu] Resetting to defaults...")
 	SettingsManager.reset_to_defaults()
 	load_current_settings()
 
 func _on_back_pressed():
+	UIAudioManager.play_back()
 	print("[SettingsMenu] Returning to main menu...")
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 

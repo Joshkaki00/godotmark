@@ -25,6 +25,11 @@ func _ready():
 	settings_button.pressed.connect(_on_settings_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	
+	# Connect hover sounds for all active buttons
+	model_showcase_button.mouse_entered.connect(_on_button_hover)
+	settings_button.mouse_entered.connect(_on_button_hover)
+	exit_button.mouse_entered.connect(_on_button_hover)
+	
 	print("\n[MainMenu] Ready - Select a benchmark to begin")
 
 func update_system_info():
@@ -50,19 +55,27 @@ func update_system_info():
 		
 		# Note: PlatformDetector is RefCounted, so it's automatically freed
 
+func _on_button_hover():
+	"""Play hover sound when mouse enters a button"""
+	UIAudioManager.play_hover()
+
 func _on_model_showcase_pressed():
+	UIAudioManager.play_confirm()
 	print("[MainMenu] Launching Model Showcase...")
 	load_scene_threaded("res://scenes/model_showcase.tscn")
 
 func _on_full_suite_pressed():
+	UIAudioManager.play_error()  # Error sound since it's disabled
 	# Currently disabled - reserved for future implementation
 	print("[MainMenu] Full Suite not yet implemented")
 
 func _on_settings_pressed():
+	UIAudioManager.play_confirm()
 	print("[MainMenu] Opening Settings...")
 	get_tree().change_scene_to_file("res://scenes/ui/settings_menu.tscn")
 
 func _on_exit_pressed():
+	UIAudioManager.play_back()
 	print("[MainMenu] Exiting...")
 	get_tree().quit()
 
