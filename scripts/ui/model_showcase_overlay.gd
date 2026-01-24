@@ -34,9 +34,7 @@ func update_phase(phase_num: int, phase_name: String):
 func update_progress(current_time: float, total_time: float):
 	"""Update progress bar and timeline"""
 	progress_bar.value = (current_time / total_time) * 100
-	var current_mins = int(current_time / 60)
-	var current_secs = int(current_time) % 60
-	var total_mins = int(total_time / 60)
-	var total_secs = int(total_time) % 60
-	timeline_label.text = "%02d:%02d / %02d:%02d" % [current_mins, current_secs, total_mins, total_secs]
+	var mins = int(current_time / 60)
+	var secs = int(current_time) % 60
+	timeline_label.text = "%02d:%02d / 01:00" % [mins, secs]
 

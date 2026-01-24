@@ -5,7 +5,6 @@ extends Control
 # UI references
 @onready var subtitle = $CenterContainer/VBoxContainer/Subtitle
 @onready var model_showcase_button = $CenterContainer/VBoxContainer/ModelShowcaseButton
-@onready var nature_island_button = $CenterContainer/VBoxContainer/NatureIslandButton
 @onready var full_suite_button = $CenterContainer/VBoxContainer/FullSuiteButton
 @onready var settings_button = $CenterContainer/VBoxContainer/SettingsButton
 @onready var exit_button = $CenterContainer/VBoxContainer/ExitButton
@@ -22,14 +21,12 @@ func _ready():
 	
 	# Connect button signals
 	model_showcase_button.pressed.connect(_on_model_showcase_pressed)
-	nature_island_button.pressed.connect(_on_nature_island_pressed)
 	full_suite_button.pressed.connect(_on_full_suite_pressed)
 	settings_button.pressed.connect(_on_settings_pressed)
 	exit_button.pressed.connect(_on_exit_pressed)
 	
 	# Connect hover sounds for all active buttons
 	model_showcase_button.mouse_entered.connect(_on_button_hover)
-	nature_island_button.mouse_entered.connect(_on_button_hover)
 	settings_button.mouse_entered.connect(_on_button_hover)
 	exit_button.mouse_entered.connect(_on_button_hover)
 	
@@ -66,11 +63,6 @@ func _on_model_showcase_pressed():
 	UIAudioManager.play_confirm()
 	print("[MainMenu] Launching Model Showcase...")
 	load_scene_threaded("res://scenes/model_showcase.tscn")
-
-func _on_nature_island_pressed():
-	UIAudioManager.play_confirm()
-	print("[MainMenu] Launching Nature Island...")
-	load_scene_threaded("res://scenes/nature_island.tscn")
 
 func _on_full_suite_pressed():
 	UIAudioManager.play_error()  # Error sound since it's disabled
@@ -109,7 +101,6 @@ func load_scene_threaded(scene_path: String):
 	
 	# Disable buttons during loading
 	model_showcase_button.disabled = true
-	nature_island_button.disabled = true
 	settings_button.disabled = true
 	exit_button.disabled = true
 
@@ -148,7 +139,6 @@ func _process(_delta):
 			if loading_screen:
 				loading_screen.visible = false
 			model_showcase_button.disabled = false
-			nature_island_button.disabled = false
 			settings_button.disabled = false
 			exit_button.disabled = false
 			if loader:
