@@ -302,28 +302,7 @@ func run_warmup_phase():
 		print("[Warmup] Shadow shader compiled")
 		light.shadow_enabled = false
 	
-	# Phase 2b: Force material shader compilation on marble  (78-80%)
-	if loading_screen:
-		loading_screen.update_progress(78.0, "Compiling material shaders...")
-	
-	if :
-		# Get the mesh instance and its materials
-		var mesh_instance =  as MeshInstance3D
-		if mesh_instance and mesh_instance.mesh:
-			for surface_idx in range(mesh_instance.mesh.get_surface_count()):
-				var mat = mesh_instance.get_surface_override_material(surface_idx)
-				if not mat:
-					mat = mesh_instance.mesh.surface_get_material(surface_idx)
-				
-				if mat:
-					# Force shader compilation by making  visible and rendering it
-					
-					camera.current = true
-					await get_tree().process_frame
-					print("[Warmup]  material shaders compiled")
-					  # Hide again until benchmark starts
-					break  # Only need to do this once
-	
+	# Phase 2b: Shader compilation skipped (no model)
 	if loading_screen:
 		loading_screen.update_progress(80.0, "Shaders compiled")
 	
@@ -693,10 +672,6 @@ func setup_phase_1():
 	env.environment.ssao_enabled = false
 	env.environment.ssr_enabled = false
 	particles.emitting = false
-	
-	# Ensure  is visible
-	if :
-		
 
 func transition_to_phase_2():
 	print("\n[Phase 2] HDR Lighting + Shadows (12-24s)")
