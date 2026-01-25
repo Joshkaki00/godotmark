@@ -250,44 +250,6 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	return mmi
 
 func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
-	"""Create MultiMesh from list of primitive mesh assets"""
-	if asset_list.is_empty() or instance_count == 0:
-		return null
-	
-	var mmi = MultiMeshInstance3D.new()
-	var multimesh = MultiMesh.new()
-	multimesh.transform_format = MultiMesh.TRANSFORM_3D
-	multimesh.instance_count = instance_count
-	
-	# Use first asset (now a Dictionary with "mesh" and "material")
-	var base_data = asset_list[0]
-	if not base_data.has("mesh") or not base_data["mesh"]:
-		return null
-	
-	multimesh.mesh = base_data["mesh"]
-	mmi.multimesh = multimesh
-	
-	# Add visibility range for automatic distance culling (Raspberry Pi optimization)
-	mmi.visibility_range_begin = 0.0
-	mmi.visibility_range_end = 40.0  # Fade out beyond 40m
-	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
-	
-	# Apply material (already optimized in primitive creation)
-	if base_data.has("material") and base_data["material"]:
-		mmi.material_override = base_data["material"]
-	
-	# Detect if this is a ground texture based on mesh type
-	var is_ground = base_data["mesh"] is PlaneMesh
-	
-	# Generate transforms based on zone and asset type
-	var transforms = generate_transforms_for_zone(instance_count, zone, is_ground)
-	for i in range(instance_count):
-		multimesh.set_instance_transform(i, transforms[i])
-	
-	add_child(mmi)
-	return mmi
-
-func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
 	"""Generate transforms based on island zone (no collision checking for performance)"""
 	var transforms: Array[Transform3D] = []
 	
