@@ -57,9 +57,14 @@ func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
 	print("[NatureIsland] Loading %d GLTF assets..." % 76)
 	
-	# Initialize performance monitor
-	perf_monitor = PerformanceMonitor.new()
-	perf_monitor.initialize()
+	# Get performance monitor from Main scene or create standalone
+	var main = get_tree().root.get_node_or_null("Main")
+	if main and main.perf_monitor:
+		perf_monitor = main.perf_monitor
+		print("[NatureIsland] Using performance monitor from Main")
+	else:
+		print("[NatureIsland] Creating standalone performance monitor")
+		perf_monitor = PerformanceMonitor.new()
 	
 	# Load all assets first
 	load_all_assets()
@@ -513,15 +518,23 @@ func update_metrics():
 	if not metrics_overlay:
 		return
 	
-	# Update performance monitor
-	perf_monitor.update(get_process_delta_time())
-	
-	# Get current metrics
-	last_fps = perf_monitor.get_fps()
-	last_frame_time = perf_monitor.get_frame_time()
-	last_cpu = perf_monitor.get_cpu_usage()
-	last_temp = perf_monitor.get_temperature()
-	last_gpu = perf_monitor.get_gpu_usage()
+	# Update performance monitor if available
+	if perf_monitor:
+		perf_monitor.update(get_process_delta_time())
+		
+		# Get current metrics
+		last_fps = perf_monitor.get_fps()
+		last_frame_time = perf_monitor.get_frame_time()
+		last_cpu = perf_monitor.get_cpu_usage()
+		last_temp = perf_monitor.get_temperature()
+		last_gpu = perf_monitor.get_gpu_usage()
+	else:
+		# Fallback metrics if no perf monitor
+		last_fps = Engine.get_frames_per_second()
+		last_frame_time = get_process_delta_time() * 1000.0
+		last_cpu = 0.0
+		last_temp = 0.0
+		last_gpu = 0.0
 	
 	# Update metrics overlay
 	if metrics_overlay.has_method("update_metrics"):
