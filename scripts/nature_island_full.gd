@@ -106,139 +106,165 @@ func _process(delta: float):
 	# Update metrics overlay
 	update_metrics()
 
+func load_and_extract_gltf(path: String) -> Dictionary:
+	"""Load GLTF, extract mesh, create pre-cached materials"""
+	var gltf_document = GLTFDocument.new()
+	var gltf_state = GLTFState.new()
+	var error = gltf_document.append_from_file(path, gltf_state)
+	
+	if error != OK:
+		push_error("[NatureIsland] Failed to load GLTF: " + path)
+		return {}
+	
+	var scene = gltf_document.generate_scene(gltf_state)
+	var mesh_instance = find_mesh_instance_recursive(scene)
+	
+	if not mesh_instance:
+		push_error("[NatureIsland] No MeshInstance3D found in: " + path)
+		scene.queue_free()
+		return {}
+	
+	var mesh = mesh_instance.mesh
+	
+	# Get original material or create default
+	var original_mat = null
+	if mesh_instance.get_surface_override_material_count() > 0:
+		original_mat = mesh_instance.get_surface_override_material(0)
+	if not original_mat and mesh.get_surface_count() > 0:
+		original_mat = mesh.surface_get_material(0)
+	
+	# Create unshaded version (Phase 1-4)
+	var mat_unshaded = StandardMaterial3D.new()
+	mat_unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	mat_unshaded.cull_mode = BaseMaterial3D.CULL_BACK
+	if original_mat and original_mat is StandardMaterial3D:
+		mat_unshaded.albedo_color = original_mat.albedo_color
+		mat_unshaded.albedo_texture = original_mat.albedo_texture
+	else:
+		mat_unshaded.albedo_color = Color(0.8, 0.8, 0.8)
+	
+	# Create lit version (Phase 5)
+	var mat_lit = StandardMaterial3D.new()
+	mat_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
+	mat_lit.cull_mode = BaseMaterial3D.CULL_BACK
+	if original_mat and original_mat is StandardMaterial3D:
+		mat_lit.albedo_color = original_mat.albedo_color
+		mat_lit.albedo_texture = original_mat.albedo_texture
+		mat_lit.normal_texture = original_mat.normal_texture
+	else:
+		mat_lit.albedo_color = Color(0.8, 0.8, 0.8)
+	
+	scene.queue_free()
+	
+	return {
+		"mesh": mesh,
+		"material_unshaded": mat_unshaded,
+		"material_lit": mat_lit,
+		"source_path": path
+	}
+
+func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
+	"""Recursively find first MeshInstance3D in scene tree"""
+	if node is MeshInstance3D:
+		return node
+	for child in node.get_children():
+		var result = find_mesh_instance_recursive(child)
+		if result:
+			return result
+	return null
+
+func is_ground_asset(asset_data: Dictionary) -> bool:
+	"""Detect if GLTF asset should be flattened as ground texture"""
+	if not asset_data.has("mesh"):
+		return false
+	
+	var mesh = asset_data["mesh"]
+	
+	# PlaneMesh check (for primitives, if any remain)
+	if mesh is PlaneMesh:
+		return true
+	
+	# GLTF mesh name/path check
+	# Ground assets typically have "ground", "mud", "trail" in their paths
+	if asset_data.has("source_path"):
+		var path = asset_data["source_path"].to_lower()
+		return ("ground" in path or "mud" in path or "trail" in path or 
+				"coast_line" in path or "rocky_trail" in path)
+	
+	return false
+
 func load_all_assets_async():
-	"""Create optimized primitive meshes for Raspberry Pi SBC (non-blocking)"""
-	print("[NatureIsland] Creating optimized primitive meshes for SBC (async)...")
+	"""Load 1K GLTF assets asynchronously with performance optimizations"""
+	print("[NatureIsland] Loading 1K GLTF assets for realistic forested island (async)...")
 	
-	# Create 3 tree variants (different colors) - defer each creation
-	for i in range(3):
-		asset_library["trees"].append(create_primitive_mesh("tree", i))
-		await get_tree().process_frame  # Yield between creations to prevent freeze
-	
-	# Create 3 rock variants (different colors)
-	for i in range(3):
-		asset_library["rocks"].append(create_primitive_mesh("rock", i))
+	# Trees (use 3 island trees for variety)
+	var tree_paths = [
+		"res://art/nature-benchmark/island_tree_01_1k.gltf",
+		"res://art/nature-benchmark/island_tree_02_1k.gltf",
+		"res://art/nature-benchmark/island_tree_03_1k.gltf"
+	]
+	for path in tree_paths:
+		var gltf_data = load_and_extract_gltf(path)
+		if gltf_data:
+			asset_library["trees"].append(gltf_data)
 		await get_tree().process_frame
 	
-	# Create 3 vegetation variants (different colors)
-	for i in range(3):
-		asset_library["vegetation"].append(create_primitive_mesh("vegetation", i))
+	# Rocks (use 3 coast rock variants)
+	var rock_paths = [
+		"res://art/nature-benchmark/boulder_01_1k.gltf",
+		"res://art/nature-benchmark/coast_rocks_01_1k.gltf",
+		"res://art/nature-benchmark/coast_rocks_02_1k.gltf"
+	]
+	for path in rock_paths:
+		var gltf_data = load_and_extract_gltf(path)
+		if gltf_data:
+			asset_library["rocks"].append(gltf_data)
 		await get_tree().process_frame
 	
-	# Create 2 ground variants (different shades)
-	for i in range(2):
-		asset_library["ground"].append(create_primitive_mesh("ground", i))
+	# Vegetation - Shrubs (2 types)
+	var shrub_paths = [
+		"res://art/nature-benchmark/shrub_01_1k.gltf",
+		"res://art/nature-benchmark/wild_rooibos_bush_1k.gltf"
+	]
+	for path in shrub_paths:
+		var gltf_data = load_and_extract_gltf(path)
+		if gltf_data:
+			asset_library["vegetation"].append(gltf_data)
 		await get_tree().process_frame
 	
-	# Create 1 coastal variant (same as rocks)
-	asset_library["coastal"].append(create_primitive_mesh("rock", 0))
-	await get_tree().process_frame
+	# Vegetation - Plants (2 types)
+	var plant_paths = [
+		"res://art/nature-benchmark/fern_02_1k.gltf",
+		"res://art/nature-benchmark/nettle_plant_1k.gltf"
+	]
+	for path in plant_paths:
+		var gltf_data = load_and_extract_gltf(path)
+		if gltf_data:
+			asset_library["vegetation"].append(gltf_data)
+		await get_tree().process_frame
 	
-	print("[NatureIsland] Created primitive meshes: Trees=%d, Rocks=%d, Vegetation=%d, Ground=%d, Coastal=%d" %
+	# Ground textures (2 types)
+	var ground_paths = [
+		"res://art/nature-benchmark/forest_ground_04_1k.gltf",
+		"res://art/nature-benchmark/brown_mud_1k.gltf"
+	]
+	for path in ground_paths:
+		var gltf_data = load_and_extract_gltf(path)
+		if gltf_data:
+			asset_library["ground"].append(gltf_data)
+		await get_tree().process_frame
+	
+	# Coastal (use same rocks for coastal)
+	if not asset_library["rocks"].is_empty():
+		asset_library["coastal"].append(asset_library["rocks"][0])
+	
+	print("[NatureIsland] Loaded GLTF assets: Trees=%d, Rocks=%d, Vegetation=%d, Ground=%d, Coastal=%d" %
 		[asset_library["trees"].size(), asset_library["rocks"].size(), 
 		asset_library["vegetation"].size(), asset_library["ground"].size(), 
 		asset_library["coastal"].size()])
 
-func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
-	"""Create optimized primitive mesh for Raspberry Pi SBC performance"""
-	var mesh = null
-	
-	# Create TWO materials: unshaded (Phase 1-4) and per-vertex (Phase 5)
-	var material_unshaded = StandardMaterial3D.new()
-	material_unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material_unshaded.cull_mode = BaseMaterial3D.CULL_BACK
-	
-	var material_lit = StandardMaterial3D.new()
-	material_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
-	material_lit.cull_mode = BaseMaterial3D.CULL_BACK
-	
-	match type:
-		"tree":
-			# Simple tree (sphere canopy - trunk handled by transform scaling)
-			var canopy = SphereMesh.new()
-			canopy.radius = 2.0
-			canopy.height = 3.0
-			canopy.radial_segments = 6
-			canopy.rings = 3
-			
-			# Color variation
-			var green_variants = [
-				Color(0.2, 0.5, 0.2),   # Dark green
-				Color(0.3, 0.6, 0.3),   # Medium green
-				Color(0.25, 0.55, 0.25) # Light-medium green
-			]
-			var color = green_variants[variant % 3]
-			material_unshaded.albedo_color = color
-			material_lit.albedo_color = color
-			mesh = canopy
-		
-		"rock":
-			# Simple rock (low-poly sphere with irregular look)
-			var rock_mesh = SphereMesh.new()
-			rock_mesh.radius = 1.0
-			rock_mesh.radial_segments = 5
-			rock_mesh.rings = 3
-			
-			# Color variation
-			var rock_variants = [
-				Color(0.5, 0.5, 0.5),   # Gray
-				Color(0.4, 0.4, 0.45),  # Blue-gray
-				Color(0.45, 0.42, 0.4)  # Brown-gray
-			]
-			var color = rock_variants[variant % 3]
-			material_unshaded.albedo_color = color
-			material_lit.albedo_color = color
-			mesh = rock_mesh
-		
-		"vegetation":
-			# Simple vegetation (small sphere)
-			var veg_mesh = SphereMesh.new()
-			veg_mesh.radius = 0.5
-			veg_mesh.radial_segments = 5
-			veg_mesh.rings = 3
-			
-			# Color variation
-			var veg_variants = [
-				Color(0.3, 0.6, 0.2),   # Bright green
-				Color(0.4, 0.65, 0.3),  # Yellow-green
-				Color(0.35, 0.55, 0.25) # Medium green
-			]
-			var color = veg_variants[variant % 3]
-			material_unshaded.albedo_color = color
-			material_lit.albedo_color = color
-			mesh = veg_mesh
-		
-		"ground":
-			# Ground texture (flat plane)
-			var ground_mesh = PlaneMesh.new()
-			ground_mesh.size = Vector2(2.0, 2.0)
-			
-			# Color variation
-			var ground_variants = [
-				Color(0.4, 0.3, 0.2),  # Brown
-				Color(0.35, 0.28, 0.18) # Darker brown
-			]
-			var color = ground_variants[variant % 2]
-			material_unshaded.albedo_color = color
-			material_lit.albedo_color = color
-			mesh = ground_mesh
-		
-		_:
-			# Default fallback
-			var default_mesh = BoxMesh.new()
-			default_mesh.size = Vector3(1, 1, 1)
-			material_unshaded.albedo_color = Color(0.8, 0.8, 0.8)
-			material_lit.albedo_color = Color(0.8, 0.8, 0.8)
-			mesh = default_mesh
-	
-	return {
-		"mesh": mesh, 
-		"material": material_unshaded,  # Default to unshaded
-		"material_lit": material_lit     # Pre-created lit material for Phase 5
-	}
-
 func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: String) -> MultiMeshInstance3D:
-	"""Create MultiMesh from list of primitive mesh assets"""
+	"""Create MultiMesh from list of GLTF assets"""
 	if asset_list.is_empty() or instance_count == 0:
 		return null
 	
@@ -247,7 +273,7 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.instance_count = instance_count
 	
-	# Use first asset (now a Dictionary with "mesh" and "material")
+	# Use first asset (Dictionary with "mesh", "material_unshaded", "material_lit")
 	var base_data = asset_list[0]
 	if not base_data.has("mesh") or not base_data["mesh"]:
 		return null
@@ -260,12 +286,12 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	mmi.visibility_range_end = 40.0  # Fade out beyond 40m
 	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 	
-	# Apply material (already optimized in primitive creation)
-	if base_data.has("material") and base_data["material"]:
-		mmi.material_override = base_data["material"]
+	# Apply unshaded material (Phase 1-4 default)
+	if base_data.has("material_unshaded") and base_data["material_unshaded"]:
+		mmi.material_override = base_data["material_unshaded"]
 	
-	# Detect if this is a ground texture based on mesh type
-	var is_ground = base_data["mesh"] is PlaneMesh
+	# Detect if this is a ground texture using new GLTF-aware function
+	var is_ground = is_ground_asset(base_data)
 	
 	# Generate transforms based on zone and asset type
 	var transforms = generate_transforms_for_zone(instance_count, zone, is_ground)
@@ -436,13 +462,13 @@ func transition_to_phase_4():
 	current_phase = 4
 	print("\n[NatureIsland] === PHASE 4: + Ground Detail + Lighting (105-140s) ===")
 	
-	# Split ground assets into textures (flat) and 3D objects
+	# Split ground assets into textures (flat) and 3D objects using GLTF-aware detection
 	var ground_textures = []
 	var ground_3d_objects = []
 	
 	for asset in asset_library["ground"]:
-		# Check if mesh is a PlaneMesh (ground texture) or not (3D object)
-		if asset.has("mesh") and asset["mesh"] is PlaneMesh:
+		# Use new is_ground_asset() function that checks path names
+		if is_ground_asset(asset):
 			ground_textures.append(asset)
 		else:
 			ground_3d_objects.append(asset)
