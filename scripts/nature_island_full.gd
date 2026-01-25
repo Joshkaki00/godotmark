@@ -412,7 +412,8 @@ func transition_to_phase_4():
 	var ground_3d_objects = []
 	
 	for asset in asset_library["ground"]:
-		if is_ground_texture_asset(asset.resource_path):
+		# Check if mesh is a PlaneMesh (ground texture) or not (3D object)
+		if asset.has("mesh") and asset["mesh"] is PlaneMesh:
 			ground_textures.append(asset)
 		else:
 			ground_3d_objects.append(asset)
