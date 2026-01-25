@@ -523,8 +523,8 @@ func update_metrics():
 		perf_monitor.update(get_process_delta_time())
 		
 		# Get current metrics
-		last_fps = perf_monitor.get_fps()
-		last_frame_time = perf_monitor.get_frame_time()
+		last_fps = perf_monitor.get_current_fps()
+		last_frame_time = perf_monitor.get_current_frametime_ms()
 		last_cpu = perf_monitor.get_cpu_usage()
 		last_temp = perf_monitor.get_temperature()
 		last_gpu = perf_monitor.get_gpu_usage()
