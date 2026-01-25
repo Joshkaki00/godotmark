@@ -34,7 +34,7 @@ var phase_triggered: Array = [false, false, false, false, false, false]
 const ISLAND_CENTER = Vector3(0, 0, 0)
 const ISLAND_SIZE_X = 50.0  # 50m x 35m irregular shape
 const ISLAND_SIZE_Z = 35.0
-const OCEAN_SIZE = 200.0
+const OCEAN_SIZE = 80.0  # Reduced from 200 to 80 for performance
 
 # Object counts (optimized for Raspberry Pi SBC - 40% further reduction for close-range)
 const TREE_COUNT = 30
