@@ -46,10 +46,20 @@ const FLOWER_COUNT = 20
 # Performance monitoring
 var loading_progress = 0.0
 var is_loading = true
+var perf_monitor: PerformanceMonitor
+var last_fps: float = 60.0
+var last_frame_time: float = 16.6
+var last_cpu: float = 0.0
+var last_temp: float = 0.0
+var last_gpu: float = 0.0
 
 func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
 	print("[NatureIsland] Loading %d GLTF assets..." % 76)
+	
+	# Initialize performance monitor
+	perf_monitor = PerformanceMonitor.new()
+	perf_monitor.initialize()
 	
 	# Load all assets first
 	load_all_assets()
@@ -499,21 +509,29 @@ func end_benchmark():
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 func update_metrics():
-	"""Update performance metrics display"""
-	if metrics_overlay and metrics_overlay.has_method("update_benchmark_info"):
-		var info = {
-			"scene": "Nature Island",
-			"phase": "Phase %d" % current_phase,
-			"timeline": "%.1fs / 176s" % timeline
-		}
-		metrics_overlay.update_benchmark_info(info)
+	"""Update performance metrics display in real-time"""
+	if not metrics_overlay:
+		return
+	
+	# Update performance monitor
+	perf_monitor.update(get_process_delta_time())
+	
+	# Get current metrics
+	last_fps = perf_monitor.get_fps()
+	last_frame_time = perf_monitor.get_frame_time()
+	last_cpu = perf_monitor.get_cpu_usage()
+	last_temp = perf_monitor.get_temperature()
+	last_gpu = perf_monitor.get_gpu_usage()
+	
+	# Update metrics overlay
+	if metrics_overlay.has_method("update_metrics"):
+		metrics_overlay.update_metrics(last_fps, last_frame_time, last_cpu, last_temp, last_gpu)
+	
+	# Update progress bar
+	if metrics_overlay.has_method("update_progress"):
+		metrics_overlay.update_progress(timeline, 176.0)
 
 func update_metrics_overlay(phase_name: String, details: String):
 	"""Update the metrics overlay with phase information"""
-	if metrics_overlay and metrics_overlay.has_method("update_benchmark_info"):
-		var info = {
-			"scene": "Nature Island",
-			"phase": phase_name,
-			"details": details
-		}
-		metrics_overlay.update_benchmark_info(info)
+	if metrics_overlay and metrics_overlay.has_method("update_phase"):
+		metrics_overlay.update_phase(current_phase, phase_name)
