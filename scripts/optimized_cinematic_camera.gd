@@ -2,27 +2,26 @@ extends Camera3D
 ## Optimized Cinematic Camera - NO per-frame look_at() calls
 ## Pre-calculates all transforms at startup for maximum performance
 
-# Pre-calculated transforms (one every 3 seconds for Raspberry Pi optimization)
+# Pre-calculated transforms (one every 1.5 seconds for smooth motion)
 var transform_cache: Array[Transform3D] = []
 var cache_duration: float = 176.0  # Total benchmark duration
-var cache_rate: float = 3.0  # One transform every 3 seconds (60 total vs 177)
+var cache_rate: float = 1.5  # One transform every 1.5 seconds (118 total - smooth but performant)
 
-# Camera path keyframes (cinematic tour of forested island)
+# Camera path keyframes (smooth circular orbit around island)
+# Design: Gentle 360° orbit at consistent height, gradual zoom in/out
 var keyframes = [
-	# Start: Aerial view from ocean side
-	{"time": 0.0, "position": Vector3(-40, 25, 0), "look_at": Vector3(0, 8, 0)},
-	# Approach: Move toward island, descend
-	{"time": 29.0, "position": Vector3(-20, 18, 15), "look_at": Vector3(5, 5, 0)},
-	# Interior: Enter forest, low angle through trees
-	{"time": 58.0, "position": Vector3(10, 6, -10), "look_at": Vector3(0, 4, 5)},
-	# Clearing: Rise up over clearing, show undergrowth
-	{"time": 88.0, "position": Vector3(-5, 12, 8), "look_at": Vector3(3, 2, -5)},
-	# Coastal: Move to rocky outcrop, show bay
-	{"time": 117.0, "position": Vector3(20, 10, -20), "look_at": Vector3(0, 3, 0)},
-	# Departure: Pull back, rise up, show whole island
-	{"time": 146.0, "position": Vector3(15, 22, 25), "look_at": Vector3(0, 6, 0)},
-	# Final: Aerial view from opposite side
-	{"time": 176.0, "position": Vector3(40, 25, 0), "look_at": Vector3(0, 8, 0)},
+	# Phase 1: Start - South view, high and distant
+	{"time": 0.0, "position": Vector3(0, 20, 45), "look_at": Vector3(0, 5, 0)},
+	# Phase 1: Southeast, begin descent
+	{"time": 35.0, "position": Vector3(32, 16, 32), "look_at": Vector3(0, 4, 0)},
+	# Phase 2: East, closer and lower
+	{"time": 70.0, "position": Vector3(38, 14, 0), "look_at": Vector3(0, 4, 0)},
+	# Phase 3: Northeast, maintain altitude
+	{"time": 105.0, "position": Vector3(32, 14, -32), "look_at": Vector3(0, 4, 0)},
+	# Phase 4: North, slight rise for overview
+	{"time": 140.0, "position": Vector3(0, 18, -42), "look_at": Vector3(0, 5, 0)},
+	# Phase 5: Northwest, final orbit completion
+	{"time": 176.0, "position": Vector3(-35, 20, -35), "look_at": Vector3(0, 5, 0)},
 ]
 
 var parent_node: Node3D
@@ -36,7 +35,7 @@ func _ready():
 	
 	# PRE-CALCULATE all transforms at startup
 	pre_calculate_transforms()
-	print("[OptimizedCamera] Pre-calculated %d transforms" % transform_cache.size())
+	print("[OptimizedCamera] Pre-calculated %d transforms (smooth orbit)" % transform_cache.size())
 
 func pre_calculate_transforms():
 	"""Pre-calculate ALL camera transforms to avoid per-frame look_at()"""
@@ -62,7 +61,7 @@ func calculate_transform_at_time(time: float) -> Transform3D:
 	# Interpolation factor
 	var time_range = next_kf["time"] - prev_kf["time"]
 	var t = (time - prev_kf["time"]) / time_range if time_range > 0 else 0.0
-	t = ease_in_out_cubic(t)
+	t = ease_in_out_sine(t)  # Gentle, smooth easing for cinematic motion
 	
 	# Interpolate position
 	var pos = prev_kf["position"].lerp(next_kf["position"], t)
@@ -86,8 +85,9 @@ func _process(_delta):
 	var idx = int(current_time / cache_rate)
 	var next_idx = min(idx + 1, transform_cache.size() - 1)
 	
-	# Interpolation factor between cached frames
+	# Interpolation factor between cached frames (smooth)
 	var t = fmod(current_time, cache_rate) / cache_rate
+	t = ease_in_out_sine(t)  # Smooth interpolation between cache points
 	
 	# Slerp between cached transforms (FAST - just quaternion interpolation)
 	var transform_a = transform_cache[idx]
@@ -99,10 +99,6 @@ func _process(_delta):
 	
 	transform = Transform3D(new_basis, new_origin)
 
-func ease_in_out_cubic(t: float) -> float:
-	"""Smooth easing function for cinematic motion"""
-	if t < 0.5:
-		return 4 * t * t * t
-	else:
-		var f = (2 * t - 2)
-		return 1 + 0.5 * f * f * f
+func ease_in_out_sine(t: float) -> float:
+	"""Gentle sine-based easing for smooth, non-nauseating camera motion"""
+	return -(cos(PI * t) - 1.0) / 2.0
