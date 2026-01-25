@@ -22,11 +22,11 @@ uniform float roughness : hint_range(0.0, 1.0) = 0.3;
 uniform float metallic : hint_range(0.0, 1.0) = 0.0;
 
 void vertex() {
-	// Phase 1-2: Just UV scroll
+	// Phase 1-3: Just UV scroll (no vertex displacement for performance)
 	UV += vec2(TIME * wave_speed * 0.05, TIME * wave_speed * 0.03);
 	
-	// Phase 2+: Add wave displacement
-	if (phase >= 2 && wave_height > 0.0) {
+	// Phase 4+: Add wave displacement (only in later phases)
+	if (phase >= 4 && wave_height > 0.0) {
 		float wave = sin(VERTEX.x * wave_frequency + TIME * wave_speed) 
 		           + cos(VERTEX.z * wave_frequency * 0.7 + TIME * wave_speed * 0.8);
 		VERTEX.y += wave * wave_height;
@@ -37,11 +37,11 @@ void fragment() {
 	// Base water color (gradient based on depth/distance)
 	vec3 color = mix(water_color.rgb, deep_water_color.rgb, UV.y);
 	
-	// Phase 3+: Add foam at shore/peaks
-	if (phase >= 3 && foam_amount > 0.0) {
+	// Phase 4+: Add foam (simplified for performance)
+	if (phase >= 4 && foam_amount > 0.0) {
 		float foam_noise = fract(sin(dot(UV, vec2(12.9898, 78.233))) * 43758.5453);
 		if (foam_noise > foam_cutoff) {
-			color = mix(color, vec3(1.0), foam_amount);
+			color = mix(color, vec3(1.0), foam_amount * 0.5);  // Reduced foam intensity
 		}
 	}
 	

@@ -36,12 +36,12 @@ const ISLAND_SIZE_X = 50.0  # 50m x 35m irregular shape
 const ISLAND_SIZE_Z = 35.0
 const OCEAN_SIZE = 200.0
 
-# Object counts (dense but optimized)
-const TREE_COUNT = 100
-const ROCK_COUNT = 40
-const VEGETATION_COUNT = 80
-const GROUND_DETAIL_COUNT = 60
-const FLOWER_COUNT = 20
+# Object counts (optimized for Raspberry Pi SBC - 50% reduction)
+const TREE_COUNT = 50
+const ROCK_COUNT = 20
+const VEGETATION_COUNT = 40
+const GROUND_DETAIL_COUNT = 30
+const FLOWER_COUNT = 10
 
 # Performance monitoring
 var loading_progress = 0.0
@@ -55,7 +55,7 @@ var last_gpu: float = 0.0
 
 func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
-	print("[NatureIsland] Loading %d GLTF assets..." % 76)
+	print("[NatureIsland] Loading 12 optimized GLTF assets for Raspberry Pi SBC...")
 	
 	# Get performance monitor from Main scene or create standalone
 	var main = get_tree().root.get_node_or_null("Main")
@@ -105,63 +105,39 @@ func _process(delta: float):
 	update_metrics()
 
 func load_all_assets():
-	"""Load all 76 GLTF assets from nature-benchmark"""
-	print("[NatureIsland] Loading asset library...")
+	"""Load 12 representative GLTF assets for Raspberry Pi optimization"""
+	print("[NatureIsland] Loading optimized asset library (12 assets)...")
 	
-	# Trees (16 assets)
+	# Trees (3 assets - representative variety)
 	var tree_assets = [
-		"island_tree_01_2k.gltf", "island_tree_02_2k.gltf", "island_tree_03_2k.gltf",
-		"fir_tree_01_2k.gltf", "jacaranda_tree_2k.gltf",
-		"quiver_tree_01_2k.gltf", "quiver_tree_02_2k.gltf",
-		"tree_small_02_2k.gltf",
-		"dead_tree_trunk_02_2k.gltf", "dead_tree_trunk_2k.gltf", "dead_quiver_trunk_2k.gltf",
-		"tree_stump_01_2k.gltf", "tree_stump_02_2k.gltf",
-		"pine_sapling_small_2k.gltf", "fir_sapling_2k.gltf", "fir_sapling_medium_2k.gltf"
+		"island_tree_01_2k.gltf",
+		"fir_tree_01_2k.gltf",
+		"dead_tree_trunk_02_2k.gltf"
 	]
 	
-	# Rocks (13 assets)
+	# Rocks (3 assets)
 	var rock_assets = [
 		"boulder_01_2k.gltf",
-		"coast_rocks_02_2k.gltf", "coast_rocks_03_2k.gltf",
-		"rock_face_01_2k.gltf", "rock_face_02_2k.gltf", "rock_face_03_2k.gltf",
-		"rock_moss_set_01_2k.gltf", "rock_moss_set_02_2k.gltf",
-		"namaqualand_boulder_02_2k.gltf", "namaqualand_boulder_03_2k.gltf",
-		"namaqualand_cliff_02_2k.gltf", "mountainside_2k.gltf",
-		"moon_rock_01_2k.gltf", "stone_01_2k.gltf", "sand_rocks_small_01_2k.gltf"
+		"coast_rocks_02_2k.gltf",
+		"rock_moss_set_01_2k.gltf"
 	]
 	
-	# Vegetation (27 assets)
+	# Vegetation (3 assets)
 	var vegetation_assets = [
-		"shrub_01_2k.gltf", "shrub_02_2k.gltf", "shrub_03_2k.gltf", "shrub_04_2k.gltf",
-		"grass_medium_01_2k.gltf", "grass_medium_02_2k.gltf", "grass_bermuda_01_2k.gltf",
-		"fern_02_2k.gltf",
-		"flower_gazania_2k.gltf", "flower_empodium_2k.gltf", "flower_heliophila_2k.gltf",
-		"flower_stinkkruid_2k.gltf", "flower_ursinia_2k.gltf", "dandelion_01_2k.gltf",
-		"nettle_plant_2k.gltf", "periwinkle_plant_2k.gltf", "weed_plant_02_2k.gltf",
-		"anthurium_botany_01_2k.gltf", "calathea_orbifolia_01_2k.gltf", "pachira_aquatica_01_2k.gltf",
-		"celandine_01_2k.gltf",
-		"cheiridopsis_succulent_2k.gltf", "crystalline_iceplant_2k.gltf",
-		"othonna_cerarioides_2k.gltf",
-		"searsia_burchellii_2k.gltf", "searsia_lucida_2k.gltf",
-		"wild_rooibos_bush_2k.gltf"
+		"shrub_01_2k.gltf",
+		"grass_medium_01_2k.gltf",
+		"flower_gazania_2k.gltf"
 	]
 	
-	# Ground (17 assets)
+	# Ground (2 assets)
 	var ground_assets = [
-		"coast_sand_01_2k.gltf", "coast_sand_02_2k.gltf",
-		"brown_mud_02_2k.gltf", "brown_mud_03_2k.gltf", "brown_mud_2k.gltf", "brown_mud_dry_2k.gltf",
-		"park_dirt_2k.gltf",
-		"forest_floor_2k.gltf", "forest_ground_04_2k.gltf",
-		"forrest_ground_01_2k.gltf", "forrest_ground_03_2k.gltf",
-		"forest_leaves_02_2k.gltf", "forest_leaves_03_2k.gltf", "leaves_forest_ground_2k.gltf",
-		"bark_debris_01_2k.gltf", "dry_branches_medium_01_2k.gltf",
-		"root_cluster_01_2k.gltf", "root_cluster_02_2k.gltf", "single_root_2k.gltf",
-		"pine_roots_2k.gltf", "moss_01_2k.gltf", "rocky_trail_2k.gltf"
+		"forest_floor_2k.gltf",
+		"root_cluster_01_2k.gltf"
 	]
 	
-	# Coastal (3 assets)
+	# Coastal (1 asset)
 	var coastal_assets = [
-		"coast_line_02_2k.gltf", "coast_land_rocks_04_2k.gltf", "coast_sand_rocks_02_2k.gltf"
+		"coast_sand_rocks_02_2k.gltf"
 	]
 	
 	# Load all assets
@@ -276,54 +252,40 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	return mmi
 
 func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
-	"""Generate transforms based on island zone"""
+	"""Generate transforms based on island zone (no collision checking for performance)"""
 	var transforms: Array[Transform3D] = []
-	var min_distance = 3.0  # Minimum distance between objects
 	
 	for i in range(count):
 		var transform = Transform3D()
 		var pos = Vector3.ZERO
-		var attempts = 0
 		
-		while attempts < 50:
-			if zone == "interior_forest":
-				# Central dense forest
-				pos = Vector3(
-					randf_range(-15, 15),
-					0,
-					randf_range(-10, 10)
-				)
-			elif zone == "coastal":
-				# Coastal ring
-				var angle = randf() * TAU
-				var radius = randf_range(18, 25)
-				pos = Vector3(
-					cos(angle) * radius,
-					0,
-					sin(angle) * radius
-				)
-			elif zone == "clearing":
-				# Scattered clearings
-				var clearing_center = Vector3(randf_range(-10, 10), 0, randf_range(-8, 8))
-				pos = clearing_center + Vector3(randf_range(-5, 5), 0, randf_range(-5, 5))
-			else:
-				# General scattered
-				pos = Vector3(
-					randf_range(-ISLAND_SIZE_X/2, ISLAND_SIZE_X/2),
-					0,
-					randf_range(-ISLAND_SIZE_Z/2, ISLAND_SIZE_Z/2)
-				)
-			
-			# Check minimum distance
-			var valid = true
-			for existing_transform in transforms:
-				if pos.distance_to(existing_transform.origin) < min_distance:
-					valid = false
-					break
-			
-			if valid:
-				break
-			attempts += 1
+		if zone == "interior_forest":
+			# Central dense forest
+			pos = Vector3(
+				randf_range(-15, 15),
+				0,
+				randf_range(-10, 10)
+			)
+		elif zone == "coastal":
+			# Coastal ring
+			var angle = randf() * TAU
+			var radius = randf_range(18, 25)
+			pos = Vector3(
+				cos(angle) * radius,
+				0,
+				sin(angle) * radius
+			)
+		elif zone == "clearing":
+			# Scattered clearings
+			var clearing_center = Vector3(randf_range(-10, 10), 0, randf_range(-8, 8))
+			pos = clearing_center + Vector3(randf_range(-5, 5), 0, randf_range(-5, 5))
+		else:
+			# General scattered
+			pos = Vector3(
+				randf_range(-ISLAND_SIZE_X/2, ISLAND_SIZE_X/2),
+				0,
+				randf_range(-ISLAND_SIZE_Z/2, ISLAND_SIZE_Z/2)
+			)
 		
 		if is_ground_texture:
 			# Flatten for ground textures (lie flat on XZ plane)
@@ -359,27 +321,23 @@ func setup_phase_1():
 		env.environment.glow_enabled = false
 		env.environment.volumetric_fog_enabled = false
 	
-	# Create tree MultiMeshes (split into groups for variety)
-	var large_trees = asset_library["trees"].slice(0, 5)  # island_tree, fir, jacaranda
-	var small_trees = asset_library["trees"].slice(5, 11)  # quiver, small, dead
-	var saplings = asset_library["trees"].slice(11, 16)  # stumps, saplings
+	# Create tree MultiMeshes (all trees use same asset for batching)
+	var all_trees = asset_library["trees"]
 	
-	if not large_trees.is_empty():
-		multimesh_groups["large_trees"] = create_multimesh_from_assets(large_trees, 60, "interior_forest")
-		print("[NatureIsland] Created 60 large trees")
-	
-	if not small_trees.is_empty():
-		multimesh_groups["small_trees"] = create_multimesh_from_assets(small_trees, 30, "coastal")
-		print("[NatureIsland] Created 30 small trees")
-	
-	if not saplings.is_empty():
-		multimesh_groups["saplings"] = create_multimesh_from_assets(saplings, 10, "clearing")
-		print("[NatureIsland] Created 10 saplings")
+	if not all_trees.is_empty():
+		multimesh_groups["large_trees"] = create_multimesh_from_assets(all_trees, 30, "interior_forest")
+		print("[NatureIsland] Created 30 large trees")
+		
+		multimesh_groups["small_trees"] = create_multimesh_from_assets(all_trees, 15, "coastal")
+		print("[NatureIsland] Created 15 small trees")
+		
+		multimesh_groups["saplings"] = create_multimesh_from_assets(all_trees, 5, "clearing")
+		print("[NatureIsland] Created 5 saplings")
 	
 	# Setup simple ocean (Phase 1: just color + basic UV scroll)
 	setup_ocean_phase_1()
 	
-	update_metrics_overlay("Phase 1: Dense Forest + Ocean", "Trees: 100 | Draw Calls: ~4 | Target: 60 FPS")
+	update_metrics_overlay("Phase 1: Dense Forest + Ocean", "Trees: 50 | Draw Calls: ~4 | Target: 60 FPS")
 
 func setup_ocean_phase_1():
 	"""Setup simple ocean for Phase 1"""
@@ -399,28 +357,24 @@ func transition_to_phase_2():
 	print("\n[NatureIsland] === PHASE 2: + Rocks (35-70s) ===")
 	
 	# Add rock MultiMeshes
-	var boulders = asset_library["rocks"].slice(0, 5)
-	var rock_faces = asset_library["rocks"].slice(5, 10)
-	var small_rocks = asset_library["rocks"].slice(10, 15)
+	var all_rocks = asset_library["rocks"]
 	
-	if not boulders.is_empty():
-		multimesh_groups["boulders"] = create_multimesh_from_assets(boulders, 15, "coastal")
-		print("[NatureIsland] Created 15 boulders")
-	
-	if not rock_faces.is_empty():
-		multimesh_groups["rock_faces"] = create_multimesh_from_assets(rock_faces, 10, "coastal")
-		print("[NatureIsland] Created 10 rock faces")
-	
-	if not small_rocks.is_empty():
-		multimesh_groups["small_rocks"] = create_multimesh_from_assets(small_rocks, 15, "general")
-		print("[NatureIsland] Created 15 small rocks")
+	if not all_rocks.is_empty():
+		multimesh_groups["boulders"] = create_multimesh_from_assets(all_rocks, 8, "coastal")
+		print("[NatureIsland] Created 8 boulders")
+		
+		multimesh_groups["rock_faces"] = create_multimesh_from_assets(all_rocks, 5, "coastal")
+		print("[NatureIsland] Created 5 rock faces")
+		
+		multimesh_groups["small_rocks"] = create_multimesh_from_assets(all_rocks, 7, "general")
+		print("[NatureIsland] Created 7 small rocks")
 	
 	# Animate ocean
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("wave_height", 0.3)
 	
-	update_metrics_overlay("Phase 2: + Rocks", "Objects: 140 | Draw Calls: ~7 | Target: 55 FPS")
+	update_metrics_overlay("Phase 2: + Rocks", "Objects: 70 | Draw Calls: ~7 | Target: 55 FPS")
 
 func transition_to_phase_3():
 	"""Phase 3: + Vegetation (70-105s) - Target 50 FPS"""
@@ -428,34 +382,27 @@ func transition_to_phase_3():
 	print("\n[NatureIsland] === PHASE 3: + Vegetation (70-105s) ===")
 	
 	# Add vegetation MultiMeshes
-	var shrubs = asset_library["vegetation"].slice(0, 4)
-	var grasses = asset_library["vegetation"].slice(4, 8)
-	var flowers = asset_library["vegetation"].slice(8, 14)
-	var plants = asset_library["vegetation"].slice(14, 20)
-	var succulents = asset_library["vegetation"].slice(20, 27)
+	var all_vegetation = asset_library["vegetation"]
 	
-	if not shrubs.is_empty():
-		multimesh_groups["shrubs"] = create_multimesh_from_assets(shrubs, 30, "clearing")
-		print("[NatureIsland] Created 30 shrubs")
-	
-	if not grasses.is_empty():
-		multimesh_groups["grasses"] = create_multimesh_from_assets(grasses, 25, "general")
-		print("[NatureIsland] Created 25 grasses")
-	
-	if not flowers.is_empty():
-		multimesh_groups["flowers"] = create_multimesh_from_assets(flowers, 15, "clearing")
-		print("[NatureIsland] Created 15 flowers")
-	
-	if not plants.is_empty():
-		multimesh_groups["plants"] = create_multimesh_from_assets(plants, 10, "interior_forest")
-		print("[NatureIsland] Created 10 plants")
+	if not all_vegetation.is_empty():
+		multimesh_groups["shrubs"] = create_multimesh_from_assets(all_vegetation, 15, "clearing")
+		print("[NatureIsland] Created 15 shrubs")
+		
+		multimesh_groups["grasses"] = create_multimesh_from_assets(all_vegetation, 12, "general")
+		print("[NatureIsland] Created 12 grasses")
+		
+		multimesh_groups["flowers"] = create_multimesh_from_assets(all_vegetation, 8, "clearing")
+		print("[NatureIsland] Created 8 flowers")
+		
+		multimesh_groups["plants"] = create_multimesh_from_assets(all_vegetation, 5, "interior_forest")
+		print("[NatureIsland] Created 5 plants")
 	
 	# Add foam to water
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("phase", 3)
 	
-	update_metrics_overlay("Phase 3: + Vegetation", "Objects: 220 | Draw Calls: ~11 | Target: 50 FPS")
+	update_metrics_overlay("Phase 3: + Vegetation", "Objects: 110 | Draw Calls: ~11 | Target: 50 FPS")
 
 func transition_to_phase_4():
 	"""Phase 4: + Ground Detail + Lighting (105-140s) - Target 45 FPS"""
@@ -477,17 +424,17 @@ func transition_to_phase_4():
 	
 	# Place ground textures FLAT
 	if not ground_textures.is_empty():
-		multimesh_groups["ground_textures"] = create_multimesh_from_assets(ground_textures, 40, "general")
-		print("[NatureIsland] Created 40 ground texture patches (flat)")
+		multimesh_groups["ground_textures"] = create_multimesh_from_assets(ground_textures, 20, "general")
+		print("[NatureIsland] Created 20 ground texture patches (flat)")
 	
 	# Place 3D ground objects normally (roots, coastal features)
 	if not ground_3d_objects.is_empty():
-		multimesh_groups["roots"] = create_multimesh_from_assets(ground_3d_objects, 15, "interior_forest")
-		print("[NatureIsland] Created 15 root clusters")
+		multimesh_groups["roots"] = create_multimesh_from_assets(ground_3d_objects, 8, "interior_forest")
+		print("[NatureIsland] Created 8 root clusters")
 	
 	if not coastal_assets.is_empty():
-		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 5, "coastal")
-		print("[NatureIsland] Created 5 coastal features")
+		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 2, "coastal")
+		print("[NatureIsland] Created 2 coastal features")
 	
 	# Enable per-vertex lighting
 	for group_name in multimesh_groups:
@@ -503,32 +450,29 @@ func transition_to_phase_4():
 		mat.set_shader_parameter("phase", 4)
 		mat.set_shader_parameter("wave_height", 0.5)
 	
-	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 280 | Draw Calls: ~15 | Target: 45 FPS")
+	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
 
 func transition_to_phase_5():
-	"""Phase 5: + Shadows + Glow (140-176s) - Target 35-40 FPS"""
+	"""Phase 5: Per-Vertex Lighting Only (140-176s) - Target 40 FPS (NO shadows/glow for Raspberry Pi)"""
 	current_phase = 5
-	print("\n[NatureIsland] === PHASE 5: + Shadows + Glow (140-176s) ===")
+	print("\n[NatureIsland] === PHASE 5: Per-Vertex Lighting (140-176s) ===")
 	
-	# Enable shadows
-	sun.shadow_enabled = true
-	sun.directional_shadow_mode = DirectionalLight3D.SHADOW_ORTHOGONAL
-	sun.directional_shadow_max_distance = 60.0
+	# Keep shadows disabled for Raspberry Pi performance
+	sun.shadow_enabled = false
+	print("[NatureIsland] Shadows disabled for Raspberry Pi optimization")
 	
-	# Enable glow
+	# Keep glow disabled for Raspberry Pi performance
 	if env.environment:
-		env.environment.glow_enabled = true
-		env.environment.glow_intensity = 0.5
-		env.environment.glow_strength = 0.8
-		env.environment.glow_bloom = 0.15
+		env.environment.glow_enabled = false
+	print("[NatureIsland] Glow disabled for Raspberry Pi optimization")
 	
-	# Full water shader
+	# Full water shader (but still no expensive vertex displacement in early phases)
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("phase", 5)
 		mat.set_shader_parameter("wave_height", 0.8)
 	
-	update_metrics_overlay("Phase 5: + Shadows + Glow", "Objects: 280+ | Draw Calls: ~15 | Target: 35-40 FPS")
+	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
 
 func start_fadeout():
 	"""Fade to black at the end (171-176s)"""

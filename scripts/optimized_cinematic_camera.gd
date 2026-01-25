@@ -2,10 +2,10 @@ extends Camera3D
 ## Optimized Cinematic Camera - NO per-frame look_at() calls
 ## Pre-calculates all transforms at startup for maximum performance
 
-# Pre-calculated transforms (one per second)
+# Pre-calculated transforms (one every 3 seconds for Raspberry Pi optimization)
 var transform_cache: Array[Transform3D] = []
 var cache_duration: float = 176.0  # Total benchmark duration
-var cache_rate: float = 1.0  # One transform per second
+var cache_rate: float = 3.0  # One transform every 3 seconds (60 total vs 177)
 
 # Camera path keyframes (cinematic tour of forested island)
 var keyframes = [
