@@ -53,9 +53,75 @@ var last_cpu: float = 0.0
 var last_temp: float = 0.0
 var last_gpu: float = 0.0
 
+func run_warmup_phase(loading_screen):
+	"""Pre-compile all shaders and create GPU buffers"""
+	print("[NatureIsland] Starting warmup phase...")
+	
+	# Make everything visible to force shader compilation
+	camera.current = true
+	sun.visible = true
+	ocean.visible = true
+	
+	if loading_screen:
+		loading_screen.update_progress(75.0, "Compiling ocean shader...")
+	
+	# Force compile ocean shader with all phase variants
+	if ocean:
+		var mat = ocean.get_surface_override_material(0)
+		if mat and mat is ShaderMaterial:
+			# Cycle through all phase parameters to compile variants
+			for phase_num in [1, 2, 3, 4, 5]:
+				mat.set_shader_parameter("phase", phase_num)
+				await get_tree().process_frame
+			mat.set_shader_parameter("phase", 1)  # Reset to phase 1
+			print("[NatureIsland] Ocean shader variants compiled")
+	
+	if loading_screen:
+		loading_screen.update_progress(80.0, "Compiling wind shaders...")
+	
+	# Force compile wind shaders by making MultiMeshes visible
+	# The shaders will compile when first rendered
+	for group_name in multimesh_groups:
+		var mmi = multimesh_groups[group_name]
+		if mmi:
+			mmi.visible = true
+	
+	# Render multiple frames to ensure GPU buffers created
+	for i in range(10):
+		if loading_screen:
+			loading_screen.update_progress(80.0 + i, "Rendering test frames... %d/10" % (i+1))
+		await get_tree().process_frame
+	
+	print("[NatureIsland] GPU buffers created - rendered 10 test frames")
+	
+	if loading_screen:
+		loading_screen.update_progress(95.0, "Thermal stabilization...")
+	
+	# Thermal stabilization (60 frames = 1 second @ 60 FPS)
+	for i in range(60):
+		await get_tree().process_frame
+	
+	print("[NatureIsland] Warmup complete!")
+
 func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
-	print("[NatureIsland] Creating optimized primitive meshes for Raspberry Pi SBC...")
+	
+	# Force disable VSync for accurate benchmark
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+	print("[NatureIsland] VSync forcibly disabled")
+	
+	# Hide everything during warmup
+	camera.current = false
+	if metrics_overlay:
+		metrics_overlay.visible = false
+	
+	# Show loading screen
+	var loading_screen = get_node_or_null("LoadingScreen")
+	if loading_screen:
+		loading_screen.visible = true
+		loading_screen.update_progress(0.0, "Initializing systems...")
+	
+	await get_tree().process_frame
 	
 	# Set benchmark title in overlay
 	if metrics_overlay and metrics_overlay.has_method("set_benchmark_title"):
@@ -70,11 +136,30 @@ func _ready():
 		print("[NatureIsland] Creating standalone performance monitor")
 		perf_monitor = PerformanceMonitor.new()
 	
+	if loading_screen:
+		loading_screen.update_progress(10.0, "Loading assets...")
+	
 	# Load all assets asynchronously to prevent freeze
 	await load_all_assets_async()
 	
+	if loading_screen:
+		loading_screen.update_progress(50.0, "Creating scene...")
+	
 	# Start with Phase 1 (also async to prevent freeze during MultiMesh creation)
 	await setup_phase_1_async()
+	
+	if loading_screen:
+		loading_screen.update_progress(70.0, "Pre-compiling shaders...")
+	
+	# NEW: Warmup phase - pre-compile all shaders
+	await run_warmup_phase(loading_screen)
+	
+	# Hide loading screen, show scene
+	if loading_screen:
+		loading_screen.visible = false
+	camera.current = true
+	if metrics_overlay:
+		metrics_overlay.visible = true
 	
 	# Loading complete - NOW start audio and benchmark
 	is_loading = false
@@ -87,6 +172,11 @@ func _ready():
 func _process(delta: float):
 	if is_loading:
 		return
+	
+	# Diagnostic: Log slow frames
+	var frame_ms = delta * 1000.0
+	if frame_ms > 50.0:  # Slower than 20 FPS
+		push_warning("[NatureIsland] SLOW FRAME: %.1fms (%.1f FPS)" % [frame_ms, 1.0/delta])
 	
 	timeline += delta
 	

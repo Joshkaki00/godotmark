@@ -5,6 +5,7 @@
 [ext_resource type="AudioStream" uid="uid://dm13tujsp2rb7" path="res://art/sounds/nature-benchmark/Forest Glass (nature benchmark).ogg" id="3"]
 [ext_resource type="PackedScene" path="res://scenes/ui/model_showcase_overlay.tscn" id="4"]
 [ext_resource type="Shader" uid="uid://c70tb8360810l" path="res://shaders/water_ocean.gdshader" id="5"]
+[ext_resource type="PackedScene" path="res://scenes/ui/loading_screen.tscn" id="6"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
 sky_top_color = Color(0.385, 0.6, 0.839, 1)
@@ -78,6 +79,9 @@ mesh = SubResource("PlaneMesh_ground")
 stream = ExtResource("3")
 
 [node name="MetricsOverlay" parent="." instance=ExtResource("4")]
+
+[node name="LoadingScreen" parent="." instance=ExtResource("6")]
+visible = false
 
 [node name="FadeOverlay" type="ColorRect" parent="."]
 modulate = Color(1, 1, 1, 0)
