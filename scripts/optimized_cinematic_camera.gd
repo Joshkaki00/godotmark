@@ -29,6 +29,11 @@ var parent_node: Node3D
 
 func _ready():
 	parent_node = get_parent()
+	
+	# Set far plane for Raspberry Pi optimization (only render within 50m)
+	far = 50.0
+	print("[OptimizedCamera] Far plane set to 50m for close-range performance")
+	
 	# PRE-CALCULATE all transforms at startup
 	pre_calculate_transforms()
 	print("[OptimizedCamera] Pre-calculated %d transforms" % transform_cache.size())
