@@ -1,6 +1,7 @@
 extends Control
 ## Real-time metrics overlay for benchmarks
 
+@onready var title_label = $Panel/MarginContainer/VBoxContainer/TitleLabel
 @onready var fps_label = $Panel/MarginContainer/VBoxContainer/FPSLabel
 @onready var frame_time_label = $Panel/MarginContainer/VBoxContainer/FrameTimeLabel
 @onready var cpu_label = $Panel/MarginContainer/VBoxContainer/CPULabel
@@ -13,6 +14,11 @@ extends Control
 func _ready():
 	# Ensure we're always on top
 	set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+
+func set_benchmark_title(title: String):
+	"""Set the benchmark title dynamically"""
+	if title_label:
+		title_label.text = title
 
 func update_metrics(fps: float, frame_time: float, cpu_usage: float, temp: float, gpu_usage: float):
 	"""Update performance metrics with color-coded FPS"""

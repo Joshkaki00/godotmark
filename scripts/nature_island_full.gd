@@ -57,6 +57,10 @@ func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
 	print("[NatureIsland] Creating optimized primitive meshes for Raspberry Pi SBC...")
 	
+	# Set benchmark title in overlay
+	if metrics_overlay and metrics_overlay.has_method("set_benchmark_title"):
+		metrics_overlay.set_benchmark_title("NATURE ISLAND BENCHMARK")
+	
 	# Get performance monitor from Main scene or create standalone
 	var main = get_tree().root.get_node_or_null("Main")
 	if main and main.perf_monitor:

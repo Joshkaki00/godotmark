@@ -75,6 +75,10 @@ func _ready():
 	print("[ModelShowcase] Starting 1-Minute Benchmark")
 	print("========================================\n")
 	
+	# Set benchmark title in overlay
+	if metrics_overlay and metrics_overlay.has_method("set_benchmark_title"):
+		metrics_overlay.set_benchmark_title("MODEL SHOWCASE BENCHMARK")
+	
 	# Hide everything during warmup - only show loading screen
 	bust.visible = false
 	camera.current = false
