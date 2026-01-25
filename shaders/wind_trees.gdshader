@@ -1,4 +1,5 @@
 shader_type spatial;
+render_mode diffuse_lambert, specular_disabled;
 
 // Wind animation parameters (slower, larger motion for trees)
 uniform float wind_speed : hint_range(0.0, 5.0) = 0.8;
@@ -39,4 +40,6 @@ void fragment() {
 	}
 	ALBEDO = albedo.rgb;
 	ALPHA = albedo.a;
+	
+	// Per-vertex lighting is applied automatically by render_mode diffuse_lambert
 }

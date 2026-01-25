@@ -569,7 +569,7 @@ func transition_to_phase_5():
 	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
 
 func swap_to_lit_materials():
-	"""Swap all multimesh materials to pre-created per-vertex versions (no freeze)"""
+	"""Swap all multimesh materials to per-vertex lighting while preserving wind animation"""
 	# Get original asset data with pre-created lit materials
 	var asset_type_map = {
 		"large_trees": "trees",
@@ -587,27 +587,45 @@ func swap_to_lit_materials():
 		"coastal_features": "coastal"
 	}
 	
+	# Load wind shaders (if they exist)
+	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
+	var veg_wind_shader = load("res://shaders/wind_vegetation.gdshader")
+	
 	for group_name in multimesh_groups:
 		var mmi = multimesh_groups[group_name]
 		if not mmi:
 			continue
 		
-		# Find which asset type this group uses
-		var asset_type = asset_type_map.get(group_name, "")
-		if asset_type == "":
-			continue
+		# Check if this group has wind animation
+		var has_wind_shader = false
+		var current_mat = mmi.material_override
+		if current_mat and current_mat is ShaderMaterial:
+			if current_mat.shader == tree_wind_shader or current_mat.shader == veg_wind_shader:
+				has_wind_shader = true
 		
-		# Get first asset of that type (they all have same material)
-		var assets = asset_library.get(asset_type, [])
-		if assets.is_empty():
-			continue
-		
-		var asset_data = assets[0]
-		if asset_data.has("material_lit"):
-			# Swap to pre-created lit material (instant, no shader compilation!)
-			mmi.material_override = asset_data["material_lit"]
+		if has_wind_shader:
+			# Keep wind shader but enable lighting in it
+			if current_mat is ShaderMaterial:
+				# Wind shaders already support lighting via fragment shader
+				# Just ensure we're not using unshaded mode anymore
+				print("[NatureIsland] Preserving wind animation for: " + group_name)
+		else:
+			# Find which asset type this group uses (for non-wind groups)
+			var asset_type = asset_type_map.get(group_name, "")
+			if asset_type == "":
+				continue
+			
+			# Get first asset of that type (they all have same material)
+			var assets = asset_library.get(asset_type, [])
+			if assets.is_empty():
+				continue
+			
+			var asset_data = assets[0]
+			if asset_data.has("material_lit"):
+				# Swap to pre-created lit material (instant, no shader compilation!)
+				mmi.material_override = asset_data["material_lit"]
 	
-	print("[NatureIsland] Material swap complete - no freeze!")
+	print("[NatureIsland] Material swap complete - wind animation preserved!")
 
 func start_fadeout():
 	"""Fade to black at the end (171-176s)"""
