@@ -394,7 +394,7 @@ func setup_phase_1_async():
 	# Setup simple ocean (Phase 1: just color + basic UV scroll)
 	setup_ocean_phase_1()
 	
-	update_metrics_overlay("Phase 1: Dense Forest + Ocean", "Trees: 30 | Draw Calls: ~4 | Target: 70 FPS")
+	update_metrics_overlay("Dense Forest + Ocean", "Trees: 30 | Draw Calls: ~4 | Target: 70 FPS")
 
 func setup_ocean_phase_1():
 	"""Setup simple ocean for Phase 1"""
@@ -431,7 +431,7 @@ func transition_to_phase_2():
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("wave_height", 0.3)
 	
-	update_metrics_overlay("Phase 2: + Rocks", "Objects: 42 | Draw Calls: ~7 | Target: 70 FPS")
+	update_metrics_overlay("+ Rocks", "Objects: 42 | Draw Calls: ~7 | Target: 70 FPS")
 
 func transition_to_phase_3():
 	"""Phase 3: + Vegetation (70-105s) - Target 50 FPS"""
@@ -481,7 +481,7 @@ func transition_to_phase_3():
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("phase", 3)
 	
-	update_metrics_overlay("Phase 3: + Vegetation", "Objects: 67 | Draw Calls: ~11 | Target: 70 FPS")
+	update_metrics_overlay("+ Vegetation", "Objects: 67 | Draw Calls: ~11 | Target: 70 FPS")
 
 func transition_to_phase_4():
 	"""Phase 4: + Ground Detail + Lighting (105-140s) - Target 45 FPS"""
@@ -544,7 +544,7 @@ func transition_to_phase_4():
 	
 	print("[NatureIsland] Applied wind animation shader to trees")
 	
-	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
+	update_metrics_overlay("+ Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
 
 func transition_to_phase_5():
 	"""Phase 5: Per-Vertex Lighting Only (140-176s) - Target 40 FPS (NO shadows/glow for Raspberry Pi)"""
@@ -570,7 +570,7 @@ func transition_to_phase_5():
 		mat.set_shader_parameter("phase", 5)
 		mat.set_shader_parameter("wave_height", 0.8)
 	
-	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
+	update_metrics_overlay("Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
 
 func swap_to_lit_materials():
 	"""Swap all multimesh materials to per-vertex lighting while preserving wind animation"""
