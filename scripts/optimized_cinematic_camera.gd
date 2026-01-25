@@ -8,20 +8,20 @@ var cache_duration: float = 176.0  # Total benchmark duration
 var cache_rate: float = 1.5  # One transform every 1.5 seconds (118 total - smooth but performant)
 
 # Camera path keyframes (smooth circular orbit around island)
-# Design: Gentle 360° orbit at consistent height, gradual zoom in/out
+# Design: Gentle 360° orbit at medium height, much closer to island for detail
 var keyframes = [
-	# Phase 1: Start - South view, high and distant
-	{"time": 0.0, "position": Vector3(0, 20, 45), "look_at": Vector3(0, 5, 0)},
-	# Phase 1: Southeast, begin descent
-	{"time": 35.0, "position": Vector3(32, 16, 32), "look_at": Vector3(0, 4, 0)},
-	# Phase 2: East, closer and lower
-	{"time": 70.0, "position": Vector3(38, 14, 0), "look_at": Vector3(0, 4, 0)},
-	# Phase 3: Northeast, maintain altitude
-	{"time": 105.0, "position": Vector3(32, 14, -32), "look_at": Vector3(0, 4, 0)},
-	# Phase 4: North, slight rise for overview
-	{"time": 140.0, "position": Vector3(0, 18, -42), "look_at": Vector3(0, 5, 0)},
+	# Phase 1: Start - South view, closer and lower
+	{"time": 0.0, "position": Vector3(0, 12, 20), "look_at": Vector3(0, 3, 0)},
+	# Phase 1: Southeast, descend slightly
+	{"time": 35.0, "position": Vector3(14, 10, 14), "look_at": Vector3(0, 2, 0)},
+	# Phase 2: East, maintain close distance
+	{"time": 70.0, "position": Vector3(18, 9, 0), "look_at": Vector3(0, 2, 0)},
+	# Phase 3: Northeast, stay close
+	{"time": 105.0, "position": Vector3(14, 9, -14), "look_at": Vector3(0, 2, 0)},
+	# Phase 4: North, slight rise but still close
+	{"time": 140.0, "position": Vector3(0, 11, -19), "look_at": Vector3(0, 3, 0)},
 	# Phase 5: Northwest, final orbit completion
-	{"time": 176.0, "position": Vector3(-35, 20, -35), "look_at": Vector3(0, 5, 0)},
+	{"time": 176.0, "position": Vector3(-16, 12, -16), "look_at": Vector3(0, 3, 0)},
 ]
 
 var parent_node: Node3D
