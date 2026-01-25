@@ -233,7 +233,7 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	if base_data["material"] and base_data["material"] is StandardMaterial3D:
 		var mat = base_data["material"].duplicate()
 		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		mmi.set_surface_override_material(0, mat)
+		mmi.material_override = mat
 	
 	# Generate transforms based on zone
 	var transforms = generate_transforms_for_zone(instance_count, zone)
@@ -447,9 +447,9 @@ func transition_to_phase_4():
 	# Enable per-vertex lighting
 	for group_name in multimesh_groups:
 		var mmi = multimesh_groups[group_name]
-		if mmi:
-			var mat = mmi.get_surface_override_material(0)
-			if mat and mat is StandardMaterial3D:
+		if mmi and mmi.material_override:
+			var mat = mmi.material_override
+			if mat is StandardMaterial3D:
 				mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	
 	# Enhanced water
