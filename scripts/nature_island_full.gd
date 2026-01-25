@@ -450,6 +450,28 @@ func transition_to_phase_3():
 		multimesh_groups["plants"] = create_multimesh_from_assets(all_vegetation, 2, "interior_forest")
 		print("[NatureIsland] Created 2 plants")
 	
+	# Add wind animation to vegetation (GPU-based, zero CPU overhead)
+	var wind_shader = load("res://shaders/wind_vegetation.gdshader")
+	for group_name in ["shrubs", "grasses", "flowers", "plants"]:
+		if multimesh_groups.has(group_name):
+			var mmi = multimesh_groups[group_name]
+			var shader_mat = ShaderMaterial.new()
+			shader_mat.shader = wind_shader
+			shader_mat.set_shader_parameter("wind_speed", 2.0)
+			shader_mat.set_shader_parameter("wind_strength", 0.15)
+			shader_mat.set_shader_parameter("max_height", 2.0)
+			
+			# Preserve original texture/color from GLTF asset
+			var original_mat = mmi.material_override
+			if original_mat and original_mat is StandardMaterial3D:
+				shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+				shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+				shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+			
+			mmi.material_override = shader_mat
+	
+	print("[NatureIsland] Applied wind animation shader to vegetation")
+	
 	# Add foam to water
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
@@ -495,6 +517,28 @@ func transition_to_phase_4():
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("phase", 4)
 		mat.set_shader_parameter("wave_height", 0.5)
+	
+	# Add wind animation to trees (GPU-based, zero CPU overhead)
+	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
+	for group_name in ["large_trees", "small_trees", "saplings"]:
+		if multimesh_groups.has(group_name):
+			var mmi = multimesh_groups[group_name]
+			var shader_mat = ShaderMaterial.new()
+			shader_mat.shader = tree_wind_shader
+			shader_mat.set_shader_parameter("wind_speed", 0.8)
+			shader_mat.set_shader_parameter("wind_strength", 0.4)
+			shader_mat.set_shader_parameter("max_height", 5.0)
+			
+			# Preserve original texture/color from GLTF asset
+			var original_mat = mmi.material_override
+			if original_mat and original_mat is StandardMaterial3D:
+				shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+				shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+				shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+			
+			mmi.material_override = shader_mat
+	
+	print("[NatureIsland] Applied wind animation shader to trees")
 	
 	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
 
