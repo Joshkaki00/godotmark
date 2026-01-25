@@ -55,7 +55,7 @@ var last_gpu: float = 0.0
 
 func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
-	print("[NatureIsland] Loading 12 optimized GLTF assets for Raspberry Pi SBC...")
+	print("[NatureIsland] Creating optimized primitive meshes for Raspberry Pi SBC...")
 	
 	# Get performance monitor from Main scene or create standalone
 	var main = get_tree().root.get_node_or_null("Main")
@@ -105,118 +105,114 @@ func _process(delta: float):
 	update_metrics()
 
 func load_all_assets():
-	"""Load 12 representative GLTF assets for Raspberry Pi optimization"""
-	print("[NatureIsland] Loading optimized asset library (12 assets)...")
+	"""Create optimized primitive meshes for Raspberry Pi SBC"""
+	print("[NatureIsland] Creating optimized primitive meshes for SBC...")
 	
-	# Trees (3 assets - representative variety)
-	var tree_assets = [
-		"island_tree_01_2k.gltf",
-		"fir_tree_01_2k.gltf",
-		"dead_tree_trunk_02_2k.gltf"
-	]
+	# Create 3 tree variants (different colors)
+	for i in range(3):
+		asset_library["trees"].append(create_primitive_mesh("tree", i))
 	
-	# Rocks (3 assets)
-	var rock_assets = [
-		"boulder_01_2k.gltf",
-		"coast_rocks_02_2k.gltf",
-		"rock_moss_set_01_2k.gltf"
-	]
+	# Create 3 rock variants (different colors)
+	for i in range(3):
+		asset_library["rocks"].append(create_primitive_mesh("rock", i))
 	
-	# Vegetation (3 assets)
-	var vegetation_assets = [
-		"shrub_01_2k.gltf",
-		"grass_medium_01_2k.gltf",
-		"flower_gazania_2k.gltf"
-	]
+	# Create 3 vegetation variants (different colors)
+	for i in range(3):
+		asset_library["vegetation"].append(create_primitive_mesh("vegetation", i))
 	
-	# Ground (2 assets)
-	var ground_assets = [
-		"forest_floor_2k.gltf",
-		"root_cluster_01_2k.gltf"
-	]
+	# Create 2 ground variants (different shades)
+	for i in range(2):
+		asset_library["ground"].append(create_primitive_mesh("ground", i))
 	
-	# Coastal (1 asset)
-	var coastal_assets = [
-		"coast_sand_rocks_02_2k.gltf"
-	]
+	# Create 1 coastal variant (same as rocks)
+	asset_library["coastal"].append(create_primitive_mesh("rock", 0))
 	
-	# Load all assets
-	for asset_name in tree_assets:
-		var scene = load("res://art/nature-benchmark/" + asset_name)
-		if scene:
-			asset_library["trees"].append(scene)
-	
-	for asset_name in rock_assets:
-		var scene = load("res://art/nature-benchmark/" + asset_name)
-		if scene:
-			asset_library["rocks"].append(scene)
-	
-	for asset_name in vegetation_assets:
-		var scene = load("res://art/nature-benchmark/" + asset_name)
-		if scene:
-			asset_library["vegetation"].append(scene)
-	
-	for asset_name in ground_assets:
-		var scene = load("res://art/nature-benchmark/" + asset_name)
-		if scene:
-			asset_library["ground"].append(scene)
-	
-	for asset_name in coastal_assets:
-		var scene = load("res://art/nature-benchmark/" + asset_name)
-		if scene:
-			asset_library["coastal"].append(scene)
-	
-	print("[NatureIsland] Loaded assets: Trees=%d, Rocks=%d, Vegetation=%d, Ground=%d, Coastal=%d" %
+	print("[NatureIsland] Created primitive meshes: Trees=%d, Rocks=%d, Vegetation=%d, Ground=%d, Coastal=%d" %
 		[asset_library["trees"].size(), asset_library["rocks"].size(), 
 		asset_library["vegetation"].size(), asset_library["ground"].size(), 
 		asset_library["coastal"].size()])
 
-func extract_mesh_and_material_from_gltf(gltf_scene: PackedScene) -> Dictionary:
-	"""Extract mesh and material from GLTF scene"""
-	var instance = gltf_scene.instantiate()
-	var mesh_instance = find_mesh_instance_recursive(instance)
+func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
+	"""Create optimized primitive mesh for Raspberry Pi SBC performance"""
+	var mesh = null
+	var material = StandardMaterial3D.new()
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material.cull_mode = BaseMaterial3D.CULL_BACK
 	
-	if not mesh_instance:
-		instance.queue_free()
-		return {"mesh": null, "material": null}
+	match type:
+		"tree":
+			# Simple tree (sphere canopy - trunk handled by transform scaling)
+			var canopy = SphereMesh.new()
+			canopy.radius = 2.0
+			canopy.height = 3.0
+			canopy.radial_segments = 6
+			canopy.rings = 3
+			
+			# Color variation
+			var green_variants = [
+				Color(0.2, 0.5, 0.2),   # Dark green
+				Color(0.3, 0.6, 0.3),   # Medium green
+				Color(0.25, 0.55, 0.25) # Light-medium green
+			]
+			material.albedo_color = green_variants[variant % 3]
+			mesh = canopy
+		
+		"rock":
+			# Simple rock (low-poly sphere with irregular look)
+			var rock_mesh = SphereMesh.new()
+			rock_mesh.radius = 1.0
+			rock_mesh.radial_segments = 5
+			rock_mesh.rings = 3
+			
+			# Color variation
+			var rock_variants = [
+				Color(0.5, 0.5, 0.5),   # Gray
+				Color(0.4, 0.4, 0.45),  # Blue-gray
+				Color(0.45, 0.42, 0.4)  # Brown-gray
+			]
+			material.albedo_color = rock_variants[variant % 3]
+			mesh = rock_mesh
+		
+		"vegetation":
+			# Simple vegetation (small sphere)
+			var veg_mesh = SphereMesh.new()
+			veg_mesh.radius = 0.5
+			veg_mesh.radial_segments = 5
+			veg_mesh.rings = 3
+			
+			# Color variation
+			var veg_variants = [
+				Color(0.3, 0.6, 0.2),   # Bright green
+				Color(0.4, 0.65, 0.3),  # Yellow-green
+				Color(0.35, 0.55, 0.25) # Medium green
+			]
+			material.albedo_color = veg_variants[variant % 3]
+			mesh = veg_mesh
+		
+		"ground":
+			# Ground texture (flat plane)
+			var ground_mesh = PlaneMesh.new()
+			ground_mesh.size = Vector2(2.0, 2.0)
+			
+			# Color variation
+			var ground_variants = [
+				Color(0.4, 0.3, 0.2),  # Brown
+				Color(0.35, 0.28, 0.18) # Darker brown
+			]
+			material.albedo_color = ground_variants[variant % 2]
+			mesh = ground_mesh
+		
+		_:
+			# Default fallback
+			var default_mesh = BoxMesh.new()
+			default_mesh.size = Vector3(1, 1, 1)
+			material.albedo_color = Color(0.8, 0.8, 0.8)
+			mesh = default_mesh
 	
-	var mesh = mesh_instance.mesh
-	var material = null
-	if mesh_instance.get_surface_override_material_count() > 0:
-		material = mesh_instance.get_surface_override_material(0)
-	elif mesh and mesh.get_surface_count() > 0:
-		material = mesh.surface_get_material(0)
-	
-	instance.queue_free()
 	return {"mesh": mesh, "material": material}
 
-func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
-	"""Recursively find MeshInstance3D in node tree"""
-	if node is MeshInstance3D:
-		return node
-	
-	for child in node.get_children():
-		var result = find_mesh_instance_recursive(child)
-		if result:
-			return result
-	
-	return null
-
-func is_ground_texture_asset(asset_path: String) -> bool:
-	"""Detect if asset is a ground texture (should be flat) vs 3D object"""
-	var ground_keywords = [
-		"floor", "ground", "mud", "sand", "dirt", 
-		"leaves", "moss", "trail", "debris", "branches"
-	]
-	
-	var lower_name = asset_path.to_lower()
-	for keyword in ground_keywords:
-		if keyword in lower_name:
-			return true
-	return false
-
 func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: String) -> MultiMeshInstance3D:
-	"""Create MultiMesh from list of assets"""
+	"""Create MultiMesh from list of primitive mesh assets"""
 	if asset_list.is_empty() or instance_count == 0:
 		return null
 	
@@ -225,9 +221,9 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	multimesh.transform_format = MultiMesh.TRANSFORM_3D
 	multimesh.instance_count = instance_count
 	
-	# Use first asset's mesh as the base
-	var base_data = extract_mesh_and_material_from_gltf(asset_list[0])
-	if not base_data["mesh"]:
+	# Use first asset (now a Dictionary with "mesh" and "material")
+	var base_data = asset_list[0]
+	if not base_data.has("mesh") or not base_data["mesh"]:
 		return null
 	
 	multimesh.mesh = base_data["mesh"]
@@ -238,16 +234,50 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	mmi.visibility_range_end = 40.0  # Fade out beyond 40m
 	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
 	
-	# Apply material (make it unshaded for Phase 1)
-	if base_data["material"] and base_data["material"] is StandardMaterial3D:
-		var mat = base_data["material"].duplicate()
-		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		mat.cull_mode = BaseMaterial3D.CULL_BACK  # Don't render backfaces (30-40% overdraw reduction)
-		mmi.material_override = mat
+	# Apply material (already optimized in primitive creation)
+	if base_data.has("material") and base_data["material"]:
+		mmi.material_override = base_data["material"]
 	
-	# Detect if this is a ground texture
-	var first_asset_path = asset_list[0].resource_path if asset_list.size() > 0 else ""
-	var is_ground = is_ground_texture_asset(first_asset_path)
+	# Detect if this is a ground texture based on mesh type
+	var is_ground = base_data["mesh"] is PlaneMesh
+	
+	# Generate transforms based on zone and asset type
+	var transforms = generate_transforms_for_zone(instance_count, zone, is_ground)
+	for i in range(instance_count):
+		multimesh.set_instance_transform(i, transforms[i])
+	
+	add_child(mmi)
+	return mmi
+
+func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
+	"""Create MultiMesh from list of primitive mesh assets"""
+	if asset_list.is_empty() or instance_count == 0:
+		return null
+	
+	var mmi = MultiMeshInstance3D.new()
+	var multimesh = MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.instance_count = instance_count
+	
+	# Use first asset (now a Dictionary with "mesh" and "material")
+	var base_data = asset_list[0]
+	if not base_data.has("mesh") or not base_data["mesh"]:
+		return null
+	
+	multimesh.mesh = base_data["mesh"]
+	mmi.multimesh = multimesh
+	
+	# Add visibility range for automatic distance culling (Raspberry Pi optimization)
+	mmi.visibility_range_begin = 0.0
+	mmi.visibility_range_end = 40.0  # Fade out beyond 40m
+	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+	
+	# Apply material (already optimized in primitive creation)
+	if base_data.has("material") and base_data["material"]:
+		mmi.material_override = base_data["material"]
+	
+	# Detect if this is a ground texture based on mesh type
+	var is_ground = base_data["mesh"] is PlaneMesh
 	
 	# Generate transforms based on zone and asset type
 	var transforms = generate_transforms_for_zone(instance_count, zone, is_ground)
