@@ -39,8 +39,8 @@ shader_parameter/metallic = 0.0
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
 material = SubResource("ShaderMaterial_ocean")
 size = Vector2(200, 200)
-subdivide_width = 5
-subdivide_depth = 5
+subdivide_width = 10
+subdivide_depth = 10
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
 shading_mode = 0
