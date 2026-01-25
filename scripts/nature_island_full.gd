@@ -226,6 +226,19 @@ func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
 	
 	return null
 
+func is_ground_texture_asset(asset_path: String) -> bool:
+	"""Detect if asset is a ground texture (should be flat) vs 3D object"""
+	var ground_keywords = [
+		"floor", "ground", "mud", "sand", "dirt", 
+		"leaves", "moss", "trail", "debris", "branches"
+	]
+	
+	var lower_name = asset_path.to_lower()
+	for keyword in ground_keywords:
+		if keyword in lower_name:
+			return true
+	return false
+
 func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: String) -> MultiMeshInstance3D:
 	"""Create MultiMesh from list of assets"""
 	if asset_list.is_empty() or instance_count == 0:
