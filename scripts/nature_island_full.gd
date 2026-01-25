@@ -263,15 +263,19 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 		mat.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		mmi.material_override = mat
 	
-	# Generate transforms based on zone
-	var transforms = generate_transforms_for_zone(instance_count, zone)
+	# Detect if this is a ground texture
+	var first_asset_path = asset_list[0].resource_path if asset_list.size() > 0 else ""
+	var is_ground = is_ground_texture_asset(first_asset_path)
+	
+	# Generate transforms based on zone and asset type
+	var transforms = generate_transforms_for_zone(instance_count, zone, is_ground)
 	for i in range(instance_count):
 		multimesh.set_instance_transform(i, transforms[i])
 	
 	add_child(mmi)
 	return mmi
 
-func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D]:
+func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
 	"""Generate transforms based on island zone"""
 	var transforms: Array[Transform3D] = []
 	var min_distance = 3.0  # Minimum distance between objects
@@ -286,7 +290,7 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 				# Central dense forest
 				pos = Vector3(
 					randf_range(-15, 15),
-					randf_range(0, 3),
+					0,
 					randf_range(-10, 10)
 				)
 			elif zone == "coastal":
@@ -295,7 +299,7 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 				var radius = randf_range(18, 25)
 				pos = Vector3(
 					cos(angle) * radius,
-					randf_range(0, 2),
+					0,
 					sin(angle) * radius
 				)
 			elif zone == "clearing":
@@ -306,7 +310,7 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 				# General scattered
 				pos = Vector3(
 					randf_range(-ISLAND_SIZE_X/2, ISLAND_SIZE_X/2),
-					randf_range(0, 2),
+					0,
 					randf_range(-ISLAND_SIZE_Z/2, ISLAND_SIZE_Z/2)
 				)
 			
@@ -321,12 +325,20 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 				break
 			attempts += 1
 		
-		# Random rotation and scale
-		transform = transform.rotated(Vector3.UP, randf() * TAU)
-		var scale = randf_range(0.8, 1.3)
-		transform = transform.scaled(Vector3(scale, scale, scale))
-		transform.origin = pos
+		if is_ground_texture:
+			# Flatten for ground textures (lie flat on XZ plane)
+			transform = transform.rotated(Vector3.RIGHT, -PI/2)  # Rotate to lie flat
+			var scale_xy = randf_range(2.0, 4.0)
+			transform = transform.scaled(Vector3(scale_xy, 0.1, scale_xy))
+			pos.y = 0.01  # Slightly above ground to avoid z-fighting
+		else:
+			# Normal 3D object (trees, rocks, plants)
+			transform = transform.rotated(Vector3.UP, randf() * TAU)
+			var scale = randf_range(0.8, 1.3)
+			transform = transform.scaled(Vector3(scale, scale, scale))
+			pos.y = max(0, pos.y)  # Ensure on ground (no floating)
 		
+		transform.origin = pos
 		transforms.append(transform)
 	
 	return transforms
@@ -450,27 +462,32 @@ func transition_to_phase_4():
 	current_phase = 4
 	print("\n[NatureIsland] === PHASE 4: + Ground Detail + Lighting (105-140s) ===")
 	
-	# Add ground detail MultiMeshes
-	var forest_floor = asset_library["ground"].slice(0, 7)
-	var roots = asset_library["ground"].slice(14, 18)
-	var moss = asset_library["ground"].slice(18, 22)
-	var coastal_ground = asset_library["coastal"]
+	# Split ground assets into textures (flat) and 3D objects
+	var ground_textures = []
+	var ground_3d_objects = []
 	
-	if not forest_floor.is_empty():
-		multimesh_groups["forest_floor"] = create_multimesh_from_assets(forest_floor, 30, "interior_forest")
-		print("[NatureIsland] Created 30 forest floor patches")
+	for asset in asset_library["ground"]:
+		if is_ground_texture_asset(asset.resource_path):
+			ground_textures.append(asset)
+		else:
+			ground_3d_objects.append(asset)
 	
-	if not roots.is_empty():
-		multimesh_groups["roots"] = create_multimesh_from_assets(roots, 15, "interior_forest")
+	# Add coastal assets (these are 3D features)
+	var coastal_assets = asset_library["coastal"]
+	
+	# Place ground textures FLAT
+	if not ground_textures.is_empty():
+		multimesh_groups["ground_textures"] = create_multimesh_from_assets(ground_textures, 40, "general")
+		print("[NatureIsland] Created 40 ground texture patches (flat)")
+	
+	# Place 3D ground objects normally (roots, coastal features)
+	if not ground_3d_objects.is_empty():
+		multimesh_groups["roots"] = create_multimesh_from_assets(ground_3d_objects, 15, "interior_forest")
 		print("[NatureIsland] Created 15 root clusters")
 	
-	if not moss.is_empty():
-		multimesh_groups["moss"] = create_multimesh_from_assets(moss, 10, "general")
-		print("[NatureIsland] Created 10 moss patches")
-	
-	if not coastal_ground.is_empty():
-		multimesh_groups["coastal_ground"] = create_multimesh_from_assets(coastal_ground, 5, "coastal")
-		print("[NatureIsland] Created 5 coastal ground elements")
+	if not coastal_assets.is_empty():
+		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 5, "coastal")
+		print("[NatureIsland] Created 5 coastal features")
 	
 	# Enable per-vertex lighting
 	for group_name in multimesh_groups:
