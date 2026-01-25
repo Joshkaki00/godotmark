@@ -55,7 +55,7 @@ var last_gpu: float = 0.0
 
 func _ready():
 	print("[NatureIsland] Initializing realistic forested island benchmark...")
-	print("[NatureIsland] Creating optimized primitive meshes for Raspberry Pi SBC...")
+	print("[NatureIsland] Creating ultra-optimized primitive meshes for Raspberry Pi SBC...")
 	
 	# Get performance monitor from Main scene or create standalone
 	var main = get_tree().root.get_node_or_null("Main")
@@ -66,7 +66,11 @@ func _ready():
 		print("[NatureIsland] Creating standalone performance monitor")
 		perf_monitor = PerformanceMonitor.new()
 	
-	# Load all assets first
+	# Load all assets first (deferred to next frame to avoid stutter)
+	call_deferred("load_all_assets_deferred")
+
+func load_all_assets_deferred():
+	"""Load assets deferred to next frame to avoid initial stutter"""
 	load_all_assets()
 	
 	# Start with Phase 1
@@ -141,12 +145,12 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 	
 	match type:
 		"tree":
-			# Simple tree (sphere canopy - trunk handled by transform scaling)
+			# Ultra-simple tree (sphere canopy - trunk handled by transform scaling)
 			var canopy = SphereMesh.new()
 			canopy.radius = 2.0
 			canopy.height = 3.0
-			canopy.radial_segments = 6
-			canopy.rings = 3
+			canopy.radial_segments = 4  # Reduced from 6 to 4 (60% fewer polys)
+			canopy.rings = 2  # Reduced from 3 to 2 (33% fewer polys)
 			
 			# Color variation
 			var green_variants = [
@@ -158,11 +162,11 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 			mesh = canopy
 		
 		"rock":
-			# Simple rock (low-poly sphere with irregular look)
+			# Ultra-simple rock (low-poly sphere with irregular look)
 			var rock_mesh = SphereMesh.new()
 			rock_mesh.radius = 1.0
-			rock_mesh.radial_segments = 5
-			rock_mesh.rings = 3
+			rock_mesh.radial_segments = 4  # Reduced from 5 to 4 (20% fewer polys)
+			rock_mesh.rings = 2  # Reduced from 3 to 2 (33% fewer polys)
 			
 			# Color variation
 			var rock_variants = [
@@ -174,11 +178,11 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 			mesh = rock_mesh
 		
 		"vegetation":
-			# Simple vegetation (small sphere)
+			# Ultra-simple vegetation (small sphere)
 			var veg_mesh = SphereMesh.new()
 			veg_mesh.radius = 0.5
-			veg_mesh.radial_segments = 5
-			veg_mesh.rings = 3
+			veg_mesh.radial_segments = 4  # Reduced from 5 to 4 (20% fewer polys)
+			veg_mesh.rings = 2  # Reduced from 3 to 2 (33% fewer polys)
 			
 			# Color variation
 			var veg_variants = [
@@ -403,7 +407,7 @@ func transition_to_phase_3():
 	update_metrics_overlay("Phase 3: + Vegetation", "Objects: 67 | Draw Calls: ~11 | Target: 70 FPS")
 
 func transition_to_phase_4():
-	"""Phase 4: + Ground Detail + Lighting (105-140s) - Target 45 FPS"""
+	"""Phase 4: + Ground Detail + Lighting (105-140s) - Target 70+ FPS"""
 	current_phase = 4
 	print("\n[NatureIsland] === PHASE 4: + Ground Detail + Lighting (105-140s) ===")
 	
@@ -435,13 +439,14 @@ func transition_to_phase_4():
 		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 2, "coastal")
 		print("[NatureIsland] Created 2 coastal features")
 	
-	# Enable per-vertex lighting
-	for group_name in multimesh_groups:
-		var mmi = multimesh_groups[group_name]
-		if mmi and mmi.material_override:
-			var mat = mmi.material_override
-			if mat is StandardMaterial3D:
-				mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
+	# Enable per-vertex lighting ONLY on new Phase 4 objects (avoid iterating all groups)
+	for group_name in ["ground_textures", "roots", "coastal_features"]:
+		if multimesh_groups.has(group_name):
+			var mmi = multimesh_groups[group_name]
+			if mmi and mmi.material_override:
+				var mat = mmi.material_override
+				if mat is StandardMaterial3D:
+					mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	
 	# Enhanced water
 	var mat = ocean.get_surface_override_material(0) if ocean else null
@@ -449,10 +454,10 @@ func transition_to_phase_4():
 		mat.set_shader_parameter("phase", 4)
 		mat.set_shader_parameter("wave_height", 0.5)
 	
-	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
+	update_metrics_overlay("Phase 4: + Ground + Lighting", "Objects: 97 | Draw Calls: ~15 | Target: 70+ FPS")
 
 func transition_to_phase_5():
-	"""Phase 5: Per-Vertex Lighting Only (140-176s) - Target 40 FPS (NO shadows/glow for Raspberry Pi)"""
+	"""Phase 5: Per-Vertex Lighting (140-176s) - Target 70+ FPS (NO shadows/glow for Raspberry Pi)"""
 	current_phase = 5
 	print("\n[NatureIsland] === PHASE 5: Per-Vertex Lighting (140-176s) ===")
 	
@@ -471,7 +476,7 @@ func transition_to_phase_5():
 		mat.set_shader_parameter("phase", 5)
 		mat.set_shader_parameter("wave_height", 0.8)
 	
-	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
+	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 97 | Draw Calls: ~15 | Target: 70+ FPS")
 
 func start_fadeout():
 	"""Fade to black at the end (171-176s)"""
