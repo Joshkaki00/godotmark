@@ -66,8 +66,8 @@ func _ready():
 		print("[NatureIsland] Creating standalone performance monitor")
 		perf_monitor = PerformanceMonitor.new()
 	
-	# Load all assets first
-	load_all_assets()
+	# Load all assets asynchronously to prevent freeze
+	await load_all_assets_async()
 	
 	# Start with Phase 1
 	setup_phase_1()
@@ -104,28 +104,33 @@ func _process(delta: float):
 	# Update metrics overlay
 	update_metrics()
 
-func load_all_assets():
-	"""Create optimized primitive meshes for Raspberry Pi SBC"""
-	print("[NatureIsland] Creating optimized primitive meshes for SBC...")
+func load_all_assets_async():
+	"""Create optimized primitive meshes for Raspberry Pi SBC (non-blocking)"""
+	print("[NatureIsland] Creating optimized primitive meshes for SBC (async)...")
 	
-	# Create 3 tree variants (different colors)
+	# Create 3 tree variants (different colors) - defer each creation
 	for i in range(3):
 		asset_library["trees"].append(create_primitive_mesh("tree", i))
+		await get_tree().process_frame  # Yield between creations to prevent freeze
 	
 	# Create 3 rock variants (different colors)
 	for i in range(3):
 		asset_library["rocks"].append(create_primitive_mesh("rock", i))
+		await get_tree().process_frame
 	
 	# Create 3 vegetation variants (different colors)
 	for i in range(3):
 		asset_library["vegetation"].append(create_primitive_mesh("vegetation", i))
+		await get_tree().process_frame
 	
 	# Create 2 ground variants (different shades)
 	for i in range(2):
 		asset_library["ground"].append(create_primitive_mesh("ground", i))
+		await get_tree().process_frame
 	
 	# Create 1 coastal variant (same as rocks)
 	asset_library["coastal"].append(create_primitive_mesh("rock", 0))
+	await get_tree().process_frame
 	
 	print("[NatureIsland] Created primitive meshes: Trees=%d, Rocks=%d, Vegetation=%d, Ground=%d, Coastal=%d" %
 		[asset_library["trees"].size(), asset_library["rocks"].size(), 
@@ -135,9 +140,15 @@ func load_all_assets():
 func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 	"""Create optimized primitive mesh for Raspberry Pi SBC performance"""
 	var mesh = null
-	var material = StandardMaterial3D.new()
-	material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	material.cull_mode = BaseMaterial3D.CULL_BACK
+	
+	# Create TWO materials: unshaded (Phase 1-4) and per-vertex (Phase 5)
+	var material_unshaded = StandardMaterial3D.new()
+	material_unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	material_unshaded.cull_mode = BaseMaterial3D.CULL_BACK
+	
+	var material_lit = StandardMaterial3D.new()
+	material_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
+	material_lit.cull_mode = BaseMaterial3D.CULL_BACK
 	
 	match type:
 		"tree":
@@ -154,7 +165,9 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 				Color(0.3, 0.6, 0.3),   # Medium green
 				Color(0.25, 0.55, 0.25) # Light-medium green
 			]
-			material.albedo_color = green_variants[variant % 3]
+			var color = green_variants[variant % 3]
+			material_unshaded.albedo_color = color
+			material_lit.albedo_color = color
 			mesh = canopy
 		
 		"rock":
@@ -170,7 +183,9 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 				Color(0.4, 0.4, 0.45),  # Blue-gray
 				Color(0.45, 0.42, 0.4)  # Brown-gray
 			]
-			material.albedo_color = rock_variants[variant % 3]
+			var color = rock_variants[variant % 3]
+			material_unshaded.albedo_color = color
+			material_lit.albedo_color = color
 			mesh = rock_mesh
 		
 		"vegetation":
@@ -186,7 +201,9 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 				Color(0.4, 0.65, 0.3),  # Yellow-green
 				Color(0.35, 0.55, 0.25) # Medium green
 			]
-			material.albedo_color = veg_variants[variant % 3]
+			var color = veg_variants[variant % 3]
+			material_unshaded.albedo_color = color
+			material_lit.albedo_color = color
 			mesh = veg_mesh
 		
 		"ground":
@@ -199,17 +216,24 @@ func create_primitive_mesh(type: String, variant: int = 0) -> Dictionary:
 				Color(0.4, 0.3, 0.2),  # Brown
 				Color(0.35, 0.28, 0.18) # Darker brown
 			]
-			material.albedo_color = ground_variants[variant % 2]
+			var color = ground_variants[variant % 2]
+			material_unshaded.albedo_color = color
+			material_lit.albedo_color = color
 			mesh = ground_mesh
 		
 		_:
 			# Default fallback
 			var default_mesh = BoxMesh.new()
 			default_mesh.size = Vector3(1, 1, 1)
-			material.albedo_color = Color(0.8, 0.8, 0.8)
+			material_unshaded.albedo_color = Color(0.8, 0.8, 0.8)
+			material_lit.albedo_color = Color(0.8, 0.8, 0.8)
 			mesh = default_mesh
 	
-	return {"mesh": mesh, "material": material}
+	return {
+		"mesh": mesh, 
+		"material": material_unshaded,  # Default to unshaded
+		"material_lit": material_lit     # Pre-created lit material for Phase 5
+	}
 
 func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: String) -> MultiMeshInstance3D:
 	"""Create MultiMesh from list of primitive mesh assets"""
@@ -435,14 +459,6 @@ func transition_to_phase_4():
 		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 2, "coastal")
 		print("[NatureIsland] Created 2 coastal features")
 	
-	# Enable per-vertex lighting
-	for group_name in multimesh_groups:
-		var mmi = multimesh_groups[group_name]
-		if mmi and mmi.material_override:
-			var mat = mmi.material_override
-			if mat is StandardMaterial3D:
-				mat.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
-	
 	# Enhanced water
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
@@ -465,6 +481,10 @@ func transition_to_phase_5():
 		env.environment.glow_enabled = false
 	print("[NatureIsland] Glow disabled for Raspberry Pi optimization")
 	
+	# Swap to pre-created per-vertex materials (NO shader recompilation freeze!)
+	print("[NatureIsland] Swapping to per-vertex materials...")
+	swap_to_lit_materials()
+	
 	# Full water shader (but still no expensive vertex displacement in early phases)
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
@@ -472,6 +492,47 @@ func transition_to_phase_5():
 		mat.set_shader_parameter("wave_height", 0.8)
 	
 	update_metrics_overlay("Phase 5: Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
+
+func swap_to_lit_materials():
+	"""Swap all multimesh materials to pre-created per-vertex versions (no freeze)"""
+	# Get original asset data with pre-created lit materials
+	var asset_type_map = {
+		"large_trees": "trees",
+		"small_trees": "trees",
+		"saplings": "trees",
+		"boulders": "rocks",
+		"rock_faces": "rocks",
+		"small_rocks": "rocks",
+		"shrubs": "vegetation",
+		"grasses": "vegetation",
+		"flowers": "vegetation",
+		"plants": "vegetation",
+		"ground_textures": "ground",
+		"roots": "ground",
+		"coastal_features": "coastal"
+	}
+	
+	for group_name in multimesh_groups:
+		var mmi = multimesh_groups[group_name]
+		if not mmi:
+			continue
+		
+		# Find which asset type this group uses
+		var asset_type = asset_type_map.get(group_name, "")
+		if asset_type == "":
+			continue
+		
+		# Get first asset of that type (they all have same material)
+		var assets = asset_library.get(asset_type, [])
+		if assets.is_empty():
+			continue
+		
+		var asset_data = assets[0]
+		if asset_data.has("material_lit"):
+			# Swap to pre-created lit material (instant, no shader compilation!)
+			mmi.material_override = asset_data["material_lit"]
+	
+	print("[NatureIsland] Material swap complete - no freeze!")
 
 func start_fadeout():
 	"""Fade to black at the end (171-176s)"""
