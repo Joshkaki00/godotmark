@@ -199,9 +199,9 @@ func load_all_assets_async():
 	
 	# Trees (use 3 island trees for variety)
 	var tree_paths = [
-		"res://art/nature-benchmark/island_tree_01_1k.gltf",
-		"res://art/nature-benchmark/island_tree_02_1k.gltf",
-		"res://art/nature-benchmark/island_tree_03_1k.gltf"
+		"res://art/nature-benchmark/island_tree_01_1k.gltf/island_tree_01_1k.gltf",
+		"res://art/nature-benchmark/island_tree_02_1k.gltf/island_tree_02_1k.gltf",
+		"res://art/nature-benchmark/island_tree_03_1k.gltf/island_tree_03_1k.gltf"
 	]
 	for path in tree_paths:
 		var gltf_data = load_and_extract_gltf(path)
@@ -211,9 +211,9 @@ func load_all_assets_async():
 	
 	# Rocks (use 3 coast rock variants)
 	var rock_paths = [
-		"res://art/nature-benchmark/boulder_01_1k.gltf",
-		"res://art/nature-benchmark/coast_rocks_01_1k.gltf",
-		"res://art/nature-benchmark/coast_rocks_02_1k.gltf"
+		"res://art/nature-benchmark/boulder_01_1k.gltf/boulder_01_1k.gltf",
+		"res://art/nature-benchmark/coast_rocks_01_1k.gltf/coast_rocks_01_1k.gltf",
+		"res://art/nature-benchmark/coast_rocks_02_1k.gltf/coast_rocks_02_1k.gltf"
 	]
 	for path in rock_paths:
 		var gltf_data = load_and_extract_gltf(path)
@@ -223,8 +223,8 @@ func load_all_assets_async():
 	
 	# Vegetation - Shrubs (2 types)
 	var shrub_paths = [
-		"res://art/nature-benchmark/shrub_01_1k.gltf",
-		"res://art/nature-benchmark/wild_rooibos_bush_1k.gltf"
+		"res://art/nature-benchmark/shrub_01_1k.gltf/shrub_01_1k.gltf",
+		"res://art/nature-benchmark/wild_rooibos_bush_1k.gltf/wild_rooibos_bush_1k.gltf"
 	]
 	for path in shrub_paths:
 		var gltf_data = load_and_extract_gltf(path)
@@ -234,8 +234,8 @@ func load_all_assets_async():
 	
 	# Vegetation - Plants (2 types)
 	var plant_paths = [
-		"res://art/nature-benchmark/fern_02_1k.gltf",
-		"res://art/nature-benchmark/nettle_plant_1k.gltf"
+		"res://art/nature-benchmark/fern_02_1k.gltf/fern_02_1k.gltf",
+		"res://art/nature-benchmark/nettle_plant_1k.gltf/nettle_plant_1k.gltf"
 	]
 	for path in plant_paths:
 		var gltf_data = load_and_extract_gltf(path)
@@ -245,8 +245,8 @@ func load_all_assets_async():
 	
 	# Ground textures (2 types)
 	var ground_paths = [
-		"res://art/nature-benchmark/forest_ground_04_1k.gltf",
-		"res://art/nature-benchmark/brown_mud_1k.gltf"
+		"res://art/nature-benchmark/forest_ground_04_1k.gltf/forest_ground_04_1k.gltf",
+		"res://art/nature-benchmark/brown_mud_1k.gltf/brown_mud_1k.gltf"
 	]
 	for path in ground_paths:
 		var gltf_data = load_and_extract_gltf(path)
