@@ -644,6 +644,13 @@ func end_benchmark():
 	print("[NatureIsland] Benchmark complete!")
 	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
+func _input(event):
+	"""Handle keyboard input for early exit"""
+	# Allow ESC to exit early
+	if event.is_action_pressed("ui_cancel"):
+		print("\n[NatureIsland] Cancelled by user")
+		end_benchmark()
+
 func update_metrics():
 	"""Update performance metrics display in real-time"""
 	if not metrics_overlay:
