@@ -69,14 +69,16 @@ func _ready():
 	# Load all assets asynchronously to prevent freeze
 	await load_all_assets_async()
 	
-	# Start with Phase 1
-	setup_phase_1()
+	# Start with Phase 1 (also async to prevent freeze during MultiMesh creation)
+	await setup_phase_1_async()
+	
+	# Loading complete - NOW start audio and benchmark
+	is_loading = false
+	print("[NatureIsland] Loading complete! Starting benchmark...")
 	
 	# Start audio
 	audio.play()
 	print("[NatureIsland] Audio started, duration: %.1fs" % audio.stream.get_length())
-	
-	is_loading = false
 
 func _process(delta: float):
 	if is_loading:
@@ -327,8 +329,8 @@ func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: b
 	
 	return transforms
 
-func setup_phase_1():
-	"""Phase 1: Trees + Ocean (0-35s) - Target 60 FPS"""
+func setup_phase_1_async():
+	"""Phase 1: Trees + Ocean (0-35s) - Target 60 FPS (async to prevent loading freeze)"""
 	current_phase = 1
 	print("\n[NatureIsland] === PHASE 1: Dense Forest + Ocean (0-35s) ===")
 	
@@ -349,12 +351,15 @@ func setup_phase_1():
 	if not all_trees.is_empty():
 		multimesh_groups["large_trees"] = create_multimesh_from_assets(all_trees, 20, "interior_forest")
 		print("[NatureIsland] Created 20 large trees")
+		await get_tree().process_frame  # Yield to prevent freeze
 		
 		multimesh_groups["small_trees"] = create_multimesh_from_assets(all_trees, 7, "coastal")
 		print("[NatureIsland] Created 7 small trees")
+		await get_tree().process_frame
 		
 		multimesh_groups["saplings"] = create_multimesh_from_assets(all_trees, 3, "clearing")
 		print("[NatureIsland] Created 3 saplings")
+		await get_tree().process_frame
 	
 	# Setup simple ocean (Phase 1: just color + basic UV scroll)
 	setup_ocean_phase_1()
