@@ -173,6 +173,9 @@ func _process(delta: float):
 	if is_loading:
 		return
 	
+	# Profile rendering pipeline for diagnostics
+	profile_rendering_pipeline(delta)
+	
 	# Diagnostic: Log slow frames
 	var frame_ms = delta * 1000.0
 	if frame_ms > 50.0:  # Slower than 20 FPS
@@ -805,3 +808,39 @@ func update_metrics_overlay(phase_name: String, details: String):
 	"""Update the metrics overlay with phase information"""
 	if metrics_overlay and metrics_overlay.has_method("update_phase"):
 		metrics_overlay.update_phase(current_phase, phase_name)
+
+func profile_rendering_pipeline(delta: float):
+	"""Comprehensive rendering pipeline profiling to identify bottlenecks"""
+	
+	# 1. VSync verification
+	var vsync_mode = DisplayServer.window_get_vsync_mode()
+	var vsync_names = ["DISABLED", "ENABLED", "ADAPTIVE", "MAILBOX"]
+	
+	# 2. RenderingServer statistics
+	var render_info = {
+		"objects_drawn": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_OBJECTS_IN_FRAME),
+		"primitives_drawn": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_PRIMITIVES_IN_FRAME),
+		"draw_calls": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TOTAL_DRAW_CALLS_IN_FRAME),
+		"texture_memory_mb": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_TEXTURE_MEM_USED) / 1024.0 / 1024.0,
+		"video_memory_mb": RenderingServer.get_rendering_info(RenderingServer.RENDERING_INFO_VIDEO_MEM_USED) / 1024.0 / 1024.0,
+	}
+	
+	# 3. Frame timing breakdown
+	var frame_ms = delta * 1000.0
+	var process_time = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
+	var physics_time = Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS) * 1000.0
+	var render_time = frame_ms - process_time - physics_time
+	
+	# 4. GPU driver diagnostics
+	var gpu_driver = RenderingServer.get_video_adapter_name()
+	var gpu_vendor = RenderingServer.get_video_adapter_vendor()
+	
+	# Log every 60 frames for detailed diagnostics
+	if Engine.get_process_frames() % 60 == 0:
+		print("[PROFILE] VSync: %s | Draw Calls: %d | Objects: %d | Primitives: %d" % 
+			[vsync_names[vsync_mode], render_info.draw_calls, render_info.objects_drawn, render_info.primitives_drawn])
+		print("[PROFILE] VRAM: %.1fMB | Texture Mem: %.1fMB" % 
+			[render_info.video_memory_mb, render_info.texture_memory_mb])
+		print("[PROFILE] Frame: %.1fms (CPU: %.1fms, Physics: %.1fms, Render: %.1fms)" % 
+			[frame_ms, process_time, physics_time, render_time])
+		print("[PROFILE] GPU: %s (%s)" % [gpu_driver, gpu_vendor])
