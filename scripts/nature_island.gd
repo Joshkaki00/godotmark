@@ -758,7 +758,7 @@ func start_fadeout():
 	
 	# Return to menu or quit
 	await get_tree().create_timer(0.5).timeout
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
 
 func save_metrics_to_file():
 	"""Save performance metrics to JSON file"""
@@ -783,4 +783,4 @@ func _input(event):
 	"""Handle input events"""
 	if event.is_action_pressed("ui_cancel"):
 		print("[NatureIsland] ESC pressed - exiting benchmark")
-		get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
