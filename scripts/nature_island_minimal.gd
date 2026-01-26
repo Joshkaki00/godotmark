@@ -24,6 +24,10 @@ func _ready():
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	print("[MinimalTest] VSync disabled")
 	
+	# Disable physics entirely (no physics bodies in scene)
+	PhysicsServer3D.set_active(false)
+	print("[MinimalTest] Physics server disabled (no physics bodies)")
+	
 	# Setup performance monitor
 	perf_monitor = PerformanceMonitor.new()
 	print("[MinimalTest] Performance monitor initialized")

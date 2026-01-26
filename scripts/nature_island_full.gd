@@ -110,6 +110,10 @@ func _ready():
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	print("[NatureIsland] VSync forcibly disabled")
 	
+	# Disable physics server (no physics bodies in this benchmark)
+	PhysicsServer3D.set_active(false)
+	print("[NatureIsland] Physics server disabled (no physics bodies)")
+	
 	# Hide everything during warmup
 	camera.current = false
 	if metrics_overlay:
