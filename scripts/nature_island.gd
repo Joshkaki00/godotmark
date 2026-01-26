@@ -444,11 +444,6 @@ func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiM
 	multimesh.mesh = base_data["mesh"]
 	mmi.multimesh = multimesh
 	
-	# Add visibility range for automatic distance culling
-	mmi.visibility_range_begin = 0.0
-	mmi.visibility_range_end = 40.0
-	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
-	
 	# Apply unshaded material (Phase 1-4 default)
 	if base_data.has("material_unshaded") and base_data["material_unshaded"]:
 		mmi.material_override = base_data["material_unshaded"]
