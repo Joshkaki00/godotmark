@@ -741,7 +741,7 @@ func update_metrics():
 	
 	# Update overlay
 	if metrics_overlay:
-		metrics_overlay.update_fps(fps)
+		metrics_overlay.update_metrics(fps, frame_time, cpu_usage, temp, gpu_usage)
 		metrics_overlay.update_progress(timeline, 60.0)
 
 func start_fadeout():
