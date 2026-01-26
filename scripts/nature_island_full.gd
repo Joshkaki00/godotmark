@@ -244,15 +244,9 @@ func load_and_extract_gltf(path: String) -> Dictionary:
 	mat_unshaded.cull_mode = BaseMaterial3D.CULL_BACK
 	if original_mat and original_mat is StandardMaterial3D:
 		mat_unshaded.albedo_color = original_mat.albedo_color
-		# Check if texture loaded successfully (compressed texture errors result in invalid textures)
-		if original_mat.albedo_texture:
-			var tex = original_mat.albedo_texture
-			if tex is Texture2D:
-				# Verify texture is valid (non-zero size means it loaded)
-				var img = tex.get_image()
-				if img and img.get_size() != Vector2i(0, 0):
-					mat_unshaded.albedo_texture = tex
-				# else: Texture failed to load, skip it (use solid color)
+		# Use texture directly if present (no validation needed - Godot already validates on load)
+		if original_mat.albedo_texture and original_mat.albedo_texture is Texture2D:
+			mat_unshaded.albedo_texture = original_mat.albedo_texture
 	else:
 		mat_unshaded.albedo_color = Color(0.8, 0.8, 0.8)
 	
@@ -262,20 +256,11 @@ func load_and_extract_gltf(path: String) -> Dictionary:
 	mat_lit.cull_mode = BaseMaterial3D.CULL_BACK
 	if original_mat and original_mat is StandardMaterial3D:
 		mat_lit.albedo_color = original_mat.albedo_color
-		# Check albedo texture
-		if original_mat.albedo_texture:
-			var tex = original_mat.albedo_texture
-			if tex is Texture2D:
-				var img = tex.get_image()
-				if img and img.get_size() != Vector2i(0, 0):
-					mat_lit.albedo_texture = tex
-		# Check normal texture
-		if original_mat.normal_texture:
-			var tex = original_mat.normal_texture
-			if tex is Texture2D:
-				var img = tex.get_image()
-				if img and img.get_size() != Vector2i(0, 0):
-					mat_lit.normal_texture = tex
+		# Use textures directly if present (no validation needed - Godot already validates on load)
+		if original_mat.albedo_texture and original_mat.albedo_texture is Texture2D:
+			mat_lit.albedo_texture = original_mat.albedo_texture
+		if original_mat.normal_texture and original_mat.normal_texture is Texture2D:
+			mat_lit.normal_texture = original_mat.normal_texture
 	else:
 		mat_lit.albedo_color = Color(0.8, 0.8, 0.8)
 	
