@@ -10,7 +10,7 @@ echo "=========================================="
 echo ""
 
 # Force GLES3 renderer
-./godot --rendering-driver opengl3 --path . res://scenes/benchmarks/02_nature_island_minimal.tscn
+~/Godot_v4.4-stable_linux.arm64 --rendering-driver opengl3 --path /mnt/exfat_drive/dev/godotmark-project/godotmark "res://scenes/benchmarks/02_nature_island_minimal.tscn"
 
 echo ""
 echo "=========================================="
