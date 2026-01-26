@@ -358,7 +358,7 @@ func run_warmup_phase():
 	if loading_screen:
 		loading_screen.update_progress(100.0, "Ready!")
 	
-	await get_tree().process_frame()
+	await get_tree().process_frame
 
 func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 	"""Extract mesh and materials from a GLTF PackedScene"""
