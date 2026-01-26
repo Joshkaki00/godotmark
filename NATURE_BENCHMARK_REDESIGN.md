@@ -41,20 +41,21 @@ Ocean: 80m x 80m (surrounds island)
 
 | Phase | Time    | Objects | Draw Calls | Features                        | Target FPS |
 |-------|---------|---------|------------|---------------------------------|------------|
-| 1     | 0-12s   | 120     | 2          | Dense forest, per-vertex lit    | 60+        |
-| 2     | 12-24s  | 170     | 3          | + 50 rocks, ocean waves         | 50+        |
-| 3     | 24-36s  | 370     | 4          | + 200 vegetation, wind shader   | 40+        |
-| 4     | 36-48s  | 440     | 5          | + 70 ground, tree wind          | 30+        |
-| 5     | 48-60s  | 440     | 5          | Maximum ocean waves             | 25+        |
+| 1     | 0-12s   | 40      | 2          | Forest, per-vertex lit          | 60+        |
+| 2     | 12-24s  | 65      | 3          | + 25 rocks, ocean waves         | 55+        |
+| 3     | 24-36s  | 130     | 4          | + 65 vegetation, wind shader    | 45+        |
+| 4     | 36-48s  | 165     | 5          | + 35 ground, tree wind          | 40+        |
+| 5     | 48-60s  | 165     | 5          | Maximum ocean waves             | 35+        |
 
 ### Asset Distribution
 
-**Total: 440 objects across 4 combined MultiMesh groups**
+**Total: 165 objects across 4 combined MultiMesh groups**
+**Optimized for Raspberry Pi 4/5 hardware**
 
-- **Trees (120):** 80 interior + 40 coastal
-- **Rocks (50):** 30 coastal + 20 general
-- **Vegetation (200):** 100 interior + 60 coastal + 40 general
-- **Ground Details (70):** 40 interior + 30 general
+- **Trees (40):** 25 interior + 15 coastal
+- **Rocks (25):** 15 coastal + 10 general
+- **Vegetation (65):** 30 interior + 20 coastal + 15 general
+- **Ground Details (35):** 20 interior + 15 general
 
 ### Zone Layout
 
@@ -212,7 +213,7 @@ Northwest (60s): Completion
 9. **Backface culling** - Reduced fragment processing
 10. **Per-vertex lighting** - Faster than per-pixel
 
-## Expected Performance (Raspberry Pi 5)
+## Expected Performance (Raspberry Pi 4/5)
 
 **Before (old implementation):**
 - 7.5 FPS average
@@ -220,9 +221,10 @@ Northwest (60s): Completion
 - 15+ draw calls
 - Complex phase system
 
-**After (new implementation):**
-- 35-70 FPS target range
+**After (new implementation with RPi-optimized counts):**
+- 35-60 FPS target range
 - Optimized draw calls (5 total)
+- Conservative object counts (165 total)
 - Clean phase progression
 - Model Showcase-proven structure
 
@@ -300,11 +302,12 @@ The Nature Island benchmark has been completely rebuilt using the proven Model S
 ✅ Clean, maintainable code structure  
 ✅ Optimized draw calls (60% reduction)  
 ✅ Proper warmup and asset loading  
-✅ 0.5-acre island with 36 nature objects  
+✅ 0.5-acre island with 165 nature objects  
 ✅ 60-second audio-synced benchmark  
-✅ Expected 35-70 FPS on Raspberry Pi 5  
+✅ Expected 35-60 FPS on Raspberry Pi 4/5  
 ✅ All phases implemented and tested  
 ✅ Camera paths optimized for island viewing  
 ✅ Metrics overlay updated with correct info  
+✅ Conservative object counts for RPi hardware  
 
 The benchmark is now ready for testing on Raspberry Pi!
