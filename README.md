@@ -858,6 +858,8 @@ godotmark/benchmark_results_<timestamp>.json
 
 ## 🤝 Contributing - Help Needed!
 
+> **📋 Full contribution guidelines:** See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed information on how to contribute.
+
 ### This Project Needs You
 
 **Real talk:** I'm relatively new to Godot (1 year in) and I've hit a wall I can't get past alone. 
