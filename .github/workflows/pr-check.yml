@@ -1,0 +1,176 @@
+name: Pull Request Checks
+
+# Security: Use 'pull_request' (NOT 'pull_request_target') to run with limited privileges
+# This prevents malicious code from accessing secrets or write permissions
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'godotmark/**'
+      - '.github/workflows/**'
+
+# Security: Set minimal default permissions (read-only)
+# Reference: https://docs.github.com/en/actions/security-for-github-actions/security-guides/security-hardening-for-github-actions
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  security-check:
+    name: Security & Style Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Security: Pin actions to full commit SHA (not tags)
+      # Prevents tag replacement attacks
+      # Reference: https://blog.gitguardian.com/github-actions-security-cheat-sheet/
+      
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit # Monitor network activity
+          # Reference: https://github.com/step-security/harden-runner
+      
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          fetch-depth: 0 # Full history for better analysis
+      
+      - name: Check for secrets in code
+        uses: trufflesecurity/trufflehog@4c56c9ea0346f5f21ea49699c87d98f33c3b8c06 # v3.63.2
+        with:
+          path: ./
+          base: ${{ github.event.pull_request.base.sha }}
+          head: ${{ github.event.pull_request.head.sha }}
+      
+      - name: Dependency Review
+        uses: actions/dependency-review-action@5bbc3ba658137598168acb2ab73b21c432dd411b # v4.2.5
+        # Reference: https://docs.github.com/en/code-security/supply-chain-security/understanding-your-software-supply-chain/about-dependency-review
+      
+      - name: Check file structure
+        run: |
+          echo "Checking for suspicious files..."
+          # Check for files that shouldn't be in PR
+          if find . -name "*.exe" -o -name "*.dll" -o -name "*.so" | grep -v "godotmark/bin"; then
+            echo "❌ Suspicious binary files found outside expected directories"
+            exit 1
+          fi
+          echo "✅ File structure check passed"
+      
+      - name: Validate GDScript syntax
+        run: |
+          echo "Basic GDScript validation..."
+          # Simple checks for common issues
+          if grep -r "eval(" godotmark/scripts/ 2>/dev/null; then
+            echo "❌ Found 'eval()' - potential security risk"
+            exit 1
+          fi
+          echo "✅ Basic validation passed"
+      
+      - name: Check for large files
+        run: |
+          echo "Checking for unexpectedly large files..."
+          # Flag files >10MB (suspicious for code contributions)
+          if find . -type f -size +10M | grep -v ".git" | grep -v "godotmark/art"; then
+            echo "⚠️ Large files found - please review"
+            # Don't fail, just warn
+          fi
+          echo "✅ Large file check completed"
+
+  gdscript-lint:
+    name: GDScript Style Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      
+      - name: Setup Python
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: '3.11'
+      
+      - name: Install gdlint
+        run: |
+          pip install gdtoolkit==4.2.2
+      
+      - name: Run gdlint
+        run: |
+          echo "Running GDScript linter..."
+          gdlint godotmark/scripts/ || echo "⚠️ Style issues found (not blocking)"
+          echo "Note: These are suggestions. See CONTRIBUTING.md for style guide."
+
+  documentation-check:
+    name: Documentation Check
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Checkout code
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      
+      - name: Check documentation updates
+        run: |
+          echo "Checking if documentation needs updates..."
+          
+          # If code changed but README/docs didn't, suggest updating
+          if git diff --name-only origin/main | grep "godotmark/scripts\|godotmark/src"; then
+            if ! git diff --name-only origin/main | grep "README.md\|CONTRIBUTING.md\|.*\.md"; then
+              echo "⚠️ Code changed but documentation didn't. Consider updating docs."
+              echo "See CONTRIBUTING.md for documentation guidelines."
+            fi
+          fi
+          
+          echo "✅ Documentation check completed"
+
+  pr-comment:
+    name: Welcome Message
+    runs-on: ubuntu-latest
+    # Only run on first-time contributors
+    if: github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    
+    permissions:
+      pull-requests: write # Need write permission to comment
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Welcome first-time contributor
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `👋 **Welcome to GodotMark!**
+              
+              Thank you for your contribution! This is your first pull request to this project.
+              
+              **What happens next:**
+              1. ✅ Automated checks will run (security, style, documentation)
+              2. 👀 A maintainer will review your PR (usually within 1-2 weeks)
+              3. 💬 We may ask questions or request changes
+              4. ✅ Once approved, we'll merge it!
+              
+              **While you wait:**
+              - Check out [CONTRIBUTING.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/CONTRIBUTING.md) for guidelines
+              - Read [COMPLETE_OPTIMIZATION_STORY.md](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/main/godotmark/COMPLETE_OPTIMIZATION_STORY.md) to understand the project
+              - Join discussions in [Issues](https://github.com/${context.repo.owner}/${context.repo.repo}/issues)
+              
+              **Questions?** Ask here or in the issue you're addressing.
+              
+              Thanks for helping make GodotMark better! 🚀`
+            })
