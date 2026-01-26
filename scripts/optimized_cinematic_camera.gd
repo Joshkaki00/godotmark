@@ -81,8 +81,8 @@ func _process(_delta):
 	
 	var current_time = parent_node.timeline if "timeline" in parent_node else 0.0
 	
-	# Get cached transform indices
-	var idx = int(current_time / cache_rate)
+	# Get cached transform indices (clamp to prevent out-of-bounds access)
+	var idx = min(int(current_time / cache_rate), transform_cache.size() - 1)
 	var next_idx = min(idx + 1, transform_cache.size() - 1)
 	
 	# Interpolation factor between cached frames (smooth)
