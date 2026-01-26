@@ -48,8 +48,7 @@ subdivide_width = 4
 subdivide_depth = 4
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ground"]
-shading_mode = 0
-disable_ambient_light = true
+shading_mode = 2
 albedo_color = Color(0.35, 0.45, 0.3, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]

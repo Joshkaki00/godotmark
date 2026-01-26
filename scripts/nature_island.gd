@@ -378,18 +378,7 @@ func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 	if not original_mat and mesh.get_surface_count() > 0:
 		original_mat = mesh.surface_get_material(0)
 	
-	# Create pre-cached unshaded material
-	var mat_unshaded = StandardMaterial3D.new()
-	mat_unshaded.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-	mat_unshaded.cull_mode = BaseMaterial3D.CULL_BACK
-	if original_mat and original_mat is StandardMaterial3D:
-		mat_unshaded.albedo_color = original_mat.albedo_color
-		if original_mat.albedo_texture:
-			mat_unshaded.albedo_texture = original_mat.albedo_texture
-	else:
-		mat_unshaded.albedo_color = Color(0.8, 0.8, 0.8)
-	
-	# Create pre-cached lit material
+	# Create per-vertex lit material (default for all phases)
 	var mat_lit = StandardMaterial3D.new()
 	mat_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	mat_lit.cull_mode = BaseMaterial3D.CULL_BACK
@@ -404,7 +393,6 @@ func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 	
 	return {
 		"mesh": mesh,
-		"material_unshaded": mat_unshaded,
 		"material_lit": mat_lit
 	}
 
@@ -444,9 +432,9 @@ func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiM
 	multimesh.mesh = base_data["mesh"]
 	mmi.multimesh = multimesh
 	
-	# Apply unshaded material (Phase 1-4 default)
-	if base_data.has("material_unshaded") and base_data["material_unshaded"]:
-		mmi.material_override = base_data["material_unshaded"]
+	# Apply per-vertex lit material (all phases)
+	if base_data.has("material_lit") and base_data["material_lit"]:
+		mmi.material_override = base_data["material_lit"]
 	
 	# Generate transforms for all zones combined
 	var instance_idx = 0
@@ -509,9 +497,9 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 	return transforms
 
 func setup_phase_1():
-	"""Phase 1: Base Island (0-12s) - Trees only"""
+	"""Phase 1: Base Island (0-12s) - Trees with vertex lighting"""
 	print("\n[Phase 1] Base Island (0-12s)")
-	print("  - 5 trees with combined MultiMesh")
+	print("  - 5 trees with per-vertex lighting")
 	
 	var trees = asset_library["trees"]
 	if not trees.is_empty():
@@ -632,13 +620,10 @@ func transition_to_phase_4():
 		metrics_overlay.update_phase(4, "Add Ground Detail")
 
 func transition_to_phase_5():
-	print("\n[Phase 5] Full Lighting (48-60s)")
-	print("  - Per-vertex lighting + maximum ocean")
+	print("\n[Phase 5] Maximum Complexity (48-60s)")
+	print("  - Maximum ocean waves + full ambient lighting")
 	
 	await get_tree().process_frame
-	
-	# Swap to lit materials while preserving wind shaders
-	swap_to_lit_materials()
 	
 	# Maximum ocean waves
 	var ocean_mat = ocean.get_surface_override_material(0)
@@ -651,44 +636,7 @@ func transition_to_phase_5():
 		env.environment.ambient_light_energy = 0.8
 	
 	if metrics_overlay:
-		metrics_overlay.update_phase(5, "Full Lighting")
-
-func swap_to_lit_materials():
-	"""Swap all materials to per-vertex lighting while preserving wind shaders"""
-	var asset_type_map = {
-		"all_trees": "trees",
-		"all_rocks": "rocks",
-		"all_vegetation": "vegetation",
-		"all_ground": "ground_details"
-	}
-	
-	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
-	var veg_wind_shader = load("res://shaders/wind_vegetation.gdshader")
-	
-	for group_name in multimesh_groups:
-		var mmi = multimesh_groups[group_name]
-		if not mmi:
-			continue
-		
-		# Check if this group has wind animation
-		var has_wind_shader = false
-		var current_mat = mmi.material_override
-		if current_mat and current_mat is ShaderMaterial:
-			if current_mat.shader == tree_wind_shader or current_mat.shader == veg_wind_shader:
-				has_wind_shader = true
-		
-		if has_wind_shader:
-			# Keep wind shader, just ensure it has lighting enabled
-			# Wind shaders already have diffuse_lambert render mode
-			continue
-		else:
-			# Swap to lit material
-			if asset_type_map.has(group_name):
-				var asset_type = asset_type_map[group_name]
-				if asset_library.has(asset_type) and not asset_library[asset_type].is_empty():
-					var asset_data = asset_library[asset_type][0]
-					if asset_data.has("material_lit") and asset_data["material_lit"]:
-						mmi.material_override = asset_data["material_lit"]
+		metrics_overlay.update_phase(5, "Maximum Complexity")
 
 func _process(delta: float):
 	if not warmup_complete:
