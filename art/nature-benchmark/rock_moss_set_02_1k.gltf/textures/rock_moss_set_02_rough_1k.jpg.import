@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brrrdyeoj0orm"
+uid="uid://185a782a7a"
 path.s3tc="res://.godot/imported/rock_moss_set_02_rough_1k.jpg-7bd292b21e1693821152b1ee95c3153c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

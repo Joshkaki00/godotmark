@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cu8vv6ualitxx"
+uid="uid://145108882a"
 path.s3tc="res://.godot/imported/boulder_01_arm_1k.jpg-37c4f9f20f5d503f248b3a311ac00a58.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

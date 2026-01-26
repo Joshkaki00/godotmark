@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b3m8gwso62tkb"
+uid="uid://1555a4a251"
 path.s3tc="res://.godot/imported/brown_mud_dry_diff_1k.jpg-deb466406215909a4f419593cd1711b5.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

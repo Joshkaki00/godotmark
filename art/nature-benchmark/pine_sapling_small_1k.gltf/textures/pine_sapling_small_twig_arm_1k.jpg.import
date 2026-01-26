@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4kvr6ksnxqb8"
+uid="uid://3063002"
 path.s3tc="res://.godot/imported/pine_sapling_small_twig_arm_1k.jpg-7d5452e7541362f97f1415c8e802ccf7.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

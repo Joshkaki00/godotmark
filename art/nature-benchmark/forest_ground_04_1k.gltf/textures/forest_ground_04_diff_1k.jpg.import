@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://o6i0tm1rj5sg"
+uid="uid://1366883878"
 path.s3tc="res://.godot/imported/forest_ground_04_diff_1k.jpg-0ade761c3da49f3ca615514508ba932f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

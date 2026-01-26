@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cxrf0c7fl2btc"
+uid="uid://16a7ba6488"
 path.s3tc="res://.godot/imported/root_cluster_01_arm_1k.jpg-06a4a5fe7f8ed9b76442fa317d52b89f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

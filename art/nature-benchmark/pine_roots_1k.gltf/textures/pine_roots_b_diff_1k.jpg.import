@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7owrrfgcejui"
+uid="uid://150410826"
 path.s3tc="res://.godot/imported/pine_roots_b_diff_1k.jpg-4dd3be7a649ece7913b8e3c62b736a53.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

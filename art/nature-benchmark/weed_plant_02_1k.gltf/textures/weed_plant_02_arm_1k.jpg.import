@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjk4klgvh1ieb"
+uid="uid://11556a0562"
 path.s3tc="res://.godot/imported/weed_plant_02_arm_1k.jpg-86d6f1645b340171ce08ac71cbb3499e.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

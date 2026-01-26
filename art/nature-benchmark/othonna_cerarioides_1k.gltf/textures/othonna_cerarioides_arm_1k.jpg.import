@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cv6ta1qngi0k3"
+uid="uid://1715605411"
 path.s3tc="res://.godot/imported/othonna_cerarioides_arm_1k.jpg-5db5fa97403f51c1062e0c549c8aac82.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

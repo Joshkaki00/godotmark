@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c21xt615pdmv6"
+uid="uid://ba55536520"
 path.s3tc="res://.godot/imported/crystalline_iceplant_diff_1k.jpg-ea9f940ee00b72b30e999cf2ca39101f.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

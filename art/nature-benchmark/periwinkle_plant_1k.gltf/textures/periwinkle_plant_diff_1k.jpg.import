@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4ijl7io76bcm"
+uid="uid://13a6165861"
 path.s3tc="res://.godot/imported/periwinkle_plant_diff_1k.jpg-84069277df884a2e7b0d31d0b662fa54.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

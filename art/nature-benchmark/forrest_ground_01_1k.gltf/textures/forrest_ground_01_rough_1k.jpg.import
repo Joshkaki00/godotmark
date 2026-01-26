@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://n0pnwwo0e1af"
+uid="uid://64558a50"
 path.s3tc="res://.godot/imported/forrest_ground_01_rough_1k.jpg-37e9c9786a5d088acc56fec0a1da8db9.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

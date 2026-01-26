@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cvkbmnmvc5b5l"
+uid="uid://1217634836"
 path.s3tc="res://.godot/imported/flower_heliophila_arm_1k.jpg-f216feacfcdeb4e58129c191796c5438.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

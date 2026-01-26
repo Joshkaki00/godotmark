@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2f8deug714f1"
+uid="uid://5306aa06a"
 path.s3tc="res://.godot/imported/coast_land_rocks_04_arm_1k.jpg-49578d91c841c7549f799d993e0298fd.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

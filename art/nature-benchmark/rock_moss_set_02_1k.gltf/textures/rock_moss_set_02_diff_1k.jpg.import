@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://0erfxmiq0qra"
+uid="uid://5a8776aa8"
 path.s3tc="res://.godot/imported/rock_moss_set_02_diff_1k.jpg-0c3997b474babcb2c39288612f27963c.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

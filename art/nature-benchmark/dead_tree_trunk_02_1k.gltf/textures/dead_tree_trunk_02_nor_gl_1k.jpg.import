@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5a0so0ovymfu"
+uid="uid://4612a7586"
 path.s3tc="res://.godot/imported/dead_tree_trunk_02_nor_gl_1k.jpg-c63e2e7498cc5128e8e6ee9e1998cfac.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -24,12 +24,12 @@ compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=1
-roughness/src_normal="res://art/nature-benchmark/dead_tree_trunk_02_1k.gltf/textures/dead_tree_trunk_02_nor_gl_1k.jpg"
+roughness/mode=0
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

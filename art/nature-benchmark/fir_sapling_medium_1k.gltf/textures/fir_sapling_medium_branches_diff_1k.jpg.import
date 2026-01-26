@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cwypxivhj4jc2"
+uid="uid://508355137"
 path.s3tc="res://.godot/imported/fir_sapling_medium_branches_diff_1k.jpg-ee08b7b4a9221fc43186c6ec18af4b9a.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

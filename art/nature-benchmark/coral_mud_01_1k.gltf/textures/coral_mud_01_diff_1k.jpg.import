@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b8o7gg2ql12y7"
+uid="uid://205aa2a26"
 path.s3tc="res://.godot/imported/coral_mud_01_diff_1k.jpg-42b8d8ac707005757e2e25b66cf3877b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

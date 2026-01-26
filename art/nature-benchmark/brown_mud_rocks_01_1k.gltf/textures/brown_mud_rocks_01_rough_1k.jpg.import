@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr0iiehja7ylk"
+uid="uid://21a6480736"
 path.s3tc="res://.godot/imported/brown_mud_rocks_01_rough_1k.jpg-79f557955118ad9cc5f1fc33fcaefaf8.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brg7a61y3iwt5"
+uid="uid://6057aa77"
 path.s3tc="res://.godot/imported/coral_mud_01_nor_gl_1k.jpg-fcce57fb78ca50212c41f71d91d0f41b.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -24,12 +24,12 @@ compress/normal_map=1
 compress/channel_pack=0
 mipmaps/generate=true
 mipmaps/limit=-1
-roughness/mode=1
-roughness/src_normal="res://art/nature-benchmark/coral_mud_01_1k.gltf/textures/coral_mud_01_nor_gl_1k.jpg"
+roughness/mode=0
+roughness/src_normal=""
 process/fix_alpha_border=true
 process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rshepm46lwog"
+uid="uid://1465174525"
 path.s3tc="res://.godot/imported/dead_tree_trunk_02_diff_1k.jpg-2a6185941f9895437bfa275e8d5d2669.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

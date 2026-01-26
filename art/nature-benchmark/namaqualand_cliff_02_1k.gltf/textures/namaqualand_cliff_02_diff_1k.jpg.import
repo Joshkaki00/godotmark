@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cngkw25rjujry"
+uid="uid://157867a830"
 path.s3tc="res://.godot/imported/namaqualand_cliff_02_diff_1k.jpg-8f713000d1b82f90b8d98b257765beeb.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

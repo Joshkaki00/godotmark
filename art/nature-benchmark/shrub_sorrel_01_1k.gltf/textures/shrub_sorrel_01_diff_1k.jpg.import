@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwngvv7ujkdp6"
+uid="uid://130528aaba"
 path.s3tc="res://.godot/imported/shrub_sorrel_01_diff_1k.jpg-3b13c022a5dc0a49bb46bb160fad1909.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://byfc6pdl8utig"
+uid="uid://167564018"
 path.s3tc="res://.godot/imported/fir_sapling_twigs_diff_1k.jpg-73781c8e0c1a53ef77cfbe3673ebf7f8.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://7lm338p8fq2d"
+uid="uid://111a1a0704"
 path.s3tc="res://.godot/imported/pine_sapling_small_bark_arm_1k.jpg-428e32a7407f1e4605f31a5d3eabebfc.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

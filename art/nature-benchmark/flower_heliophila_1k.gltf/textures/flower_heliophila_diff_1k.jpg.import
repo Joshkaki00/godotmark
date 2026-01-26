@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmpdp71sqdjbp"
+uid="uid://863017228"
 path.s3tc="res://.godot/imported/flower_heliophila_diff_1k.jpg-d1be3e622fa3d55420aef139913ddbbf.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

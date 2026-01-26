@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0x4p3w1ca0lw"
+uid="uid://1841563137"
 path.s3tc="res://.godot/imported/fir_sapling_twigs_arm_1k.jpg-ade70076252e42832f7e006a6dd5e3d2.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2

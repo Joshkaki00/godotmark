@@ -2,7 +2,7 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2ac2xm51o6fq"
+uid="uid://1282222305"
 path.s3tc="res://.godot/imported/flower_stinkkruid_diff_1k.jpg-a60344455b163af584eb76d7ff4224d4.s3tc.ctex"
 metadata={
 "imported_formats": ["s3tc_bptc"],
@@ -32,4 +32,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=0
+detect_3d/compress_to=2
