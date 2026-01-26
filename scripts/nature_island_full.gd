@@ -416,6 +416,59 @@ func create_multimesh_from_assets(asset_list: Array, instance_count: int, zone: 
 	add_child(mmi)
 	return mmi
 
+func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiMeshInstance3D:
+	"""Create single MultiMesh from multiple zone configurations (reduces draw calls)
+	zone_configs format: [{"count": 20, "zone": "interior_forest"}, ...]
+	"""
+	if asset_list.is_empty() or zone_configs.is_empty():
+		return null
+	
+	# Calculate total instance count
+	var total_count = 0
+	for config in zone_configs:
+		total_count += config["count"]
+	
+	if total_count == 0:
+		return null
+	
+	var mmi = MultiMeshInstance3D.new()
+	var multimesh = MultiMesh.new()
+	multimesh.transform_format = MultiMesh.TRANSFORM_3D
+	multimesh.instance_count = total_count
+	
+	# Use first asset (Dictionary with "mesh", "material_unshaded", "material_lit")
+	var base_data = asset_list[0]
+	if not base_data.has("mesh") or not base_data["mesh"]:
+		return null
+	
+	multimesh.mesh = base_data["mesh"]
+	mmi.multimesh = multimesh
+	
+	# Add visibility range for automatic distance culling (Raspberry Pi optimization)
+	mmi.visibility_range_begin = 0.0
+	mmi.visibility_range_end = 40.0  # Fade out beyond 40m
+	mmi.visibility_range_fade_mode = GeometryInstance3D.VISIBILITY_RANGE_FADE_SELF
+	
+	# Apply unshaded material (Phase 1-4 default)
+	if base_data.has("material_unshaded") and base_data["material_unshaded"]:
+		mmi.material_override = base_data["material_unshaded"]
+	
+	# Detect if this is a ground texture using new GLTF-aware function
+	var is_ground = is_ground_asset(base_data)
+	
+	# Generate transforms for all zones combined
+	var instance_idx = 0
+	for config in zone_configs:
+		var count = config["count"]
+		var zone = config["zone"]
+		var transforms = generate_transforms_for_zone(count, zone, is_ground)
+		for i in range(count):
+			multimesh.set_instance_transform(instance_idx, transforms[i])
+			instance_idx += 1
+	
+	add_child(mmi)
+	return mmi
+
 func generate_transforms_for_zone(count: int, zone: String, is_ground_texture: bool = false) -> Array[Transform3D]:
 	"""Generate transforms based on island zone (no collision checking for performance)"""
 	var transforms: Array[Transform3D] = []
@@ -486,26 +539,23 @@ func setup_phase_1_async():
 		env.environment.glow_enabled = false
 		env.environment.volumetric_fog_enabled = false
 	
-	# Create tree MultiMeshes (all trees use same asset for batching)
+	# Create tree MultiMeshes (COMBINED into single MultiMesh for reduced draw calls)
 	var all_trees = asset_library["trees"]
 	
 	if not all_trees.is_empty():
-		multimesh_groups["large_trees"] = create_multimesh_from_assets(all_trees, 20, "interior_forest")
-		print("[NatureIsland] Created 20 large trees")
+		# Merge all tree zones into ONE MultiMesh (3 draw calls → 1 draw call)
+		multimesh_groups["all_trees"] = create_combined_multimesh(all_trees, [
+			{"count": 20, "zone": "interior_forest"},
+			{"count": 7, "zone": "coastal"},
+			{"count": 3, "zone": "clearing"}
+		])
+		print("[NatureIsland] Created 30 trees (1 combined MultiMesh)")
 		await get_tree().process_frame  # Yield to prevent freeze
-		
-		multimesh_groups["small_trees"] = create_multimesh_from_assets(all_trees, 7, "coastal")
-		print("[NatureIsland] Created 7 small trees")
-		await get_tree().process_frame
-		
-		multimesh_groups["saplings"] = create_multimesh_from_assets(all_trees, 3, "clearing")
-		print("[NatureIsland] Created 3 saplings")
-		await get_tree().process_frame
 	
 	# Setup simple ocean (Phase 1: just color + basic UV scroll)
 	setup_ocean_phase_1()
 	
-	update_metrics_overlay("Dense Forest + Ocean", "Trees: 30 | Draw Calls: ~4 | Target: 70 FPS")
+	update_metrics_overlay("Dense Forest + Ocean", "Trees: 30 | Draw Calls: ~2 | Target: 70 FPS")
 
 func setup_ocean_phase_1():
 	"""Setup simple ocean for Phase 1"""
@@ -524,66 +574,62 @@ func transition_to_phase_2():
 	current_phase = 2
 	print("\n[NatureIsland] === PHASE 2: + Rocks (35-70s) ===")
 	
-	# Add rock MultiMeshes
+	# Add rock MultiMeshes (COMBINED into single MultiMesh)
 	var all_rocks = asset_library["rocks"]
 	
 	if not all_rocks.is_empty():
-		multimesh_groups["boulders"] = create_multimesh_from_assets(all_rocks, 5, "coastal")
-		print("[NatureIsland] Created 5 boulders")
-		
-		multimesh_groups["rock_faces"] = create_multimesh_from_assets(all_rocks, 4, "coastal")
-		print("[NatureIsland] Created 4 rock faces")
-		
-		multimesh_groups["small_rocks"] = create_multimesh_from_assets(all_rocks, 3, "general")
-		print("[NatureIsland] Created 3 small rocks")
+		# Merge all rock zones into ONE MultiMesh (3 draw calls → 1 draw call)
+		multimesh_groups["all_rocks"] = create_combined_multimesh(all_rocks, [
+			{"count": 5, "zone": "coastal"},
+			{"count": 4, "zone": "coastal"},
+			{"count": 3, "zone": "general"}
+		])
+		print("[NatureIsland] Created 12 rocks (1 combined MultiMesh)")
 	
 	# Animate ocean
 	var mat = ocean.get_surface_override_material(0) if ocean else null
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("wave_height", 0.3)
 	
-	update_metrics_overlay("+ Rocks", "Objects: 42 | Draw Calls: ~7 | Target: 70 FPS")
+	update_metrics_overlay("+ Rocks", "Objects: 42 | Draw Calls: ~3 | Target: 70 FPS")
 
 func transition_to_phase_3():
 	"""Phase 3: + Vegetation (70-105s) - Target 50 FPS"""
 	current_phase = 3
 	print("\n[NatureIsland] === PHASE 3: + Vegetation (70-105s) ===")
 	
-	# Add vegetation MultiMeshes
+	# Add vegetation MultiMeshes (COMBINED into single MultiMesh)
 	var all_vegetation = asset_library["vegetation"]
 	
 	if not all_vegetation.is_empty():
-		multimesh_groups["shrubs"] = create_multimesh_from_assets(all_vegetation, 10, "clearing")
-		print("[NatureIsland] Created 10 shrubs")
-		
-		multimesh_groups["grasses"] = create_multimesh_from_assets(all_vegetation, 8, "general")
-		print("[NatureIsland] Created 8 grasses")
-		
-		multimesh_groups["flowers"] = create_multimesh_from_assets(all_vegetation, 5, "clearing")
-		print("[NatureIsland] Created 5 flowers")
-		
-		multimesh_groups["plants"] = create_multimesh_from_assets(all_vegetation, 2, "interior_forest")
-		print("[NatureIsland] Created 2 plants")
+		# Merge all vegetation zones into ONE MultiMesh (4 draw calls → 1 draw call)
+		multimesh_groups["all_vegetation"] = create_combined_multimesh(all_vegetation, [
+			{"count": 10, "zone": "clearing"},
+			{"count": 8, "zone": "general"},
+			{"count": 5, "zone": "clearing"},
+			{"count": 2, "zone": "interior_forest"}
+		])
+		print("[NatureIsland] Created 25 vegetation (1 combined MultiMesh)")
 	
 	# Add wind animation to vegetation (GPU-based, zero CPU overhead)
 	var wind_shader = load("res://shaders/wind_vegetation.gdshader")
-	for group_name in ["shrubs", "grasses", "flowers", "plants"]:
-		if multimesh_groups.has(group_name):
-			var mmi = multimesh_groups[group_name]
-			var shader_mat = ShaderMaterial.new()
-			shader_mat.shader = wind_shader
-			shader_mat.set_shader_parameter("wind_speed", 2.0)
-			shader_mat.set_shader_parameter("wind_strength", 0.15)
-			shader_mat.set_shader_parameter("max_height", 2.0)
-			
-			# Preserve original texture/color from GLTF asset
-			var original_mat = mmi.material_override
-			if original_mat and original_mat is StandardMaterial3D:
-				shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
-				shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
-				shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
-			
-			mmi.material_override = shader_mat
+	# Apply wind shader to combined vegetation MultiMesh
+	if multimesh_groups.has("all_vegetation"):
+		var mmi = multimesh_groups["all_vegetation"]
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = wind_shader
+		shader_mat.set_shader_parameter("wind_speed", 2.0)
+		shader_mat.set_shader_parameter("wind_strength", 0.15)
+		shader_mat.set_shader_parameter("max_height", 2.0)
+		
+		# Preserve original texture/color from GLTF asset
+		var original_mat = mmi.material_override
+		if original_mat and original_mat is StandardMaterial3D:
+			shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+			shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+			shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+		
+		mmi.material_override = shader_mat
 	
 	print("[NatureIsland] Applied wind animation shader to vegetation")
 	
@@ -592,7 +638,7 @@ func transition_to_phase_3():
 	if mat and mat is ShaderMaterial:
 		mat.set_shader_parameter("phase", 3)
 	
-	update_metrics_overlay("+ Vegetation", "Objects: 67 | Draw Calls: ~11 | Target: 70 FPS")
+	update_metrics_overlay("+ Vegetation", "Objects: 67 | Draw Calls: ~4 | Target: 70 FPS")
 
 func transition_to_phase_4():
 	"""Phase 4: + Ground Detail + Lighting (105-140s) - Target 45 FPS"""
@@ -613,19 +659,22 @@ func transition_to_phase_4():
 	# Add coastal assets (these are 3D features)
 	var coastal_assets = asset_library["coastal"]
 	
-	# Place ground textures FLAT
+	# Place ground textures FLAT (COMBINED into single MultiMesh)
 	if not ground_textures.is_empty():
 		multimesh_groups["ground_textures"] = create_multimesh_from_assets(ground_textures, 20, "general")
 		print("[NatureIsland] Created 20 ground texture patches (flat)")
 	
-	# Place 3D ground objects normally (roots, coastal features)
-	if not ground_3d_objects.is_empty():
-		multimesh_groups["roots"] = create_multimesh_from_assets(ground_3d_objects, 8, "interior_forest")
-		print("[NatureIsland] Created 8 root clusters")
+	# Place 3D ground objects normally (COMBINED roots + coastal into single MultiMesh)
+	var ground_3d_combined = []
+	ground_3d_combined.append_array(ground_3d_objects)
+	ground_3d_combined.append_array(coastal_assets)
 	
-	if not coastal_assets.is_empty():
-		multimesh_groups["coastal_features"] = create_multimesh_from_assets(coastal_assets, 2, "coastal")
-		print("[NatureIsland] Created 2 coastal features")
+	if not ground_3d_combined.is_empty():
+		multimesh_groups["all_ground_3d"] = create_combined_multimesh(ground_3d_combined, [
+			{"count": 8, "zone": "interior_forest"},
+			{"count": 2, "zone": "coastal"}
+		])
+		print("[NatureIsland] Created 10 ground 3D objects (1 combined MultiMesh)")
 	
 	# Enhanced water
 	var mat = ocean.get_surface_override_material(0) if ocean else null
@@ -635,27 +684,27 @@ func transition_to_phase_4():
 	
 	# Add wind animation to trees (GPU-based, zero CPU overhead)
 	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
-	for group_name in ["large_trees", "small_trees", "saplings"]:
-		if multimesh_groups.has(group_name):
-			var mmi = multimesh_groups[group_name]
-			var shader_mat = ShaderMaterial.new()
-			shader_mat.shader = tree_wind_shader
-			shader_mat.set_shader_parameter("wind_speed", 0.8)
-			shader_mat.set_shader_parameter("wind_strength", 0.4)
-			shader_mat.set_shader_parameter("max_height", 5.0)
-			
-			# Preserve original texture/color from GLTF asset
-			var original_mat = mmi.material_override
-			if original_mat and original_mat is StandardMaterial3D:
-				shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
-				shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
-				shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
-			
-			mmi.material_override = shader_mat
+	# Apply wind shader to combined tree MultiMesh
+	if multimesh_groups.has("all_trees"):
+		var mmi = multimesh_groups["all_trees"]
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = tree_wind_shader
+		shader_mat.set_shader_parameter("wind_speed", 0.8)
+		shader_mat.set_shader_parameter("wind_strength", 0.4)
+		shader_mat.set_shader_parameter("max_height", 5.0)
+		
+		# Preserve original texture/color from GLTF asset
+		var original_mat = mmi.material_override
+		if original_mat and original_mat is StandardMaterial3D:
+			shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+			shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+			shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+		
+		mmi.material_override = shader_mat
 	
 	print("[NatureIsland] Applied wind animation shader to trees")
 	
-	update_metrics_overlay("+ Ground + Lighting", "Objects: 140 | Draw Calls: ~15 | Target: 45 FPS")
+	update_metrics_overlay("+ Ground + Lighting", "Objects: 107 | Draw Calls: ~6 | Target: 45 FPS")
 
 func transition_to_phase_5():
 	"""Phase 5: Per-Vertex Lighting Only (140-176s) - Target 40 FPS (NO shadows/glow for Raspberry Pi)"""
@@ -681,25 +730,17 @@ func transition_to_phase_5():
 		mat.set_shader_parameter("phase", 5)
 		mat.set_shader_parameter("wave_height", 0.8)
 	
-	update_metrics_overlay("Per-Vertex Lighting", "Objects: 140+ | Draw Calls: ~15 | Target: 40 FPS")
+	update_metrics_overlay("Per-Vertex Lighting", "Objects: 107+ | Draw Calls: ~6 | Target: 40 FPS")
 
 func swap_to_lit_materials():
 	"""Swap all multimesh materials to per-vertex lighting while preserving wind animation"""
 	# Get original asset data with pre-created lit materials
 	var asset_type_map = {
-		"large_trees": "trees",
-		"small_trees": "trees",
-		"saplings": "trees",
-		"boulders": "rocks",
-		"rock_faces": "rocks",
-		"small_rocks": "rocks",
-		"shrubs": "vegetation",
-		"grasses": "vegetation",
-		"flowers": "vegetation",
-		"plants": "vegetation",
+		"all_trees": "trees",
+		"all_rocks": "rocks",
+		"all_vegetation": "vegetation",
 		"ground_textures": "ground",
-		"roots": "ground",
-		"coastal_features": "coastal"
+		"all_ground_3d": "ground"
 	}
 	
 	# Load wind shaders (if they exist)
