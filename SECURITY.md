@@ -18,7 +18,7 @@ Instead, please report them via:
    - Fill out the form with details
 
 2. **Email** (if you prefer)
-   - Email: [Add your email if you want]
+   - **Email:** [godotmarkinquiries@gmail.com](mailto:godotmarkinquiries@gmail.com)
    - Subject: "[SECURITY] GodotMark vulnerability report"
 
 ### What to include in your report
