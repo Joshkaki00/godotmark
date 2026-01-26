@@ -4,24 +4,24 @@ extends Camera3D
 
 # Pre-calculated transforms (one every 1.5 seconds for smooth motion)
 var transform_cache: Array[Transform3D] = []
-var cache_duration: float = 176.0  # Total benchmark duration
-var cache_rate: float = 1.5  # One transform every 1.5 seconds (118 total - smooth but performant)
+var cache_duration: float = 60.0  # Total benchmark duration (1 minute)
+var cache_rate: float = 1.5  # One transform every 1.5 seconds (40 total - smooth but performant)
 
-# Camera path keyframes (smooth circular orbit around island)
-# Design: Gentle 360° orbit at medium height, much closer to island for detail
+# Camera path keyframes (smooth orbit around 0.5-acre island: 30m x 60m)
+# Design: Gentle 180° orbit showing different perspectives of the elongated island
 var keyframes = [
-	# Phase 1: Start - South view, closer and lower
-	{"time": 0.0, "position": Vector3(0, 12, 20), "look_at": Vector3(0, 3, 0)},
-	# Phase 1: Southeast, descend slightly
-	{"time": 35.0, "position": Vector3(14, 10, 14), "look_at": Vector3(0, 2, 0)},
-	# Phase 2: East, maintain close distance
-	{"time": 70.0, "position": Vector3(18, 9, 0), "look_at": Vector3(0, 2, 0)},
-	# Phase 3: Northeast, stay close
-	{"time": 105.0, "position": Vector3(14, 9, -14), "look_at": Vector3(0, 2, 0)},
-	# Phase 4: North, slight rise but still close
-	{"time": 140.0, "position": Vector3(0, 11, -19), "look_at": Vector3(0, 3, 0)},
-	# Phase 5: Northwest, final orbit completion
-	{"time": 176.0, "position": Vector3(-16, 12, -16), "look_at": Vector3(0, 3, 0)},
+	# Phase 1: Start - South view, overlooking long axis
+	{"time": 0.0, "position": Vector3(0, 15, 40), "look_at": Vector3(0, 2, 0)},
+	# Phase 2: Southeast, descending to show rocks
+	{"time": 12.0, "position": Vector3(25, 12, 25), "look_at": Vector3(0, 1, 0)},
+	# Phase 3: East, side view of island length
+	{"time": 24.0, "position": Vector3(30, 10, 0), "look_at": Vector3(0, 2, 0)},
+	# Phase 4: Northeast, showing ground details
+	{"time": 36.0, "position": Vector3(25, 12, -25), "look_at": Vector3(0, 1, 0)},
+	# Phase 5: North, final wide view
+	{"time": 48.0, "position": Vector3(0, 15, -40), "look_at": Vector3(0, 2, 0)},
+	# End: Northwest, completion
+	{"time": 60.0, "position": Vector3(-20, 16, -35), "look_at": Vector3(0, 3, 0)},
 ]
 
 var parent_node: Node3D
