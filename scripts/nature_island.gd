@@ -497,17 +497,17 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 	return transforms
 
 func setup_phase_1():
-	"""Phase 1: Base Island (0-12s) - Trees with vertex lighting"""
+	"""Phase 1: Base Island (0-12s) - Dense forest with vertex lighting"""
 	print("\n[Phase 1] Base Island (0-12s)")
-	print("  - 5 trees with per-vertex lighting")
+	print("  - Dense forest with per-vertex lighting")
 	
 	var trees = asset_library["trees"]
 	if not trees.is_empty():
 		multimesh_groups["all_trees"] = create_combined_multimesh(trees, [
-			{"count": 3, "zone": "interior"},
-			{"count": 2, "zone": "coastal"}
+			{"count": 80, "zone": "interior"},
+			{"count": 40, "zone": "coastal"}
 		])
-		print("[Phase 1] Created 5 trees (1 combined MultiMesh)")
+		print("[Phase 1] Created 120 trees (1 combined MultiMesh)")
 	
 	# Simple ocean (no waves)
 	var ocean_mat = ocean.get_surface_override_material(0)
@@ -517,17 +517,17 @@ func setup_phase_1():
 
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocks (12-24s)")
-	print("  - 6 coastal rocks + ocean waves")
+	print("  - Coastal rocks + ocean waves")
 	
 	await get_tree().process_frame
 	
 	var rocks = asset_library["rocks"]
 	if not rocks.is_empty():
 		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-			{"count": 4, "zone": "coastal"},
-			{"count": 2, "zone": "coastal"}
+			{"count": 30, "zone": "coastal"},
+			{"count": 20, "zone": "general"}
 		])
-		print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
+		print("[Phase 2] Created 50 rocks (1 combined MultiMesh)")
 	
 	# Enable ocean waves
 	var ocean_mat = ocean.get_surface_override_material(0)
@@ -540,18 +540,18 @@ func transition_to_phase_2():
 
 func transition_to_phase_3():
 	print("\n[Phase 3] Add Vegetation (24-36s)")
-	print("  - 15 vegetation assets + wind animation")
+	print("  - Dense undergrowth + wind animation")
 	
 	await get_tree().process_frame
 	
 	var vegetation = asset_library["vegetation"]
 	if not vegetation.is_empty():
 		multimesh_groups["all_vegetation"] = create_combined_multimesh(vegetation, [
-			{"count": 8, "zone": "interior"},
-			{"count": 5, "zone": "coastal"},
-			{"count": 2, "zone": "general"}
+			{"count": 100, "zone": "interior"},
+			{"count": 60, "zone": "coastal"},
+			{"count": 40, "zone": "general"}
 		])
-		print("[Phase 3] Created 15 vegetation (1 combined MultiMesh)")
+		print("[Phase 3] Created 200 vegetation (1 combined MultiMesh)")
 		
 		# Apply wind shader to vegetation
 		var wind_shader = load("res://shaders/wind_vegetation.gdshader")
@@ -578,17 +578,17 @@ func transition_to_phase_3():
 
 func transition_to_phase_4():
 	print("\n[Phase 4] Add Ground Detail (36-48s)")
-	print("  - 10 ground objects + tree wind")
+	print("  - Ground debris + tree wind")
 	
 	await get_tree().process_frame
 	
 	var ground_details = asset_library["ground_details"]
 	if not ground_details.is_empty():
 		multimesh_groups["all_ground"] = create_combined_multimesh(ground_details, [
-			{"count": 6, "zone": "interior"},
-			{"count": 4, "zone": "general"}
+			{"count": 40, "zone": "interior"},
+			{"count": 30, "zone": "general"}
 		])
-		print("[Phase 4] Created 10 ground details (1 combined MultiMesh)")
+		print("[Phase 4] Created 70 ground details (1 combined MultiMesh)")
 	
 	# Apply wind shader to trees
 	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")

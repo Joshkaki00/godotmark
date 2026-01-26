@@ -41,20 +41,20 @@ Ocean: 80m x 80m (surrounds island)
 
 | Phase | Time    | Objects | Draw Calls | Features                        | Target FPS |
 |-------|---------|---------|------------|---------------------------------|------------|
-| 1     | 0-12s   | 5       | 2          | 5 trees, simple ocean           | 70+        |
-| 2     | 12-24s  | 11      | 3          | + 6 rocks, ocean waves          | 65+        |
-| 3     | 24-36s  | 26      | 4          | + 15 vegetation, wind shader    | 55+        |
-| 4     | 36-48s  | 36      | 5          | + 10 ground, tree wind          | 45+        |
-| 5     | 48-60s  | 36      | 5          | Per-vertex lighting, max waves  | 35+        |
+| 1     | 0-12s   | 120     | 2          | Dense forest, per-vertex lit    | 60+        |
+| 2     | 12-24s  | 170     | 3          | + 50 rocks, ocean waves         | 50+        |
+| 3     | 24-36s  | 370     | 4          | + 200 vegetation, wind shader   | 40+        |
+| 4     | 36-48s  | 440     | 5          | + 70 ground, tree wind          | 30+        |
+| 5     | 48-60s  | 440     | 5          | Maximum ocean waves             | 25+        |
 
 ### Asset Distribution
 
-**Total: 36 objects across 4 combined MultiMesh groups**
+**Total: 440 objects across 4 combined MultiMesh groups**
 
-- **Trees (5):** 3 interior + 2 coastal
-- **Rocks (6):** 4 coastal + 2 coastal
-- **Vegetation (15):** 8 interior + 5 coastal + 2 general
-- **Ground Details (10):** 6 interior + 4 general
+- **Trees (120):** 80 interior + 40 coastal
+- **Rocks (50):** 30 coastal + 20 general
+- **Vegetation (200):** 100 interior + 60 coastal + 40 general
+- **Ground Details (70):** 40 interior + 30 general
 
 ### Zone Layout
 
