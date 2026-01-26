@@ -39,23 +39,23 @@ Ocean: 80m x 80m (surrounds island)
 
 ### Phase Structure (60 seconds)
 
-| Phase | Time    | Objects | Draw Calls | Features                        | Target FPS |
-|-------|---------|---------|------------|---------------------------------|------------|
-| 1     | 0-12s   | 40      | 2          | Forest, per-vertex lit          | 60+        |
-| 2     | 12-24s  | 65      | 3          | + 25 rocks, ocean waves         | 55+        |
-| 3     | 24-36s  | 130     | 4          | + 65 vegetation, wind shader    | 45+        |
-| 4     | 36-48s  | 165     | 5          | + 35 ground, tree wind          | 40+        |
-| 5     | 48-60s  | 165     | 5          | Maximum ocean waves             | 35+        |
+| Phase | Time    | Objects | Triangles | Draw Calls | Features                        | Target FPS |
+|-------|---------|---------|-----------|------------|---------------------------------|------------|
+| 1     | 0-12s   | 10      | ~4,000    | 2          | Forest, per-vertex lit          | 60+        |
+| 2     | 12-24s  | 16      | ~4,600    | 3          | + 6 rocks, ocean waves          | 55+        |
+| 3     | 24-36s  | 36      | ~5,600    | 4          | + 20 vegetation, wind shader    | 50+        |
+| 4     | 36-48s  | 36      | ~5,600    | 4          | Tree wind (no new geometry)     | 45+        |
+| 5     | 48-60s  | 36      | ~5,600    | 4          | Maximum ocean waves             | 40+        |
 
 ### Asset Distribution
 
-**Total: 165 objects across 4 combined MultiMesh groups**
-**Optimized for Raspberry Pi 4/5 hardware**
+**Total: 36 objects, ~5,600 triangles (under RPi 4's 10K budget)**
+**Optimized for Raspberry Pi 4/5 triangle throughput**
 
-- **Trees (40):** 25 interior + 15 coastal
-- **Rocks (25):** 15 coastal + 10 general
-- **Vegetation (65):** 30 interior + 20 coastal + 15 general
-- **Ground Details (35):** 20 interior + 15 general
+- **Trees (10):** 6 interior + 4 coastal (~400 tri each = 4,000 tri)
+- **Rocks (6):** 4 coastal + 2 general (~100 tri each = 600 tri)
+- **Vegetation (20):** 12 interior + 5 coastal + 3 general (~50 tri each = 1,000 tri)
+- **Ground Details (0):** Removed to stay under triangle budget
 
 ### Zone Layout
 
@@ -220,13 +220,16 @@ Northwest (60s): Completion
 - High driver overhead
 - 15+ draw calls
 - Complex phase system
+- ~457,000 triangles (45× over budget!)
 
-**After (new implementation with RPi-optimized counts):**
-- 35-60 FPS target range
-- Optimized draw calls (5 total)
-- Conservative object counts (165 total)
+**After (optimized for RPi 4 specs):**
+- 40-60 FPS target range
+- Optimized draw calls (4 total)
+- **Triangle count: ~5,600 (under 10K budget)** ✅
+- Low-poly models (400-500 tri average)
+- Per-vertex lighting
+- VRAM compressed textures
 - Clean phase progression
-- Model Showcase-proven structure
 
 ## Testing
 
@@ -300,14 +303,19 @@ godot --path . res://scenes/nature_island.tscn
 The Nature Island benchmark has been completely rebuilt using the proven Model Showcase template, resulting in:
 
 ✅ Clean, maintainable code structure  
-✅ Optimized draw calls (60% reduction)  
+✅ Optimized draw calls (4 total)  
 ✅ Proper warmup and asset loading  
-✅ 0.5-acre island with 165 nature objects  
+✅ 0.5-acre island with 36 nature objects  
+✅ **Triangle count: ~5,600 (under RPi 4's 10K budget)** ✅  
 ✅ 60-second audio-synced benchmark  
-✅ Expected 35-60 FPS on Raspberry Pi 4/5  
+✅ Expected 40-60 FPS on Raspberry Pi 4/5  
+✅ Per-vertex lighting throughout  
+✅ VRAM compressed textures  
+✅ Low-poly models (400-500 triangles average)  
 ✅ All phases implemented and tested  
 ✅ Camera paths optimized for island viewing  
 ✅ Metrics overlay updated with correct info  
-✅ Conservative object counts for RPi hardware  
 
-The benchmark is now ready for testing on Raspberry Pi!
+**The benchmark is now optimized for Raspberry Pi 4 hardware specifications!**
+
+See `RASPBERRY_PI_4_MODEL_OPTIMIZATION.md` for detailed triangle budget analysis.

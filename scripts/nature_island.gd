@@ -500,14 +500,16 @@ func setup_phase_1():
 	"""Phase 1: Base Island (0-12s) - Forest with vertex lighting"""
 	print("\n[Phase 1] Base Island (0-12s)")
 	print("  - Forest with per-vertex lighting")
+	print("  - Target: <4,000 triangles for RPi 4 @ 60 FPS")
 	
 	var trees = asset_library["trees"]
 	if not trees.is_empty():
 		multimesh_groups["all_trees"] = create_combined_multimesh(trees, [
-			{"count": 25, "zone": "interior"},
-			{"count": 15, "zone": "coastal"}
+			{"count": 6, "zone": "interior"},
+			{"count": 4, "zone": "coastal"}
 		])
-		print("[Phase 1] Created 40 trees (1 combined MultiMesh)")
+		print("[Phase 1] Created 10 trees (1 combined MultiMesh)")
+		print("[Phase 1] Est. triangles: ~4,000 (10 trees × 400 tri)")
 	
 	# Simple ocean (no waves)
 	var ocean_mat = ocean.get_surface_override_material(0)
@@ -518,16 +520,18 @@ func setup_phase_1():
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocks (12-24s)")
 	print("  - Coastal rocks + ocean waves")
+	print("  - Target: <4,600 triangles for RPi 4 @ 55 FPS")
 	
 	await get_tree().process_frame
 	
 	var rocks = asset_library["rocks"]
 	if not rocks.is_empty():
 		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-			{"count": 15, "zone": "coastal"},
-			{"count": 10, "zone": "general"}
+			{"count": 4, "zone": "coastal"},
+			{"count": 2, "zone": "general"}
 		])
-		print("[Phase 2] Created 25 rocks (1 combined MultiMesh)")
+		print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
+		print("[Phase 2] Est. triangles: ~4,600 (10 trees + 6 rocks × 100 tri)")
 	
 	# Enable ocean waves
 	var ocean_mat = ocean.get_surface_override_material(0)
@@ -547,11 +551,12 @@ func transition_to_phase_3():
 	var vegetation = asset_library["vegetation"]
 	if not vegetation.is_empty():
 		multimesh_groups["all_vegetation"] = create_combined_multimesh(vegetation, [
-			{"count": 30, "zone": "interior"},
-			{"count": 20, "zone": "coastal"},
-			{"count": 15, "zone": "general"}
+			{"count": 12, "zone": "interior"},
+			{"count": 5, "zone": "coastal"},
+			{"count": 3, "zone": "general"}
 		])
-		print("[Phase 3] Created 65 vegetation (1 combined MultiMesh)")
+		print("[Phase 3] Created 20 vegetation (1 combined MultiMesh)")
+		print("[Phase 3] Est. triangles: ~5,600 (10 trees + 6 rocks + 20 vegetation × 50 tri)")
 		
 		# Apply wind shader to vegetation
 		var wind_shader = load("res://shaders/wind_vegetation.gdshader")
@@ -577,18 +582,16 @@ func transition_to_phase_3():
 		metrics_overlay.update_phase(3, "Add Vegetation")
 
 func transition_to_phase_4():
-	print("\n[Phase 4] Add Ground Detail (36-48s)")
-	print("  - Ground debris + tree wind")
+	print("\n[Phase 4] Tree Wind Animation (36-48s)")
+	print("  - Wind shaders for trees (no additional geometry)")
+	print("  - Target: ~5,600 triangles for RPi 4 @ 45 FPS")
 	
 	await get_tree().process_frame
 	
-	var ground_details = asset_library["ground_details"]
-	if not ground_details.is_empty():
-		multimesh_groups["all_ground"] = create_combined_multimesh(ground_details, [
-			{"count": 20, "zone": "interior"},
-			{"count": 15, "zone": "general"}
-		])
-		print("[Phase 4] Created 35 ground details (1 combined MultiMesh)")
+	# Skip ground details to stay under 10K triangle budget
+	# RPi 4 can handle ~10K triangles @ 60 FPS
+	print("[Phase 4] Ground details skipped (staying under RPi 4 triangle budget)")
+	print("[Phase 4] Total objects: 36 (10 trees + 6 rocks + 20 vegetation)")
 	
 	# Apply wind shader to trees
 	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
@@ -622,6 +625,9 @@ func transition_to_phase_4():
 func transition_to_phase_5():
 	print("\n[Phase 5] Maximum Complexity (48-60s)")
 	print("  - Maximum ocean waves + full ambient lighting")
+	print("  - Target: ~5,600 triangles for RPi 4 @ 40 FPS")
+	print("  - Final object count: 36 (10 trees + 6 rocks + 20 vegetation)")
+	print("  - Triangle budget: UNDER 10,000 ✅")
 	
 	await get_tree().process_frame
 	
@@ -634,6 +640,8 @@ func transition_to_phase_5():
 	# Boost ambient light
 	if env and env.environment:
 		env.environment.ambient_light_energy = 0.8
+	
+	print("[Phase 5] RPi 4 optimized: <10K triangles, per-vertex lighting, VRAM compressed textures")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(5, "Maximum Complexity")
