@@ -2,23 +2,22 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2a42701a61"
-path.s3tc="res://.godot/imported/forrest_ground_03_rough_1k.jpg-4b288b620f963170723596b7738fc4ae.s3tc.ctex"
+uid="uid://17075a1541"
+path="res://.godot/imported/forrest_ground_03_rough_1k.jpg-4b288b620f963170723596b7738fc4ae.ctex"
 metadata={
-"imported_formats": ["s3tc_bptc"],
-"vram_texture": true
+"vram_texture": false
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/forrest_ground_03_1k.gltf/textures/forrest_ground_03_rough_1k.jpg"
-dest_files=["res://.godot/imported/forrest_ground_03_rough_1k.jpg-4b288b620f963170723596b7738fc4ae.s3tc.ctex"]
+dest_files=["res://.godot/imported/forrest_ground_03_rough_1k.jpg-4b288b620f963170723596b7738fc4ae.ctex"]
 
 [params]
 
-compress/mode=2
+compress/mode=4
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.6
 compress/hdr_compression=1
 compress/normal_map=0
 compress/channel_pack=0
@@ -31,5 +30,5 @@ process/premult_alpha=false
 process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
-process/size_limit=0
-detect_3d/compress_to=2
+process/size_limit=512
+detect_3d/compress_to=0
