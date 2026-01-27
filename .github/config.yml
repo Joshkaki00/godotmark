@@ -1,0 +1,89 @@
+# Configuration for Welcome Bot - https://github.com/behaviorbot/welcome
+# Automatically welcomes new contributors and celebrates their first contributions
+
+# Configuration for first-time issue creators
+newIssueWelcomeComment: >
+  👋 Hey there, thanks for opening your first issue in **GodotMark**! 
+  
+  
+  We're a small team trying to build something meaningful - a 3D gaming benchmark for ARM single-board computers. 
+  Your input is genuinely appreciated. 🙏
+  
+  
+  **What happens next:**
+  
+  - A maintainer will review your issue as soon as possible
+  
+  - If it's a bug, we'll try to reproduce it
+  
+  - If it's a feature request, we'll discuss feasibility
+  
+  
+  **Want to help more?** Check out our [Contributing Guide](CONTRIBUTING.md) - we especially need help with:
+  
+  - Godot 4.x rendering optimization
+  
+  - Raspberry Pi GPU profiling
+  
+  - Shader optimization
+  
+  
+  Thanks for being part of this journey! 🚀
+
+# Configuration for first-time pull request creators  
+newPRWelcomeComment: >
+  🎉 **Woah, your first pull request to GodotMark!** This is awesome! 🎉
+  
+  
+  Thank you so much for taking the time to contribute. Seriously, you're amazing for jumping in like this. 💪
+  
+  
+  **What happens next:**
+  
+  - Our CI checks will run automatically (security scans, linting, etc.)
+  
+  - A maintainer will review your code - usually within 24-48 hours
+  
+  - We might request some changes (don't worry, it's part of the process!)
+  
+  
+  **While you wait:**
+  
+  - Make sure your PR description explains the "why" behind your changes
+  
+  - Check that all CI checks pass (green checkmarks ✅)
+  
+  - Feel free to ask questions in the PR comments!
+  
+  
+  You're now part of the GodotMark story. Thank you! 🙌
+
+# Configuration for first-time contributors who get their PR merged
+firstPRMergeComment: >
+  🎊 **CONGRATULATIONS!** Your first contribution has been merged! 🎊
+  
+  
+  ![celebration](https://media.giphy.com/media/g9582DNuQppxC/giphy.gif)
+  
+  
+  You're officially a **GodotMark contributor** now! 🏆
+  
+  
+  Your name will be added to our contributors list via the @all-contributors bot (if you'd like - just comment `@all-contributors please add @<your-username> for <contribution-type>`).
+  
+  
+  **What's next:**
+  
+  - Your contribution is now part of the project forever 🌟
+  
+  - Feel free to tackle more issues (check out "help wanted" label)
+  
+  - Join our discussions and share your ideas
+  
+  - Tell others about GodotMark if you found it interesting!
+  
+  
+  Thank you for making this project better. You rock! 🚀✨
+  
+  
+  — The GodotMark Team

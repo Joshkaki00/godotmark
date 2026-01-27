@@ -416,6 +416,53 @@ This project exists because people care enough to contribute.
 
 ---
 
+## 🤖 Contributor Recognition Bots
+
+We use several GitHub bots to make contributing more welcoming and rewarding:
+
+### All-Contributors Bot ✨
+Automatically recognizes **all types of contributions** to the project!
+
+**How to use:**
+1. After someone contributes (code, docs, ideas, bug reports, etc.)
+2. Comment on the PR or issue: `@all-contributors please add @username for <contribution-type>`
+3. The bot will automatically update the README with their contribution
+
+**Example:**
+```
+@all-contributors please add @johndoe for code, docs, bug
+```
+
+**Contribution types:**
+- `code` - Code contributions
+- `doc` - Documentation
+- `bug` - Bug reports
+- `ideas` - Ideas & suggestions
+- `test` - Testing
+- `review` - Code reviews
+- `infra` - Infrastructure
+- `design` - Design
+- `question` - Answering questions
+- ...and [many more](https://allcontributors.org/docs/en/emoji-key)!
+
+### Welcome Bot 👋
+Automatically welcomes new contributors when they:
+- Open their first issue
+- Create their first pull request
+- Get their first PR merged
+
+You don't need to do anything - the bot handles it automatically!
+
+### First Timers Bot 🎯
+**For Maintainers:** Create beginner-friendly issues by:
+1. Creating a branch that starts with `first-timers-`
+2. The bot will automatically generate a detailed issue for newcomers
+3. Perfect for simple fixes like typos, formatting, or minor improvements
+
+**For Contributors:** Look for issues labeled `first-timers-only` - they're specifically designed to be easy for newcomers!
+
+---
+
 ## Questions?
 
 If you have questions about contributing, please:
@@ -428,4 +475,4 @@ If you have questions about contributing, please:
 
 ---
 
-*Last updated: January 26, 2026*
+*Last updated: January 27, 2026*
