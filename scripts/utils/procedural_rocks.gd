@@ -15,10 +15,17 @@ static func create_rock_mesh(seed_value: int = 0) -> ArrayMesh:
 	sphere.radius = 1.0
 	sphere.height = 2.0
 	
-	# Get mesh data
-	var arrays = sphere.get_mesh_arrays()
-	var vertices = arrays[Mesh.ARRAY_VERTEX]
-	var normals = arrays[Mesh.ARRAY_NORMAL]
+	# Get mesh data as surface tool (easier to work with)
+	var surface_tool = SurfaceTool.new()
+	surface_tool.create_from(sphere, 0)
+	
+	# Generate mesh data
+	var array_mesh = surface_tool.commit()
+	var arrays = array_mesh.surface_get_arrays(0)
+	
+	# Get vertices as PackedVector3Array
+	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
+	var vertex_array: Array = []
 	
 	# Deform vertices to make it look rocky
 	for i in range(vertices.size()):
@@ -35,42 +42,42 @@ static func create_rock_mesh(seed_value: int = 0) -> ArrayMesh:
 		vert.x += rng.randf_range(-0.2, 0.2)
 		vert.z += rng.randf_range(-0.2, 0.2)
 		
-		vertices[i] = vert
+		vertex_array.append(vert)
 	
-	# Recalculate normals for the deformed mesh
-	normals = []
-	var indices = arrays[Mesh.ARRAY_INDEX]
-	normals.resize(vertices.size())
-	normals.fill(Vector3.ZERO)
+	# Rebuild mesh with SurfaceTool (handles normals automatically)
+	var st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
-	# Calculate face normals and accumulate
+	var indices: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	
+	# Add vertices with UVs
 	for i in range(0, indices.size(), 3):
 		var i0 = indices[i]
 		var i1 = indices[i + 1]
 		var i2 = indices[i + 2]
 		
-		var v0 = vertices[i0]
-		var v1 = vertices[i1]
-		var v2 = vertices[i2]
+		# Calculate face normal
+		var v0 = vertex_array[i0]
+		var v1 = vertex_array[i1]
+		var v2 = vertex_array[i2]
+		var normal = (v1 - v0).cross(v2 - v0).normalized()
 		
-		var edge1 = v1 - v0
-		var edge2 = v2 - v0
-		var face_normal = edge1.cross(edge2).normalized()
+		# Add triangle
+		st.set_normal(normal)
+		st.set_uv(uvs[i0])
+		st.add_vertex(v0)
 		
-		normals[i0] += face_normal
-		normals[i1] += face_normal
-		normals[i2] += face_normal
+		st.set_normal(normal)
+		st.set_uv(uvs[i1])
+		st.add_vertex(v1)
+		
+		st.set_normal(normal)
+		st.set_uv(uvs[i2])
+		st.add_vertex(v2)
 	
-	# Normalize accumulated normals
-	for i in range(normals.size()):
-		normals[i] = normals[i].normalized()
-	
-	# Create new mesh with deformed vertices
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	
-	var mesh = ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	st.generate_normals()
+	var mesh = st.commit()
 	
 	return mesh
 
