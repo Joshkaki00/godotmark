@@ -512,18 +512,21 @@ func setup_phase_1():
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocks (12-24s)")
 	print("  - Coastal rocks + ocean waves")
-	print("  - Target: <4,600 triangles for RPi 4 @ 55 FPS")
+	print("  - ROCKS DISABLED FOR TESTING")
 	
 	await get_tree().process_frame
 	
-	var rocks = asset_library["rocks"]
-	if not rocks.is_empty():
-		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-			{"count": 4, "zone": "coastal"},
-			{"count": 2, "zone": "general"}
-		])
-		print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
-		print("[Phase 2] Est. triangles: ~4,600 (10 trees + 6 rocks × 100 tri)")
+	# DISABLED FOR TESTING: Rocks tank FPS
+	# var rocks = asset_library["rocks"]
+	# if not rocks.is_empty():
+	# 	multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
+	# 		{"count": 4, "zone": "coastal"},
+	# 		{"count": 2, "zone": "general"}
+	# 	])
+	# 	print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
+	# 	print("[Phase 2] Est. triangles: ~4,600 (10 trees + 6 rocks × 100 tri)")
+	
+	print("[Phase 2] Rocks DISABLED - testing if they're the bottleneck")
 	
 	# Note: Ocean shader disabled for performance test
 	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
