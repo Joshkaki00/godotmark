@@ -431,6 +431,8 @@ func create_island_ground():
 	var island_mesh = st.commit()
 	ground.mesh = island_mesh
 	print("[Island] Created elliptical island ground (25m × 50m)")
+
+func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
 	"""Recursively find first MeshInstance3D in node tree"""
 	if node is MeshInstance3D:
 		return node
