@@ -76,6 +76,9 @@ func _ready():
 	print("[NatureIsland] Starting 1-Minute Nature Benchmark")
 	print("========================================\n")
 	
+	# Make the ground more island-shaped (elliptical)
+	create_island_ground()
+	
 	# Set benchmark title in overlay
 	if metrics_overlay and metrics_overlay.has_method("set_benchmark_title"):
 		metrics_overlay.set_benchmark_title("NATURE ISLAND BENCHMARK")
@@ -392,7 +395,42 @@ func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 		"material_lit": mat_lit
 	}
 
-func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
+func create_island_ground():
+	"""Create an elliptical island-shaped ground mesh"""
+	var st = SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	
+	# Island parameters
+	var width = 25.0  # East-West
+	var length = 50.0  # North-South
+	var segments = 16  # Smoother ellipse
+	
+	# Center vertex
+	st.set_normal(Vector3.UP)
+	st.set_uv(Vector2(0.5, 0.5))
+	st.add_vertex(Vector3(0, 0, 0))
+	
+	# Create elliptical ring of vertices
+	for i in range(segments + 1):
+		var angle = (float(i) / segments) * TAU
+		var x = cos(angle) * width * 0.5
+		var z = sin(angle) * length * 0.5
+		var u = (cos(angle) + 1.0) * 0.5
+		var v = (sin(angle) + 1.0) * 0.5
+		
+		st.set_normal(Vector3.UP)
+		st.set_uv(Vector2(u, v))
+		st.add_vertex(Vector3(x, 0, z))
+	
+	# Create triangles (fan from center)
+	for i in range(segments):
+		st.add_index(0)  # Center
+		st.add_index(i + 1)
+		st.add_index(i + 2)
+	
+	var island_mesh = st.commit()
+	ground.mesh = island_mesh
+	print("[Island] Created elliptical island ground (25m × 50m)")
 	"""Recursively find first MeshInstance3D in node tree"""
 	if node is MeshInstance3D:
 		return node
@@ -446,46 +484,48 @@ func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiM
 	return mmi
 
 func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D]:
-	"""Generate transforms based on island zone"""
+	"""Generate transforms based on island zone with elliptical island shape"""
 	var transforms: Array[Transform3D] = []
+	
+	# Island dimensions (elliptical, like a real island)
+	var island_width = 25.0  # East-West
+	var island_length = 50.0  # North-South
 	
 	for i in range(count):
 		var transform = Transform3D()
 		var pos = Vector3.ZERO
 		
 		if zone == "interior":
-			# Center area (15m x 40m)
-			pos = Vector3(
-				randf_range(-7.5, 7.5),
-				0,
-				randf_range(-20, 20)
-			)
+			# Interior: Elliptical distribution (avoid edges)
+			var angle = randf() * TAU
+			var radius_factor = randf_range(0.2, 0.7)  # Keep away from edges
+			pos.x = cos(angle) * island_width * radius_factor * 0.5
+			pos.z = sin(angle) * island_length * radius_factor * 0.5
+			
 		elif zone == "coastal":
-			# Edge ring (5m border around 30x60 ground)
-			var side = randi() % 4
-			match side:
-				0:  # North
-					pos = Vector3(randf_range(-15, 15), 0, randf_range(25, 30))
-				1:  # South
-					pos = Vector3(randf_range(-15, 15), 0, randf_range(-30, -25))
-				2:  # East
-					pos = Vector3(randf_range(10, 15), 0, randf_range(-30, 30))
-				3:  # West
-					pos = Vector3(randf_range(-15, -10), 0, randf_range(-30, 30))
-		else:  # "general" - mixed placement
-			pos = Vector3(
-				randf_range(-15, 15),
-				0,
-				randf_range(-30, 30)
-			)
+			# Coastal: Ring around the edge of the ellipse
+			var angle = randf() * TAU
+			var radius_factor = randf_range(0.75, 0.95)  # Near the edge
+			pos.x = cos(angle) * island_width * radius_factor * 0.5
+			pos.z = sin(angle) * island_length * radius_factor * 0.5
+			
+		else:  # "general" - scattered everywhere
+			# General: Anywhere on the ellipse
+			var angle = randf() * TAU
+			var radius_factor = randf_range(0.3, 0.9)
+			pos.x = cos(angle) * island_width * radius_factor * 0.5
+			pos.z = sin(angle) * island_length * radius_factor * 0.5
+		
+		# Add slight height variation for terrain
+		pos.y = randf_range(-0.1, 0.3)
 		
 		transform.origin = pos
 		
-		# Random rotation
+		# Random rotation (only Y-axis for upright objects)
 		transform = transform.rotated(Vector3.UP, randf() * TAU)
 		
-		# Random scale variation (90-110%)
-		var scale_var = randf_range(0.9, 1.1)
+		# Random scale variation (80-120%)
+		var scale_var = randf_range(0.8, 1.2)
 		transform = transform.scaled(Vector3(scale_var, scale_var, scale_var))
 		
 		transforms.append(transform)
@@ -520,11 +560,11 @@ func transition_to_phase_2():
 	var rocks = asset_library["rocks"]
 	if not rocks.is_empty():
 		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-			{"count": 4, "zone": "coastal"},
+			{"count": 8, "zone": "coastal"},
 			{"count": 2, "zone": "general"}
 		])
-		print("[Phase 2] Created 6 procedural rocks (1 combined MultiMesh)")
-		print("[Phase 2] Est. triangles: ~4,480 (10 trees + 6 rocks × 80 tri)")
+		print("[Phase 2] Created 10 procedural rocks (1 combined MultiMesh)")
+		print("[Phase 2] Est. triangles: ~5,600 (12 trees + 10 rocks × 80 tri)")
 	
 	# Note: Ocean shader disabled for performance test
 	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
