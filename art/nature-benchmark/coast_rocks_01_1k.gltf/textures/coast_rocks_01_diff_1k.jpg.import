@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2085a173a0"
-path="res://.godot/imported/coast_rocks_01_diff_1k.jpg-9b2cb43e2cee8be44c7ebede7538b2a5.ctex"
+path.s3tc="res://.godot/imported/coast_rocks_01_diff_1k.jpg-9b2cb43e2cee8be44c7ebede7538b2a5.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/coast_rocks_01_1k.gltf/textures/coast_rocks_01_diff_1k.jpg"
-dest_files=["res://.godot/imported/coast_rocks_01_diff_1k.jpg-9b2cb43e2cee8be44c7ebede7538b2a5.ctex"]
+dest_files=["res://.godot/imported/coast_rocks_01_diff_1k.jpg-9b2cb43e2cee8be44c7ebede7538b2a5.s3tc.ctex"]
 
 [params]
 

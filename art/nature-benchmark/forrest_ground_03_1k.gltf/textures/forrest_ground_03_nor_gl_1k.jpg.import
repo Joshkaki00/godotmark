@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://670873025"
-path="res://.godot/imported/forrest_ground_03_nor_gl_1k.jpg-24eeb27cffbffc7260bf1c046d360de0.ctex"
+path.s3tc="res://.godot/imported/forrest_ground_03_nor_gl_1k.jpg-24eeb27cffbffc7260bf1c046d360de0.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/forrest_ground_03_1k.gltf/textures/forrest_ground_03_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/forrest_ground_03_nor_gl_1k.jpg-24eeb27cffbffc7260bf1c046d360de0.ctex"]
+dest_files=["res://.godot/imported/forrest_ground_03_nor_gl_1k.jpg-24eeb27cffbffc7260bf1c046d360de0.s3tc.ctex"]
 
 [params]
 

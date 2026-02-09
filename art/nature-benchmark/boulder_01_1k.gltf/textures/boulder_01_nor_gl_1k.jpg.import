@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://22063a601"
-path="res://.godot/imported/boulder_01_nor_gl_1k.jpg-e41942f25311cf7d52f5f8a1e94ff5a6.ctex"
+path.s3tc="res://.godot/imported/boulder_01_nor_gl_1k.jpg-e41942f25311cf7d52f5f8a1e94ff5a6.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/boulder_01_1k.gltf/textures/boulder_01_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/boulder_01_nor_gl_1k.jpg-e41942f25311cf7d52f5f8a1e94ff5a6.ctex"]
+dest_files=["res://.godot/imported/boulder_01_nor_gl_1k.jpg-e41942f25311cf7d52f5f8a1e94ff5a6.s3tc.ctex"]
 
 [params]
 

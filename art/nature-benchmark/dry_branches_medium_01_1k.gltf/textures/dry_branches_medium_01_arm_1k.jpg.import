@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://176a624446"
-path="res://.godot/imported/dry_branches_medium_01_arm_1k.jpg-9d6709311593b438211c4b5224efcc6f.ctex"
+path.s3tc="res://.godot/imported/dry_branches_medium_01_arm_1k.jpg-9d6709311593b438211c4b5224efcc6f.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/dry_branches_medium_01_1k.gltf/textures/dry_branches_medium_01_arm_1k.jpg"
-dest_files=["res://.godot/imported/dry_branches_medium_01_arm_1k.jpg-9d6709311593b438211c4b5224efcc6f.ctex"]
+dest_files=["res://.godot/imported/dry_branches_medium_01_arm_1k.jpg-9d6709311593b438211c4b5224efcc6f.s3tc.ctex"]
 
 [params]
 

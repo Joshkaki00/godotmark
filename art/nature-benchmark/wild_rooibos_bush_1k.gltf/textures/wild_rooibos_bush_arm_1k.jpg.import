@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1768427336"
-path="res://.godot/imported/wild_rooibos_bush_arm_1k.jpg-820a97336c50a3286d48509508f1f4bb.ctex"
+path.s3tc="res://.godot/imported/wild_rooibos_bush_arm_1k.jpg-820a97336c50a3286d48509508f1f4bb.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/wild_rooibos_bush_1k.gltf/textures/wild_rooibos_bush_arm_1k.jpg"
-dest_files=["res://.godot/imported/wild_rooibos_bush_arm_1k.jpg-820a97336c50a3286d48509508f1f4bb.ctex"]
+dest_files=["res://.godot/imported/wild_rooibos_bush_arm_1k.jpg-820a97336c50a3286d48509508f1f4bb.s3tc.ctex"]
 
 [params]
 

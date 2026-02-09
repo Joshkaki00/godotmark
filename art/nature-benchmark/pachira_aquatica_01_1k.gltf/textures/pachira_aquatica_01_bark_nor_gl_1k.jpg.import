@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1507163a88"
-path="res://.godot/imported/pachira_aquatica_01_bark_nor_gl_1k.jpg-155b784b70e1ca200f535dc08bc61e25.ctex"
+path.s3tc="res://.godot/imported/pachira_aquatica_01_bark_nor_gl_1k.jpg-155b784b70e1ca200f535dc08bc61e25.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/pachira_aquatica_01_1k.gltf/textures/pachira_aquatica_01_bark_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/pachira_aquatica_01_bark_nor_gl_1k.jpg-155b784b70e1ca200f535dc08bc61e25.ctex"]
+dest_files=["res://.godot/imported/pachira_aquatica_01_bark_nor_gl_1k.jpg-155b784b70e1ca200f535dc08bc61e25.s3tc.ctex"]
 
 [params]
 

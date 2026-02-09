@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://8733213a2"
-path="res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e654441e4b1e0198a149893c2c.ctex"
+path.s3tc="res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e654441e4b1e0198a149893c2c.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/cheiridopsis_succulent_1k.gltf/textures/cheiridopsis_succulent_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e654441e4b1e0198a149893c2c.ctex"]
+dest_files=["res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e654441e4b1e0198a149893c2c.s3tc.ctex"]
 
 [params]
 

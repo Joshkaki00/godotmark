@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://50416625a"
-path="res://.godot/imported/tree_stump_01_nor_gl_1k.jpg-6896d6c82fdb0712cd83123dc2b52cf6.ctex"
+path.s3tc="res://.godot/imported/tree_stump_01_nor_gl_1k.jpg-6896d6c82fdb0712cd83123dc2b52cf6.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/tree_stump_01_1k.gltf/textures/tree_stump_01_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/tree_stump_01_nor_gl_1k.jpg-6896d6c82fdb0712cd83123dc2b52cf6.ctex"]
+dest_files=["res://.godot/imported/tree_stump_01_nor_gl_1k.jpg-6896d6c82fdb0712cd83123dc2b52cf6.s3tc.ctex"]
 
 [params]
 

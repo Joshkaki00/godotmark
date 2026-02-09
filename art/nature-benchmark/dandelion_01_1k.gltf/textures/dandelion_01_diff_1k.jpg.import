@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://15218a45a"
-path="res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588cea7710ac2ae3.ctex"
+path.s3tc="res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588cea7710ac2ae3.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/dandelion_01_1k.gltf/textures/dandelion_01_diff_1k.jpg"
-dest_files=["res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588cea7710ac2ae3.ctex"]
+dest_files=["res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588cea7710ac2ae3.s3tc.ctex"]
 
 [params]
 

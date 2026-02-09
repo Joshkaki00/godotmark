@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://813445412"
-path="res://.godot/imported/fir_sapling_medium_twigs_nor_gl_1k.jpg-64860423e92d48cc8bf2053bd539cdfe.ctex"
+path.s3tc="res://.godot/imported/fir_sapling_medium_twigs_nor_gl_1k.jpg-64860423e92d48cc8bf2053bd539cdfe.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/fir_sapling_medium_1k.gltf/textures/fir_sapling_medium_twigs_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/fir_sapling_medium_twigs_nor_gl_1k.jpg-64860423e92d48cc8bf2053bd539cdfe.ctex"]
+dest_files=["res://.godot/imported/fir_sapling_medium_twigs_nor_gl_1k.jpg-64860423e92d48cc8bf2053bd539cdfe.s3tc.ctex"]
 
 [params]
 

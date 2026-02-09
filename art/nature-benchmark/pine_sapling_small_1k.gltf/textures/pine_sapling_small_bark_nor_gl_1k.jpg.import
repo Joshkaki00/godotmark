@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1641842455"
-path="res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f224604242b7466a86ff4738f6e.ctex"
+path.s3tc="res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f224604242b7466a86ff4738f6e.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/pine_sapling_small_1k.gltf/textures/pine_sapling_small_bark_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f224604242b7466a86ff4738f6e.ctex"]
+dest_files=["res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f224604242b7466a86ff4738f6e.s3tc.ctex"]
 
 [params]
 

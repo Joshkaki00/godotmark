@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://10124a3507"
-path="res://.godot/imported/searsia_burchellii_arm_1k.jpg-fe8087df7ec4094b2795b99dfc83c54e.ctex"
+path.s3tc="res://.godot/imported/searsia_burchellii_arm_1k.jpg-fe8087df7ec4094b2795b99dfc83c54e.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/searsia_burchellii_1k.gltf/textures/searsia_burchellii_arm_1k.jpg"
-dest_files=["res://.godot/imported/searsia_burchellii_arm_1k.jpg-fe8087df7ec4094b2795b99dfc83c54e.ctex"]
+dest_files=["res://.godot/imported/searsia_burchellii_arm_1k.jpg-fe8087df7ec4094b2795b99dfc83c54e.s3tc.ctex"]
 
 [params]
 

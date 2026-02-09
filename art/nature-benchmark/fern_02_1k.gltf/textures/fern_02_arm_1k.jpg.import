@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://611886828"
-path="res://.godot/imported/fern_02_arm_1k.jpg-4b5c2ed220c8761be62a0dff46605e4b.ctex"
+path.s3tc="res://.godot/imported/fern_02_arm_1k.jpg-4b5c2ed220c8761be62a0dff46605e4b.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/fern_02_1k.gltf/textures/fern_02_arm_1k.jpg"
-dest_files=["res://.godot/imported/fern_02_arm_1k.jpg-4b5c2ed220c8761be62a0dff46605e4b.ctex"]
+dest_files=["res://.godot/imported/fern_02_arm_1k.jpg-4b5c2ed220c8761be62a0dff46605e4b.s3tc.ctex"]
 
 [params]
 

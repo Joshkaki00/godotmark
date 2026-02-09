@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://214a06ba3a"
-path="res://.godot/imported/weed_plant_02_diff_1k.jpg-1572842ac6ccc8e4419faeeb6004b10f.ctex"
+path.s3tc="res://.godot/imported/weed_plant_02_diff_1k.jpg-1572842ac6ccc8e4419faeeb6004b10f.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/weed_plant_02_1k.gltf/textures/weed_plant_02_diff_1k.jpg"
-dest_files=["res://.godot/imported/weed_plant_02_diff_1k.jpg-1572842ac6ccc8e4419faeeb6004b10f.ctex"]
+dest_files=["res://.godot/imported/weed_plant_02_diff_1k.jpg-1572842ac6ccc8e4419faeeb6004b10f.s3tc.ctex"]
 
 [params]
 

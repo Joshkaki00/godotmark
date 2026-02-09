@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://65aa01a85"
-path="res://.godot/imported/island_tree_02_leaves_nor_gl_1k.jpg-998bd4748b11dbd2b78d696fc47b8d9e.ctex"
+path.s3tc="res://.godot/imported/island_tree_02_leaves_nor_gl_1k.jpg-998bd4748b11dbd2b78d696fc47b8d9e.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/island_tree_02_1k.gltf/textures/island_tree_02_leaves_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/island_tree_02_leaves_nor_gl_1k.jpg-998bd4748b11dbd2b78d696fc47b8d9e.ctex"]
+dest_files=["res://.godot/imported/island_tree_02_leaves_nor_gl_1k.jpg-998bd4748b11dbd2b78d696fc47b8d9e.s3tc.ctex"]
 
 [params]
 

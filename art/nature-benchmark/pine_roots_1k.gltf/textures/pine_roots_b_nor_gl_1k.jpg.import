@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://3a16a8225"
-path="res://.godot/imported/pine_roots_b_nor_gl_1k.jpg-9d9aec0fc92b0441edc97169535b05ec.ctex"
+path.s3tc="res://.godot/imported/pine_roots_b_nor_gl_1k.jpg-9d9aec0fc92b0441edc97169535b05ec.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/pine_roots_1k.gltf/textures/pine_roots_b_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/pine_roots_b_nor_gl_1k.jpg-9d9aec0fc92b0441edc97169535b05ec.ctex"]
+dest_files=["res://.godot/imported/pine_roots_b_nor_gl_1k.jpg-9d9aec0fc92b0441edc97169535b05ec.s3tc.ctex"]
 
 [params]
 

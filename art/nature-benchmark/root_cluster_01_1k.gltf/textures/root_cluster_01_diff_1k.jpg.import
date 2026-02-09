@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1275121567"
-path="res://.godot/imported/root_cluster_01_diff_1k.jpg-11b46fe0b06df95382851799dead346a.ctex"
+path.s3tc="res://.godot/imported/root_cluster_01_diff_1k.jpg-11b46fe0b06df95382851799dead346a.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/root_cluster_01_1k.gltf/textures/root_cluster_01_diff_1k.jpg"
-dest_files=["res://.godot/imported/root_cluster_01_diff_1k.jpg-11b46fe0b06df95382851799dead346a.ctex"]
+dest_files=["res://.godot/imported/root_cluster_01_diff_1k.jpg-11b46fe0b06df95382851799dead346a.s3tc.ctex"]
 
 [params]
 

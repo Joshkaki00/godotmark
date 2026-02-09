@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4a6506802"
-path="res://.godot/imported/nettle_plant_arm_1k.jpg-7f94eecdaa3c2ad8efc4f4def29f9f9c.ctex"
+path.s3tc="res://.godot/imported/nettle_plant_arm_1k.jpg-7f94eecdaa3c2ad8efc4f4def29f9f9c.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/nettle_plant_1k.gltf/textures/nettle_plant_arm_1k.jpg"
-dest_files=["res://.godot/imported/nettle_plant_arm_1k.jpg-7f94eecdaa3c2ad8efc4f4def29f9f9c.ctex"]
+dest_files=["res://.godot/imported/nettle_plant_arm_1k.jpg-7f94eecdaa3c2ad8efc4f4def29f9f9c.s3tc.ctex"]
 
 [params]
 

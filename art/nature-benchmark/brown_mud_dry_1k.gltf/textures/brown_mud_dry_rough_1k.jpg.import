@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://576208888"
-path="res://.godot/imported/brown_mud_dry_rough_1k.jpg-2c58fba7146a40a31802e21c9b88cfbf.ctex"
+path.s3tc="res://.godot/imported/brown_mud_dry_rough_1k.jpg-2c58fba7146a40a31802e21c9b88cfbf.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/brown_mud_dry_1k.gltf/textures/brown_mud_dry_rough_1k.jpg"
-dest_files=["res://.godot/imported/brown_mud_dry_rough_1k.jpg-2c58fba7146a40a31802e21c9b88cfbf.ctex"]
+dest_files=["res://.godot/imported/brown_mud_dry_rough_1k.jpg-2c58fba7146a40a31802e21c9b88cfbf.s3tc.ctex"]
 
 [params]
 

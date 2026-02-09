@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7154a2011"
-path="res://.godot/imported/flower_empodium_diff_1k.jpg-42daf090f721470143e8834ac3c122e3.ctex"
+path.s3tc="res://.godot/imported/flower_empodium_diff_1k.jpg-42daf090f721470143e8834ac3c122e3.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/flower_empodium_1k.gltf/textures/flower_empodium_diff_1k.jpg"
-dest_files=["res://.godot/imported/flower_empodium_diff_1k.jpg-42daf090f721470143e8834ac3c122e3.ctex"]
+dest_files=["res://.godot/imported/flower_empodium_diff_1k.jpg-42daf090f721470143e8834ac3c122e3.s3tc.ctex"]
 
 [params]
 

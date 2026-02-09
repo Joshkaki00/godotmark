@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2104a46163"
-path="res://.godot/imported/brown_mud_rocks_01_diff_1k.jpg-dfa6a7bd6c3dfddd93b1b54599db0937.ctex"
+path.s3tc="res://.godot/imported/brown_mud_rocks_01_diff_1k.jpg-dfa6a7bd6c3dfddd93b1b54599db0937.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/brown_mud_rocks_01_1k.gltf/textures/brown_mud_rocks_01_diff_1k.jpg"
-dest_files=["res://.godot/imported/brown_mud_rocks_01_diff_1k.jpg-dfa6a7bd6c3dfddd93b1b54599db0937.ctex"]
+dest_files=["res://.godot/imported/brown_mud_rocks_01_diff_1k.jpg-dfa6a7bd6c3dfddd93b1b54599db0937.s3tc.ctex"]
 
 [params]
 

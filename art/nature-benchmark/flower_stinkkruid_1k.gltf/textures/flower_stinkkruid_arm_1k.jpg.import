@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1353045284"
-path="res://.godot/imported/flower_stinkkruid_arm_1k.jpg-ac81d388df42f2fa7ebcb7206e641ecf.ctex"
+path.s3tc="res://.godot/imported/flower_stinkkruid_arm_1k.jpg-ac81d388df42f2fa7ebcb7206e641ecf.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/flower_stinkkruid_1k.gltf/textures/flower_stinkkruid_arm_1k.jpg"
-dest_files=["res://.godot/imported/flower_stinkkruid_arm_1k.jpg-ac81d388df42f2fa7ebcb7206e641ecf.ctex"]
+dest_files=["res://.godot/imported/flower_stinkkruid_arm_1k.jpg-ac81d388df42f2fa7ebcb7206e641ecf.s3tc.ctex"]
 
 [params]
 

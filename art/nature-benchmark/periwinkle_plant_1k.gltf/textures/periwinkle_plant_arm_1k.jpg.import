@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2032723237"
-path="res://.godot/imported/periwinkle_plant_arm_1k.jpg-204110ca78ce273bfe064da8c80e8d1e.ctex"
+path.s3tc="res://.godot/imported/periwinkle_plant_arm_1k.jpg-204110ca78ce273bfe064da8c80e8d1e.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/periwinkle_plant_1k.gltf/textures/periwinkle_plant_arm_1k.jpg"
-dest_files=["res://.godot/imported/periwinkle_plant_arm_1k.jpg-204110ca78ce273bfe064da8c80e8d1e.ctex"]
+dest_files=["res://.godot/imported/periwinkle_plant_arm_1k.jpg-204110ca78ce273bfe064da8c80e8d1e.s3tc.ctex"]
 
 [params]
 

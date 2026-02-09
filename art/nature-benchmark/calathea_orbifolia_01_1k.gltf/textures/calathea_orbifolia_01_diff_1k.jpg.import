@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://380738a36"
-path="res://.godot/imported/calathea_orbifolia_01_diff_1k.jpg-2098c58885f680530805798dc02ceb6c.ctex"
+path.s3tc="res://.godot/imported/calathea_orbifolia_01_diff_1k.jpg-2098c58885f680530805798dc02ceb6c.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/calathea_orbifolia_01_1k.gltf/textures/calathea_orbifolia_01_diff_1k.jpg"
-dest_files=["res://.godot/imported/calathea_orbifolia_01_diff_1k.jpg-2098c58885f680530805798dc02ceb6c.ctex"]
+dest_files=["res://.godot/imported/calathea_orbifolia_01_diff_1k.jpg-2098c58885f680530805798dc02ceb6c.s3tc.ctex"]
 
 [params]
 

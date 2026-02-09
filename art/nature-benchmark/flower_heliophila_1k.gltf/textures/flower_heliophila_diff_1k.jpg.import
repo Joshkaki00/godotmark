@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://7855182ba"
-path="res://.godot/imported/flower_heliophila_diff_1k.jpg-d1be3e622fa3d55420aef139913ddbbf.ctex"
+path.s3tc="res://.godot/imported/flower_heliophila_diff_1k.jpg-d1be3e622fa3d55420aef139913ddbbf.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/flower_heliophila_1k.gltf/textures/flower_heliophila_diff_1k.jpg"
-dest_files=["res://.godot/imported/flower_heliophila_diff_1k.jpg-d1be3e622fa3d55420aef139913ddbbf.ctex"]
+dest_files=["res://.godot/imported/flower_heliophila_diff_1k.jpg-d1be3e622fa3d55420aef139913ddbbf.s3tc.ctex"]
 
 [params]
 

@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://734221368"
-path="res://.godot/imported/pachira_aquatica_01_leaves_nor_gl_1k.jpg-4aa388150179d8a15f321c6510a40c89.ctex"
+path.s3tc="res://.godot/imported/pachira_aquatica_01_leaves_nor_gl_1k.jpg-4aa388150179d8a15f321c6510a40c89.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/pachira_aquatica_01_1k.gltf/textures/pachira_aquatica_01_leaves_nor_gl_1k.jpg"
-dest_files=["res://.godot/imported/pachira_aquatica_01_leaves_nor_gl_1k.jpg-4aa388150179d8a15f321c6510a40c89.ctex"]
+dest_files=["res://.godot/imported/pachira_aquatica_01_leaves_nor_gl_1k.jpg-4aa388150179d8a15f321c6510a40c89.s3tc.ctex"]
 
 [params]
 

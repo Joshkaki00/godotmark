@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://104a632a46"
-path="res://.godot/imported/single_root_arm_1k.jpg-cab0c2c5c9a009e0653b353dba46c076.ctex"
+path.s3tc="res://.godot/imported/single_root_arm_1k.jpg-cab0c2c5c9a009e0653b353dba46c076.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/single_root_1k.gltf/textures/single_root_arm_1k.jpg"
-dest_files=["res://.godot/imported/single_root_arm_1k.jpg-cab0c2c5c9a009e0653b353dba46c076.ctex"]
+dest_files=["res://.godot/imported/single_root_arm_1k.jpg-cab0c2c5c9a009e0653b353dba46c076.s3tc.ctex"]
 
 [params]
 

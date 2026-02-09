@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://382a46533"
-path="res://.godot/imported/anthurium_botany_01_arm_1k.jpg-c8f018df288d0d76d67ab341c6cddc59.ctex"
+path.s3tc="res://.godot/imported/anthurium_botany_01_arm_1k.jpg-c8f018df288d0d76d67ab341c6cddc59.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/anthurium_botany_01_1k.gltf/textures/anthurium_botany_01_arm_1k.jpg"
-dest_files=["res://.godot/imported/anthurium_botany_01_arm_1k.jpg-c8f018df288d0d76d67ab341c6cddc59.ctex"]
+dest_files=["res://.godot/imported/anthurium_botany_01_arm_1k.jpg-c8f018df288d0d76d67ab341c6cddc59.s3tc.ctex"]
 
 [params]
 

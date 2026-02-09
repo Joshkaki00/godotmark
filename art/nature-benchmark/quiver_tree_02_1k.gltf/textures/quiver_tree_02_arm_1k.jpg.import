@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://1628173a07"
-path="res://.godot/imported/quiver_tree_02_arm_1k.jpg-3741265abc287a2e5de55152b3d1294a.ctex"
+path.s3tc="res://.godot/imported/quiver_tree_02_arm_1k.jpg-3741265abc287a2e5de55152b3d1294a.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/quiver_tree_02_1k.gltf/textures/quiver_tree_02_arm_1k.jpg"
-dest_files=["res://.godot/imported/quiver_tree_02_arm_1k.jpg-3741265abc287a2e5de55152b3d1294a.ctex"]
+dest_files=["res://.godot/imported/quiver_tree_02_arm_1k.jpg-3741265abc287a2e5de55152b3d1294a.s3tc.ctex"]
 
 [params]
 

@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://2aba4a4805"
-path="res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ffd425c401be358.ctex"
+path.s3tc="res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ffd425c401be358.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/coral_mud_01_1k.gltf/textures/coral_mud_01_rough_1k.jpg"
-dest_files=["res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ffd425c401be358.ctex"]
+dest_files=["res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ffd425c401be358.s3tc.ctex"]
 
 [params]
 

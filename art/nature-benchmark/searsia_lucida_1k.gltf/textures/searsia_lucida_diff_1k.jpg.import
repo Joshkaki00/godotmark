@@ -3,15 +3,16 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://60641167a"
-path="res://.godot/imported/searsia_lucida_diff_1k.jpg-81d85800eedf0cf61d791bfbc4b2cf77.ctex"
+path.s3tc="res://.godot/imported/searsia_lucida_diff_1k.jpg-81d85800eedf0cf61d791bfbc4b2cf77.s3tc.ctex"
 metadata={
+"imported_formats": ["s3tc_bptc"],
 "vram_texture": true
 }
 
 [deps]
 
 source_file="res://art/nature-benchmark/searsia_lucida_1k.gltf/textures/searsia_lucida_diff_1k.jpg"
-dest_files=["res://.godot/imported/searsia_lucida_diff_1k.jpg-81d85800eedf0cf61d791bfbc4b2cf77.ctex"]
+dest_files=["res://.godot/imported/searsia_lucida_diff_1k.jpg-81d85800eedf0cf61d791bfbc4b2cf77.s3tc.ctex"]
 
 [params]
 
