@@ -6,6 +6,8 @@ Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-powe
 
 📖 **NEW:** Read [`COMPLETE_OPTIMIZATION_STORY.md`](COMPLETE_OPTIMIZATION_STORY.md) for the full optimization journey (spoiler: it doesn't have a happy ending yet)
 
+🧪 **BREAKING:** Testing ocean shader as 4.5 FPS culprit - see [`OCEAN_SHADER_PERFORMANCE_TEST.md`](OCEAN_SHADER_PERFORMANCE_TEST.md)
+
 ⚠️ **STATUS:** Model Showcase works great. Nature Island is stuck at 4.5 FPS despite all "correct" optimizations. **I need help figuring out why.**
 
 ---

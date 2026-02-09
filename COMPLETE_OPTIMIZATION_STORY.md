@@ -742,11 +742,12 @@ After months of optimization work, Nature Island is **worse than when we started
 - Something specific to Nature Island + Raspberry Pi is broken ❌
 
 **Theories (unverified):**
-1. **GLTF asset loading issue** - Maybe the models aren't actually simplified at runtime?
-2. **Shader complexity** - Wind/ocean shaders might be too expensive despite being "simple"
-3. **Memory bandwidth** - Still hitting bandwidth limits somehow?
-4. **Driver bug** - GLES3 driver issue specific to this scene configuration?
-5. **Hidden bottleneck** - Something we haven't profiled yet
+1. **🎯 Ocean Shader (TESTING NOW)** - Fragment shader doing per-pixel trigonometric math on 80×80 meter plane
+2. **GLTF asset loading issue** - Maybe the models aren't actually simplified at runtime?
+3. **Shader complexity** - Wind/ocean shaders might be too expensive despite being "simple"
+4. **Memory bandwidth** - Still hitting bandwidth limits somehow?
+5. **Driver bug** - GLES3 driver issue specific to this scene configuration?
+6. **Hidden bottleneck** - Something we haven't profiled yet
 
 **What we need:**
 - Someone with deep Godot engine knowledge to profile and debug
@@ -754,6 +755,89 @@ After months of optimization work, Nature Island is **worse than when we started
 - Fresh eyes from someone who knows what to look for
 
 **This is where I'm stuck. This is why I need help.**
+
+---
+
+## **BREAKING UPDATE: February 8, 2026 - The Ocean Shader Hypothesis**
+
+### The "Silent Killer" Pattern
+
+An expert contributor noticed something I missed:
+
+**The Nature Island benchmark has ONE unique element that Model Showcase doesn't have:**
+- **A custom fragment shader** (`water_ocean.gdshader`)
+- Running on the **largest mesh in the scene** (80×80 meter ocean plane)
+- Doing **per-pixel math** every frame (trigonometric noise, color blending, conditional branching)
+
+### The Smoking Gun
+
+```gdscript
+void fragment() {
+    // Per-pixel color gradient
+    vec3 color = mix(water_color.rgb, deep_water_color.rgb, UV.y);
+    
+    // EXPENSIVE: Procedural foam noise
+    if (phase >= 4 && foam_amount > 0.0) {
+        float foam_noise = fract(sin(dot(UV, vec2(12.9898, 78.233))) * 43758.5453);
+        if (foam_noise > foam_cutoff) {
+            color = mix(color, vec3(1.0), foam_amount * 0.5);
+        }
+    }
+    
+    ALBEDO = color;
+}
+```
+
+**This runs for EVERY PIXEL on an 80×80 meter plane, EVERY FRAME.**
+
+At 1920×1080 resolution, that's potentially **thousands of pixels per frame** doing:
+- Trigonometric calculations (`sin`, `dot`)
+- Conditional branching (`if (phase >= 4)`)
+- Hash function math (`* 43758.5453`)
+
+### Why Model Showcase Works
+
+Model Showcase uses:
+- ✅ **StandardMaterial3D** with per-vertex lighting (no custom shaders)
+- ✅ **Static marble bust** (no animation)
+- ✅ **No per-pixel math at all**
+
+**Result:** 80 FPS on Raspberry Pi 5
+
+### Why This Makes Sense
+
+The Raspberry Pi 5's VideoCore VII GPU is a **mobile-class GPU** optimized for:
+- ✅ Vertex processing (moving vertices is cheap)
+- ✅ Texture sampling (reading textures is fast)
+
+But **terrible at:**
+- ❌ Per-pixel math (trigonometric functions, noise, complex blending)
+- ❌ Conditional branching in fragment shaders
+
+This is a **classic mobile GPU bottleneck** that desktop GPUs mask:
+- **Desktop GPU:** Shader runs at 60 FPS (GPU has dedicated math units)
+- **RPi GPU:** Shader chokes at 4.5 FPS (GPU stalls on per-pixel math)
+
+### The Test (In Progress)
+
+I've temporarily replaced the ocean's `ShaderMaterial` with a simple `StandardMaterial3D`:
+
+```gdscript
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
+shading_mode = 2  # Per-vertex lighting
+albedo_color = Color(0.1, 0.3, 0.5, 0.9)
+```
+
+**Expected Result:**
+- ✅ If FPS jumps from 4.5 to 30+ FPS → **shader was the culprit**
+- ❌ If FPS stays at 4.5 FPS → bottleneck is elsewhere
+
+**See:**
+- `OCEAN_SHADER_PERFORMANCE_TEST.md` for detailed test plan and instructions
+- `SHADER_PERFORMANCE_GUIDE.md` for guidelines on optimizing shaders for Raspberry Pi
+- `water_ocean_rpi_safe.gdshader` for the optimized "Raspberry Pi Safe" shader
+
+**Status:** ⏳ **AWAITING TEST RESULTS ON RASPBERRY PI 5**
 
 ---
 
@@ -793,6 +877,8 @@ We didn't solve all problems. Each optimization led to the next, but eventually 
 
 ## Related Documentation
 
+- **`OCEAN_SHADER_PERFORMANCE_TEST.md`** - Testing the ocean shader as the 4.5 FPS culprit (NEW)
+- **`SHADER_PERFORMANCE_GUIDE.md`** - Guidelines for optimizing shaders for Raspberry Pi (NEW)
 - **`OPTIMIZATION_COMPLETE_GUIDE.md`** - Step-by-step optimization guide
 - **`RASPBERRY_PI_4_MODEL_OPTIMIZATION.md`** - Triangle budget analysis
 - **`TEXTURE_COMPRESSION_FIX.md`** - VRAM compression deep dive

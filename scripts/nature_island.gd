@@ -305,13 +305,8 @@ func run_warmup_phase():
 	if loading_screen:
 		loading_screen.update_progress(70.0, "Compiling ocean shader...")
 	
-	# Ocean shader is already in the scene
-	var ocean_mat = ocean.get_surface_override_material(0)
-	if ocean_mat:
-		ocean.visible = true
-		await get_tree().process_frame
-		ocean.visible = false
-		print("[Warmup] Ocean shader compiled")
+	# Ocean shader is already in the scene (disabled for performance test)
+	print("[Warmup] Ocean shader test skipped (using StandardMaterial3D)")
 	
 	if loading_screen:
 		loading_screen.update_progress(80.0, "Shaders compiled")
@@ -511,11 +506,8 @@ func setup_phase_1():
 		print("[Phase 1] Created 10 trees (1 combined MultiMesh)")
 		print("[Phase 1] Est. triangles: ~4,000 (10 trees × 400 tri)")
 	
-	# Simple ocean (no waves)
-	var ocean_mat = ocean.get_surface_override_material(0)
-	if ocean_mat and ocean_mat is ShaderMaterial:
-		ocean_mat.set_shader_parameter("wave_height", 0.0)
-		ocean_mat.set_shader_parameter("phase", 1)
+	# Simple ocean (no shader - using StandardMaterial3D for testing)
+	print("[Phase 1] Ocean using StandardMaterial3D (shader disabled for performance test)")
 
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocks (12-24s)")
@@ -533,11 +525,8 @@ func transition_to_phase_2():
 		print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
 		print("[Phase 2] Est. triangles: ~4,600 (10 trees + 6 rocks × 100 tri)")
 	
-	# Enable ocean waves
-	var ocean_mat = ocean.get_surface_override_material(0)
-	if ocean_mat and ocean_mat is ShaderMaterial:
-		ocean_mat.set_shader_parameter("wave_height", 0.3)
-		ocean_mat.set_shader_parameter("phase", 2)
+	# Note: Ocean shader disabled for performance test
+	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(2, "Add Rocks")
@@ -613,11 +602,8 @@ func transition_to_phase_4():
 		mmi.material_override = shader_mat
 		print("[Phase 4] Applied wind animation to trees")
 	
-	# Increase ocean waves
-	var ocean_mat = ocean.get_surface_override_material(0)
-	if ocean_mat and ocean_mat is ShaderMaterial:
-		ocean_mat.set_shader_parameter("wave_height", 0.5)
-		ocean_mat.set_shader_parameter("phase", 4)
+	# Note: Ocean shader disabled for performance test
+	print("[Phase 4] Ocean waves disabled (StandardMaterial3D)")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(4, "Add Ground Detail")
@@ -631,11 +617,8 @@ func transition_to_phase_5():
 	
 	await get_tree().process_frame
 	
-	# Maximum ocean waves
-	var ocean_mat = ocean.get_surface_override_material(0)
-	if ocean_mat and ocean_mat is ShaderMaterial:
-		ocean_mat.set_shader_parameter("wave_height", 0.8)
-		ocean_mat.set_shader_parameter("phase", 5)
+	# Note: Ocean shader disabled for performance test
+	print("[Phase 5] Ocean waves disabled (StandardMaterial3D)")
 	
 	# Boost ambient light
 	if env and env.environment:
