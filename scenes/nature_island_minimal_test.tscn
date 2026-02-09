@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://minimal_test_nature"]
+[gd_scene load_steps=11 format=3 uid="uid://bhyqve4mvutbw"]
 
 [ext_resource type="Script" path="res://scripts/nature_island_minimal_test.gd" id="1"]
 [ext_resource type="Script" uid="uid://1briwibkgajt" path="res://scripts/optimized_cinematic_camera.gd" id="2"]
@@ -20,14 +20,11 @@ ambient_light_source = 1
 ambient_light_color = Color(0.7, 0.7, 0.8, 1)
 ambient_light_energy = 0.6
 tonemap_mode = 2
-ssao_enabled = false
-glow_enabled = false
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ocean"]
 shading_mode = 2
 albedo_color = Color(0.1, 0.3, 0.5, 0.9)
 roughness = 0.3
-metallic = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
 material = SubResource("StandardMaterial3D_ocean")
