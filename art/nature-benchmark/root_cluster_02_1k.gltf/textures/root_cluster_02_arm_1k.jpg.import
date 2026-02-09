@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://1234538444"
 path="res://.godot/imported/root_cluster_02_arm_1k.jpg-5316fba78bf2f3d6704abe7e2ddacf32.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/root_cluster_02_arm_1k.jpg-5316fba78bf2f3d670
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

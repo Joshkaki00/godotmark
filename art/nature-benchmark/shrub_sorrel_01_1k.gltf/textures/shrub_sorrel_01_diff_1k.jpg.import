@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://347432286"
 path="res://.godot/imported/shrub_sorrel_01_diff_1k.jpg-3b13c022a5dc0a49bb46bb160fad1909.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/shrub_sorrel_01_diff_1k.jpg-3b13c022a5dc0a49b
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

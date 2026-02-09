@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://376730861"
 path="res://.godot/imported/tree_small_02_nor_gl_1k.jpg-b3b5a8ced91eeba6cd5f9bb32f905310.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/tree_small_02_nor_gl_1k.jpg-b3b5a8ced91eeba6c
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

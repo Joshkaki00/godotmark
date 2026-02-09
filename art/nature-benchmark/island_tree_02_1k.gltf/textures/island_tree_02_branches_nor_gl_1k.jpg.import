@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://12161a3476"
 path="res://.godot/imported/island_tree_02_branches_nor_gl_1k.jpg-65340af151d0f0fae56088121e7de072.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/island_tree_02_branches_nor_gl_1k.jpg-65340af
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

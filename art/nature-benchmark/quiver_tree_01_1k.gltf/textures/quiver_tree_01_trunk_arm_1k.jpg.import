@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://14a2755487"
 path="res://.godot/imported/quiver_tree_01_trunk_arm_1k.jpg-4c60e3f6569fcac3760c4bac38d6b851.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/quiver_tree_01_trunk_arm_1k.jpg-4c60e3f6569fc
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

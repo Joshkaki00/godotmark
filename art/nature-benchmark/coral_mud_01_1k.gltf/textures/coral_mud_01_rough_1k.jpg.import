@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://2aba4a4805"
 path="res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ffd425c401be358.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/coral_mud_01_rough_1k.jpg-166f11ffacaa87637ff
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

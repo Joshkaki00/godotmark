@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://863410235"
 path="res://.godot/imported/namaqualand_cliff_02_arm_1k.jpg-ae3159ffd8f80a0e72a61c3c48197d5e.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/namaqualand_cliff_02_arm_1k.jpg-ae3159ffd8f80
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

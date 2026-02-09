@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://7377675a5"
 path="res://.godot/imported/othonna_cerarioides_nor_gl_1k.jpg-c93359996a6c8d6881bf59cee2a6a189.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/othonna_cerarioides_nor_gl_1k.jpg-c93359996a6
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

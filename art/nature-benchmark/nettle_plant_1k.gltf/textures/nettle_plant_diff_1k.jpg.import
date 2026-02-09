@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://8a0451256"
 path="res://.godot/imported/nettle_plant_diff_1k.jpg-1092d9529278485963317cd16a372188.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/nettle_plant_diff_1k.jpg-1092d952927848596331
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

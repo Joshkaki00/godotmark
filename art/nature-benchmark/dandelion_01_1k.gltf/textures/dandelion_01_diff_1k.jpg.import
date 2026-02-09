@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://15218a45a"
 path="res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588cea7710ac2ae3.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/dandelion_01_diff_1k.jpg-019242cb6049f3d2588c
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

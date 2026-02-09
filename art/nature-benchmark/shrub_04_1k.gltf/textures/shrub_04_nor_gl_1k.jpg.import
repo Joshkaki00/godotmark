@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://54623a8ba"
 path="res://.godot/imported/shrub_04_nor_gl_1k.jpg-e62a55046752deefeb9a54b86be5ab60.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/shrub_04_nor_gl_1k.jpg-e62a55046752deefeb9a54
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

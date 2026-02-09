@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://1641842455"
 path="res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f224604242b7466a86ff4738f6e.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/pine_sapling_small_bark_nor_gl_1k.jpg-40737f2
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

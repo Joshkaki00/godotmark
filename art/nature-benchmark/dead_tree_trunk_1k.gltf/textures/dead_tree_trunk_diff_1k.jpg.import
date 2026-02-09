@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://207246a4a3"
 path="res://.godot/imported/dead_tree_trunk_diff_1k.jpg-6beb82df69d945b5a0fcf949231d2822.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/dead_tree_trunk_diff_1k.jpg-6beb82df69d945b5a
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

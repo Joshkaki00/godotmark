@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://8733213a2"
 path="res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e654441e4b1e0198a149893c2c.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/cheiridopsis_succulent_nor_gl_1k.jpg-9d6af4e6
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

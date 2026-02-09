@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://2a16617257"
 path="res://.godot/imported/crystalline_iceplant_arm_1k.jpg-449246cfce94ea5cc49f33ccb18676b0.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/crystalline_iceplant_arm_1k.jpg-449246cfce94e
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

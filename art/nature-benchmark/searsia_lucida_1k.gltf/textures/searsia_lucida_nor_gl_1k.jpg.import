@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://208123a10"
 path="res://.godot/imported/searsia_lucida_nor_gl_1k.jpg-72a2cf242d6d4410bcdf51d3c82fc41a.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/searsia_lucida_nor_gl_1k.jpg-72a2cf242d6d4410
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

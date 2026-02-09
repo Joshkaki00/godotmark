@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://1018032354"
 path="res://.godot/imported/coast_line_02_diff_1k.jpg-b1cfc6564471f930f77d49b59a16d0eb.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/coast_line_02_diff_1k.jpg-b1cfc6564471f930f77
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1

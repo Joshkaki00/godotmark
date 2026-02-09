@@ -5,7 +5,7 @@ type="CompressedTexture2D"
 uid="uid://1133ba3a82"
 path="res://.godot/imported/forest_ground_04_diff_1k.jpg-0ade761c3da49f3ca615514508ba932f.ctex"
 metadata={
-"vram_texture": false
+"vram_texture": true
 }
 
 [deps]
@@ -15,7 +15,7 @@ dest_files=["res://.godot/imported/forest_ground_04_diff_1k.jpg-0ade761c3da49f3c
 
 [params]
 
-compress/mode=4
+compress/mode=2
 compress/high_quality=false
 compress/lossy_quality=0.6
 compress/hdr_compression=1
