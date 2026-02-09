@@ -212,18 +212,15 @@ func run_warmup_phase():
 	if loading_screen:
 		loading_screen.update_progress(0.0, "Loading nature assets...")
 	
-	# Queue all GLTF assets for loading
+	# Queue all GLTF assets for loading (EXCEPT ROCKS - using procedural)
 	var asset_paths = {
 		"trees": [
 			"res://art/nature-benchmark/island_tree_01_1k.gltf/island_tree_01_1k.gltf",
 			"res://art/nature-benchmark/island_tree_02_1k.gltf/island_tree_02_1k.gltf",
 			"res://art/nature-benchmark/island_tree_03_1k.gltf/island_tree_03_1k.gltf"
 		],
-		"rocks": [
-			"res://art/nature-benchmark/coast_rocks_01_1k.gltf/coast_rocks_01_1k.gltf",
-			"res://art/nature-benchmark/coast_rocks_02_1k.gltf/coast_rocks_02_1k.gltf",
-			"res://art/nature-benchmark/coast_rocks_03_1k.gltf/coast_rocks_03_1k.gltf"
-		],
+		# ROCKS REMOVED: GLTF rocks are 500K+ triangles each (photogrammetry scans)
+		# Using procedural rocks instead (~80 triangles each)
 		"vegetation": [
 			"res://art/nature-benchmark/shrub_01_1k.gltf/shrub_01_1k.gltf",
 			"res://art/nature-benchmark/shrub_03_1k.gltf/shrub_03_1k.gltf",
@@ -273,12 +270,16 @@ func run_warmup_phase():
 				if not asset_data.is_empty():
 					asset_library[category].append(asset_data)
 	
-	print("[Warmup] Loaded %d trees, %d rocks, %d vegetation, %d ground details" % [
+	print("[Warmup] Loaded %d trees, %d vegetation, %d ground details" % [
 		asset_library["trees"].size(),
-		asset_library["rocks"].size(),
 		asset_library["vegetation"].size(),
 		asset_library["ground_details"].size()
 	])
+	
+	# Generate procedural rocks (lightweight replacements for 500K+ triangle GLTF rocks)
+	var ProceduralRocks = preload("res://scripts/utils/procedural_rocks.gd")
+	asset_library["rocks"] = ProceduralRocks.create_rock_variations(3)
+	print("[Warmup] Generated 3 procedural rock variations (~80 triangles each)")
 	
 	if loading_screen:
 		loading_screen.update_progress(60.0, "Assets loaded")
@@ -511,22 +512,19 @@ func setup_phase_1():
 
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocks (12-24s)")
-	print("  - Coastal rocks + ocean waves")
-	print("  - ROCKS DISABLED FOR TESTING")
+	print("  - Coastal rocks (procedural, ~80 triangles each)")
+	print("  - Target: <4,500 triangles for RPi 4 @ 55 FPS")
 	
 	await get_tree().process_frame
 	
-	# DISABLED FOR TESTING: Rocks tank FPS
-	# var rocks = asset_library["rocks"]
-	# if not rocks.is_empty():
-	# 	multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-	# 		{"count": 4, "zone": "coastal"},
-	# 		{"count": 2, "zone": "general"}
-	# 	])
-	# 	print("[Phase 2] Created 6 rocks (1 combined MultiMesh)")
-	# 	print("[Phase 2] Est. triangles: ~4,600 (10 trees + 6 rocks × 100 tri)")
-	
-	print("[Phase 2] Rocks DISABLED - testing if they're the bottleneck")
+	var rocks = asset_library["rocks"]
+	if not rocks.is_empty():
+		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
+			{"count": 4, "zone": "coastal"},
+			{"count": 2, "zone": "general"}
+		])
+		print("[Phase 2] Created 6 procedural rocks (1 combined MultiMesh)")
+		print("[Phase 2] Est. triangles: ~4,480 (10 trees + 6 rocks × 80 tri)")
 	
 	# Note: Ocean shader disabled for performance test
 	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
