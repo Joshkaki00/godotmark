@@ -490,6 +490,7 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 	var transforms: Array[Transform3D] = []
 	
 	# Island dimensions (elliptical, like a real island)
+	# IMPORTANT: Keep these matching the ground mesh in create_island_ground()
 	var island_width = 25.0  # East-West
 	var island_length = 50.0  # North-South
 	
@@ -498,28 +499,28 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 		var pos = Vector3.ZERO
 		
 		if zone == "interior":
-			# Interior: Elliptical distribution (avoid edges)
+			# Interior: Center of island (avoid edges completely)
 			var angle = randf() * TAU
-			var radius_factor = randf_range(0.2, 0.7)  # Keep away from edges
+			var radius_factor = randf_range(0.1, 0.5)  # Stay well within bounds
 			pos.x = cos(angle) * island_width * radius_factor * 0.5
 			pos.z = sin(angle) * island_length * radius_factor * 0.5
 			
 		elif zone == "coastal":
-			# Coastal: Ring around the edge of the ellipse
+			# Coastal: Ring near the edge (but not TOO close)
 			var angle = randf() * TAU
-			var radius_factor = randf_range(0.75, 0.95)  # Near the edge
+			var radius_factor = randf_range(0.6, 0.8)  # Stay inside the island boundary
 			pos.x = cos(angle) * island_width * radius_factor * 0.5
 			pos.z = sin(angle) * island_length * radius_factor * 0.5
 			
 		else:  # "general" - scattered everywhere
-			# General: Anywhere on the ellipse
+			# General: Anywhere, but stay within bounds
 			var angle = randf() * TAU
-			var radius_factor = randf_range(0.3, 0.9)
+			var radius_factor = randf_range(0.2, 0.75)  # Don't go past 75% to stay well inside
 			pos.x = cos(angle) * island_width * radius_factor * 0.5
 			pos.z = sin(angle) * island_length * radius_factor * 0.5
 		
-		# Add slight height variation for terrain
-		pos.y = randf_range(-0.1, 0.3)
+		# Keep objects at ground level (slight variation for naturalness)
+		pos.y = randf_range(0.0, 0.1)
 		
 		transform.origin = pos
 		
