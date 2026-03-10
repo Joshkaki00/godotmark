@@ -106,14 +106,67 @@ library = env.SharedLibrary(library_path, source=sources)
 
 Default(library)
 
+# Add clean target
+if GetOption('clean'):
+    print("\n" + "="*60)
+    print("Cleaning build artifacts...")
+    print("="*60)
+    print("Note: Use ./clean.py, ./clean.sh, or ./clean.ps1 for thorough cleaning")
+    print("="*60 + "\n")
+
+# Add help alias
+env.Help("""
+GodotMark Build System
+======================
+
+USAGE:
+  scons [options]
+
+COMMON OPTIONS:
+  platform=<platform>    Target platform (linux, windows, macos)
+  target=<target>        Build type (template_debug, template_release)
+  cpu=<cpu>              CPU optimization (rpi4, rpi5, orangepi5, rock5b, generic)
+  arch=<arch>            Architecture (x86_64, arm64)
+  optimize_size=yes      Enable size optimization (-Os)
+  verbose=yes            Verbose build output
+  -c, --clean            Clean build artifacts (use clean.py for thorough clean)
+  -j<n>                  Parallel build with N jobs
+
+EXAMPLES:
+  # Raspberry Pi 5 release build
+  scons platform=linux target=template_release cpu=rpi5 arch=arm64 -j4
+  
+  # Debug build with verbose output
+  scons platform=linux target=template_debug verbose=yes
+  
+  # Clean build
+  scons -c
+  
+  # Thorough clean (recommended)
+  python clean.py
+  # or
+  ./clean.sh        # Linux/Mac
+  ./clean.ps1       # Windows
+
+CPU TARGETS:
+  rpi4       - Raspberry Pi 4 (Cortex-A72)
+  rpi5       - Raspberry Pi 5 (Cortex-A76)
+  orangepi5  - Orange Pi 5 (RK3588)
+  rock5b     - Rock 5B (RK3588)
+  jetson     - NVIDIA Jetson Orin
+  generic    - Generic ARM64 (default)
+
+For more information, see BUILD_AND_RUN.md
+""")
+
 # Print build summary
 print("\n" + "="*60)
 print("GodotMark Build Configuration")
 print("="*60)
-print(f"Platform:        {platform}")
-print(f"Architecture:    {arch if arch else 'native'}")
-print(f"Target:          {target}")
+print(f"Platform:         {platform}")
+print(f"Architecture:     {arch if arch else 'native'}")
+print(f"Target:           {target}")
 print(f"CPU Optimization: {cpu_target}")
-print(f"Output:          {library_path}")
+print(f"Output:           {library_path}")
 print("="*60 + "\n")
 

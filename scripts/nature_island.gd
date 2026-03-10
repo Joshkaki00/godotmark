@@ -740,7 +740,16 @@ func start_fadeout():
 
 func save_metrics_to_file():
 	"""Save performance metrics to JSON file"""
-	var file_path = "user://nature_island_metrics_%d.json" % Time.get_ticks_msec()
+	# Check if CLI specified custom output path
+	var main_node = get_tree().root.get_node_or_null("Main")
+	var file_path = ""
+	
+	if main_node and main_node.has_method("get_cli_output_path"):
+		file_path = main_node.get_cli_output_path("nature_island")
+	else:
+		# Default fallback
+		file_path = "user://nature_island_metrics_%d.json" % Time.get_ticks_msec()
+	
 	var file = FileAccess.open(file_path, FileAccess.WRITE)
 	
 	if file:

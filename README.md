@@ -139,14 +139,43 @@ chmod +x build_native_rpi5.sh
 
 **Build time:** ~10-20 minutes (first time)
 
+**Clean Build:**
+```bash
+# Remove all build artifacts
+python clean.py
+
+# Rebuild from scratch
+./build_native_rpi5.sh template_release rpi5 yes
+```
+
+**See:** [`CLEAN_BUILD_GUIDE.md`](CLEAN_BUILD_GUIDE.md) for detailed clean build procedures
+
 ---
 
 ### 4. Run the Benchmark
 
+**GUI Mode (Normal):**
 ```bash
 cd /mnt/exfat_drive/dev/godotmark-project
 ./Godot_v4.4-stable_linux.arm64 --path godotmark
 ```
+
+**Headless Mode (CLI):**
+```bash
+# Run specific benchmark
+./godotmark --benchmark nature-island
+
+# Custom output path
+./godotmark --benchmark model-showcase --output-path ./results/test.json
+
+# Quality presets
+./godotmark --benchmark nature-island --quality low
+
+# Show help
+./godotmark --help
+```
+
+**See:** [`CLI_GUIDE.md`](CLI_GUIDE.md) for complete CLI documentation
 
 **Note:** GodotMark will automatically check your driver configuration on startup!
 

@@ -10,6 +10,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Command Line Interface (CLI)** with comprehensive argument support
+  - `--help` / `-h` - Show help message
+  - `--version` / `-v` - Show version information
+  - `--benchmark NAME` / `-b NAME` - Run specific benchmark (model-showcase, nature-island)
+  - `--run-benchmarks` - Run all benchmarks sequentially
+  - `--quick-test` - Run 10-second quick test for CI
+  - `--output-path PATH` / `-o PATH` - Custom output path for results JSON
+  - `--quality PRESET` / `-q PRESET` - Set quality preset (low, medium, high, ultra)
+  - `--skip-intro` - Skip splash screen
+  - `--verbose` - Enable verbose logging
+- **Environment Variable Support**
+  - `GODOTMARK_OUTPUT_DIR` - Default output directory for results
+  - `GODOTMARK_QUALITY` - Default quality preset
+- **Clean Build Scripts**
+  - `clean.py` - Cross-platform Python script (recommended)
+  - `clean.sh` - Bash script for Linux/Mac
+  - `clean.ps1` - PowerShell script for Windows
+  - `scons -c` - Basic SCons clean target
+  - Comprehensive cleaning of build artifacts, caches, and intermediate files
+- **SCons Help System** - Built-in help via `scons --help`
+- **Documentation**
+  - `CLI_GUIDE.md` - Complete CLI reference with examples
+  - `CLEAN_BUILD_GUIDE.md` - Clean build procedures and troubleshooting
 - Procedural rock generator for Nature Island benchmark (~80 triangles vs 500K+ in GLTF assets)
 - Elliptical island ground mesh for more realistic appearance
 - Shader performance guidelines documentation (`SHADER_PERFORMANCE_GUIDE.md`)
