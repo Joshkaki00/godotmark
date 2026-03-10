@@ -4,11 +4,9 @@
 
 Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-power ARM hardware
 
-📖 **NEW:** Read [`COMPLETE_OPTIMIZATION_STORY.md`](COMPLETE_OPTIMIZATION_STORY.md) for the full optimization journey (spoiler: it doesn't have a happy ending yet)
+📖 **READ:** [`CHANGELOG.md`](CHANGELOG.md) - Complete project history, fixes, and optimizations
 
-🧪 **BREAKING:** Testing ocean shader as 4.5 FPS culprit - see [`OCEAN_SHADER_PERFORMANCE_TEST.md`](OCEAN_SHADER_PERFORMANCE_TEST.md)
-
-⚠️ **STATUS:** Model Showcase works great. Nature Island is stuck at 4.5 FPS despite all "correct" optimizations. **I need help figuring out why.**
+✅ **SOLVED:** Nature Island 4.5 FPS mystery - photogrammetry rocks had 500K+ triangles each! Now uses procedural rocks. See [`MYSTERY_SOLVED_ROCKS.md`](MYSTERY_SOLVED_ROCKS.md)
 
 ---
 
@@ -16,29 +14,29 @@ Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-powe
 
 GodotMark is a **comprehensive 3D gaming benchmark** designed specifically for ARM single-board computers (SBCs). It pushes hardware to its limits while remaining efficient and lean for embedded systems.
 
-**Two Benchmarks (One Working, One Not):**
-1. **Model Showcase** - ✅ GPU stress test with PBR materials and particle effects (WORKS)
-2. **Nature Island** - ⚠️ Draw call efficiency test with 0.5-acre outdoor environment (BROKEN - only 4.5 FPS despite optimizations)
+**Two Benchmarks (Both Working!):**
+1. **Model Showcase** - ✅ GPU stress test with PBR materials and particle effects
+2. **Nature Island** - ✅ Draw call efficiency test with procedurally-generated outdoor environment
 
 ---
 
 ## 📊 Quick Stats
 
-### Model Showcase Benchmark (WORKING)
+### Model Showcase Benchmark
 
 - **Duration:** 60 seconds (5 progressive phases)
 - **Status:** ✅ Fully functional and optimized
 - **FPS:** Smooth performance on Raspberry Pi 4/5
 
-### Nature Island Benchmark (NEEDS WORK)
+### Nature Island Benchmark
 
 - **Duration:** 60 seconds (5 progressive phases)
-- **Objects:** 36 nature assets (trees, rocks, vegetation)
-- **Triangles:** ~5,600 (under RPi 4's 10K budget)
+- **Objects:** 32 nature assets (12 trees, 10 rocks, 20 vegetation)
+- **Triangles:** ~5,500 (under RPi 4's 10K budget)
 - **Draw Calls:** 4 total (MultiMesh instancing)
 - **VRAM:** 74 MB (compressed textures)
-- **Status:** ⚠️ Optimized on paper, but only achieves ~4.5 FPS on Raspberry Pi
-- **Problem:** Something is still very wrong despite all optimizations
+- **Status:** ✅ Optimized and working (30+ FPS on Raspberry Pi 5)
+- **Shape:** Elliptical island (25m × 50m)
 
 ---
 
