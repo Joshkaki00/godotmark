@@ -1,5 +1,20 @@
 # GodotMark - 3D Gaming Benchmark for ARM SBCs
 
+[![Version](https://img.shields.io/badge/version-0.1.0--alpha-blue.svg)](https://github.com/yourusername/godotmark/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Godot](https://img.shields.io/badge/godot-4.4--stable-478cbf.svg)](https://godotengine.org/)
+[![Platform](https://img.shields.io/badge/platform-Raspberry%20Pi%20%7C%20ARM%20SBCs-c51a4a.svg)](https://www.raspberrypi.com/)
+
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](BUILD_AND_RUN.md)
+[![ARM64](https://img.shields.io/badge/ARM64-optimized-orange.svg)](OPTIMIZATION_COMPLETE_GUIDE.md)
+[![OpenGL ES 3.0](https://img.shields.io/badge/OpenGL%20ES-3.0-blue.svg)](https://www.khronos.org/opengles/)
+[![Performance](https://img.shields.io/badge/performance-60%20FPS%20target-success.svg)](COMPLETE_OPTIMIZATION_STORY.md)
+
+[![Contributors](https://img.shields.io/badge/contributors-welcome-blueviolet.svg)](CONTRIBUTING.md)
+[![Good First Issues](https://img.shields.io/badge/good%20first%20issues-available-yellow.svg)](.github/GOOD_FIRST_ISSUES_GUIDE.md)
+[![Documentation](https://img.shields.io/badge/docs-comprehensive-informational.svg)](DOCS_QUICK_REFERENCE.md)
+[![Changelog](https://img.shields.io/badge/changelog-maintained-success.svg)](CHANGELOG.md)
+
 **Version 0.1.0-alpha** | Open-source benchmark for Raspberry Pi, Orange Pi, Rock 5B, and other ARM single-board computers
 
 Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-power ARM hardware
