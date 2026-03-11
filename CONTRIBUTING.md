@@ -20,10 +20,10 @@ First off, **thank you** for considering contributing to GodotMark. This project
 
 > **Note:** Please don't file an issue to ask a question. You'll get faster results by using the resources below.
 
-- Check the [README.md](README.md) and [COMPLETE_OPTIMIZATION_STORY.md](COMPLETE_OPTIMIZATION_STORY.md)
-- Search existing [GitHub Issues](../../issues)
-- Ask in [GitHub Discussions](../../discussions) (when available)
-- Join the [Godot Discord](https://discord.gg/godotengine) and mention GodotMark
+- 💬 **Ask in [GitHub Discussions](https://github.com/Joshkaki00/godotmark/discussions)** - Best place for questions!
+- 📖 Check the [README.md](README.md) and [COMPLETE_OPTIMIZATION_STORY.md](COMPLETE_OPTIMIZATION_STORY.md)
+- 🔍 Search existing [GitHub Issues](https://github.com/Joshkaki00/godotmark/issues)
+- 💭 Join the [Godot Discord](https://discord.gg/godotengine) and mention GodotMark
 
 ---
 

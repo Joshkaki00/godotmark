@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **GitHub Discussions Integration**
+  - Added prominent Discussions badge and links throughout documentation
+  - Community section in README with category overview
+  - Updated CONTRIBUTING.md with Discussions as primary Q&A channel
+  - Footer section encouraging community engagement
 - **Professional Badge System** for README
   - Version, license, and engine version badges
   - Platform and architecture badges

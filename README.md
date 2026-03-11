@@ -12,6 +12,7 @@
 
 [![Contributors](https://img.shields.io/badge/contributors-welcome-blueviolet.svg)](CONTRIBUTING.md)
 [![Good First Issues](https://img.shields.io/badge/good%20first%20issues-available-yellow.svg)](.github/GOOD_FIRST_ISSUES_GUIDE.md)
+[![Discussions](https://img.shields.io/badge/discussions-open-brightgreen.svg)](https://github.com/Joshkaki00/godotmark/discussions)
 [![Documentation](https://img.shields.io/badge/docs-comprehensive-informational.svg)](DOCS_QUICK_REFERENCE.md)
 [![Changelog](https://img.shields.io/badge/changelog-maintained-success.svg)](CHANGELOG.md)
 
@@ -22,6 +23,33 @@ Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-powe
 📖 **READ:** [`CHANGELOG.md`](CHANGELOG.md) - Complete project history, fixes, and optimizations
 
 ✅ **SOLVED:** Nature Island 4.5 FPS mystery - photogrammetry rocks had 500K+ triangles each! Now uses procedural rocks. See [`MYSTERY_SOLVED_ROCKS.md`](MYSTERY_SOLVED_ROCKS.md)
+
+💬 **COMMUNITY:** Join the discussion! Questions, ideas, and feedback welcome at [GitHub Discussions](https://github.com/Joshkaki00/godotmark/discussions)
+
+---
+
+## 💬 Community & Support
+
+**Got questions? Want to share results? Have ideas?**
+
+👉 **[Join the Discussion](https://github.com/Joshkaki00/godotmark/discussions)** 👈
+
+### Discussion Categories
+
+- **📣 Announcements** - Project updates and news
+- **💬 General** - General discussion about GodotMark
+- **💡 Ideas** - Feature requests and suggestions
+- **🗳️ Polls** - Community polls and voting
+- **🙏 Q&A** - Get help and ask questions
+- **🙌 Show and Tell** - Share your benchmark results!
+
+### Quick Links
+
+- 🐛 [Report a Bug](https://github.com/Joshkaki00/godotmark/issues)
+- 🚀 [Request a Feature](https://github.com/Joshkaki00/godotmark/discussions/categories/ideas)
+- 📖 [Read the Docs](DOCS_QUICK_REFERENCE.md)
+- 🤝 [Contributing Guide](CONTRIBUTING.md)
+- 📊 [View Changelog](CHANGELOG.md)
 
 ---
 
@@ -1229,5 +1257,35 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
 
 ---
+
+---
+
+## 🌟 Get Involved
+
+### Join the Community
+
+- 💬 **[GitHub Discussions](https://github.com/Joshkaki00/godotmark/discussions)** - Ask questions, share results, discuss ideas
+- 🐛 **[Issue Tracker](https://github.com/Joshkaki00/godotmark/issues)** - Report bugs and request features
+- 📖 **[Documentation](DOCS_QUICK_REFERENCE.md)** - Complete documentation reference
+- 🤝 **[Contributing Guide](CONTRIBUTING.md)** - Learn how to contribute
+
+### Share Your Results
+
+We'd love to see your benchmark results! Share them in [Show and Tell](https://github.com/Joshkaki00/godotmark/discussions/categories/show-and-tell) 🙌
+
+- What hardware are you testing?
+- What FPS are you getting?
+- Any optimization tips to share?
+- Found an interesting bottleneck?
+
+### Stay Updated
+
+- ⭐ **Star the repo** to follow development
+- 👀 **Watch for releases** to get notified of new versions
+- 📣 **Check Announcements** for major updates
+
+---
+
+**GodotMark** - Built with ❤️ by the community, for the community
 
 **End of README** 🎉
