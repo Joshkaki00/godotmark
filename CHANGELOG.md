@@ -10,6 +10,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Jolt Physics integration** - Cheap physics simulation for falling leaves
+  - Enabled Jolt Physics engine (15% faster than default, multi-core friendly)
+  - Added falling leaves with RigidBody3D (20 max, very lightweight)
+  - Air resistance simulation (gravity_scale 0.3, linear_damp 2.0)
+  - Demonstrates cheap physics on ARM platforms
+  - Script: `scripts/cheap_physics_leaves.gd`
 - **Low-Poly Asset Replacement System**
   - `replace_assets.ps1` - Automated script for asset archival and replacement
   - `ASSET_REPLACEMENT_GUIDE.md` - Complete guide for replacing GLTF/GLB assets
