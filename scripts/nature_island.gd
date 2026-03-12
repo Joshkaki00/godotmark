@@ -739,6 +739,10 @@ func _process(delta: float):
 	# Track timeline
 	timeline += delta
 	
+	# Update performance monitor every frame for real-time data
+	if perf_monitor:
+		perf_monitor.update(delta)
+	
 	# Phase transitions
 	if timeline >= 12.0 and not phase_triggered[2]:
 		phase_triggered[2] = true
@@ -763,9 +767,15 @@ func update_metrics():
 	"""Update performance metrics"""
 	var fps = Engine.get_frames_per_second()
 	var frame_time = Performance.get_monitor(Performance.TIME_PROCESS) * 1000.0
-	var cpu_usage = OS.get_processor_count()  # Placeholder
-	var temp = 0.0  # Placeholder
-	var gpu_usage = 0.0  # Placeholder
+	var cpu_usage = 0.0
+	var temp = 0.0
+	var gpu_usage = 0.0
+	
+	# Get real metrics from performance monitor
+	if perf_monitor:
+		cpu_usage = perf_monitor.get_cpu_usage()
+		temp = perf_monitor.get_temperature()
+		gpu_usage = perf_monitor.get_gpu_usage()
 	
 	# Store in current phase
 	if metrics.has(current_phase_key):

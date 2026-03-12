@@ -95,6 +95,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **CRITICAL:** Nature Island GPU and temperature metrics not updating
+  - Added missing `perf_monitor.update(delta)` call in `_process()`
+  - Changed placeholder CPU/GPU/temp values to read from `PerformanceMonitor`
+  - Metrics overlay now displays real-time CPU usage, GPU usage, and temperature data
+  - Matches working implementation from Model Showcase benchmark
 - **CRITICAL:** Ground mesh still 30×60m (scene file override) - removed static mesh, now uses procedural 35.5×71m ellipse
 - **CRITICAL:** Camera too close to island - changed to aerial views (height 13m → 42m avg)
 - **CRITICAL:** Memory leaks - CLI class extending Node without scene tree (changed to RefCounted)
