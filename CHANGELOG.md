@@ -64,13 +64,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Estimated 99.9% triangle count reduction (5M → 5.6K)
   - Updated `scripts/nature_island.gd` asset paths to use GLB format
 - **Nature Island density dramatically increased for realism**
-  - Island size: 25×50m (0.24 acres) → 35.5×71m (0.5 acres) - real island size!
+  - Island size: 25×50m → 106.5×213m (3× larger for proper scale - trees no longer hanging off edges!)
   - Trees: 10 → 40 (4× more, natural forest spacing with breathing room)
   - Rocks: 10 → 15 (1.5× more for natural rocky shoreline)
   - Undergrowth: 20 → 50 (2.5× more understory vegetation)
   - Ground details: 0 → 20 (fallen logs, branches, natural debris)
   - Total objects: 36 → 125 (3.5× more, balanced density)
-  - Reference: Real forested island photos (0.5 acre size)
+  - Area: ~18,000 m² (~4.5 acres visual scale)
+  - Reference: Real forested island photos with proper proportions
 - Nature Island now uses procedural rocks instead of photogrammetry-scanned GLTF assets
 - Island shape changed from rectangular (30×60m) to elliptical (25×50m)
 - Asset distribution uses elliptical zones for more natural placement

@@ -403,14 +403,14 @@ func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 	}
 
 func create_island_ground():
-	"""Create an elliptical island-shaped ground mesh (0.5 acres / 2,023 m²)"""
+	"""Create an elliptical island-shaped ground mesh (LARGE - 3× bigger for proper scale)"""
 	var st = SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	
-	# Island parameters - 0.5 acres with 2:1 aspect ratio
-	var width = 35.5   # East-West (117 feet)
-	var length = 71.0  # North-South (233 feet)
-	var segments = 16  # Smoother ellipse
+	# Island parameters - TRIPLED for proper visual scale
+	var width = 106.5   # East-West (3× 35.5m = 350 feet)
+	var length = 213.0  # North-South (3× 71m = 700 feet)
+	var segments = 24   # More segments for larger ellipse
 	
 	# Center vertex
 	st.set_normal(Vector3.UP)
@@ -444,7 +444,7 @@ func create_island_ground():
 	ground_material.albedo_color = Color(0.35, 0.45, 0.3, 1)  # Green-brown island ground
 	ground.material_override = ground_material
 	
-	print("[Island] Created elliptical island ground (35.5m × 71m / 0.5 acres)")
+	print("[Island] Created elliptical island ground (106.5m × 213m / LARGE - 3× scale)")
 
 func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
 	"""Recursively find first MeshInstance3D in node tree"""
@@ -510,10 +510,10 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 	"""Generate transforms based on island zone with elliptical island shape"""
 	var transforms: Array[Transform3D] = []
 	
-	# Island dimensions (elliptical, 0.5 acres / 2,023 m²)
+	# Island dimensions (elliptical, TRIPLED for proper visual scale)
 	# IMPORTANT: Keep these matching the ground mesh in create_island_ground()
-	var island_width = 35.5   # East-West (117 feet)
-	var island_length = 71.0  # North-South (233 feet)
+	var island_width = 106.5   # East-West (3× 35.5m = 350 feet)
+	var island_length = 213.0  # North-South (3× 71m = 700 feet)
 	
 	for i in range(count):
 		var transform = Transform3D()

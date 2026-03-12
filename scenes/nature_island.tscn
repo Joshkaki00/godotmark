@@ -34,7 +34,7 @@ metallic = 0.0
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ocean"]
 material = SubResource("StandardMaterial3D_ocean")
-size = Vector2(200, 200)
+size = Vector2(500, 500)
 subdivide_width = 4
 subdivide_depth = 4
 
