@@ -63,6 +63,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dead Trees.glb, Rock.glb, Rock Large.glb (ground details)
   - Estimated 99.9% triangle count reduction (5M → 5.6K)
   - Updated `scripts/nature_island.gd` asset paths to use GLB format
+- **Nature Island density dramatically increased for realism**
+  - Trees: 10 → 65 (6.5× more, matching real forest density)
+  - Rocks: 10 → 20 (2× more for rocky shoreline)
+  - Undergrowth: 20 → 85 (4.25× more, thick forest floor)
+  - Ground details: 0 → 30 (fallen logs, branches, debris)
+  - Total objects: 36 → 200 (5.5× more realistic)
+  - Reference: Real forested island photos
 - Nature Island now uses procedural rocks instead of photogrammetry-scanned GLTF assets
 - Island shape changed from rectangular (30×60m) to elliptical (25×50m)
 - Asset distribution uses elliptical zones for more natural placement

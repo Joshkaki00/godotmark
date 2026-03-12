@@ -550,38 +550,39 @@ func generate_transforms_for_zone(count: int, zone: String) -> Array[Transform3D
 	return transforms
 
 func setup_phase_1():
-	"""Phase 1: Base Island (0-12s) - Forest with vertex lighting"""
-	print("\n[Phase 1] Base Island (0-12s)")
-	print("  - Forest with per-vertex lighting")
-	print("  - Target: <4,000 triangles for RPi 4 @ 60 FPS")
+	"""Phase 1: Dense Forest Island (0-12s) - Realistic forest density"""
+	print("\n[Phase 1] Dense Forest Island (0-12s)")
+	print("  - Dense forest coverage like real island")
+	print("  - Target: <10,000 triangles for RPi 4 @ 45 FPS")
 	
 	var trees = asset_library["trees"]
 	if not trees.is_empty():
 		multimesh_groups["all_trees"] = create_combined_multimesh(trees, [
-			{"count": 6, "zone": "interior"},
-			{"count": 4, "zone": "coastal"}
+			{"count": 30, "zone": "interior"},   # Dense interior forest
+			{"count": 20, "zone": "coastal"},    # Trees near shore
+			{"count": 15, "zone": "general"}     # Fill gaps
 		])
-		print("[Phase 1] Created 10 trees (1 combined MultiMesh)")
-		print("[Phase 1] Est. triangles: ~4,000 (10 trees × 400 tri)")
+		print("[Phase 1] Created 65 trees (dense forest coverage)")
+		print("[Phase 1] Est. triangles: ~6,500 (65 trees × 100 tri avg after scaling)")
 	
 	# Simple ocean (no shader - using StandardMaterial3D for testing)
 	print("[Phase 1] Ocean using StandardMaterial3D (shader disabled for performance test)")
 
 func transition_to_phase_2():
-	print("\n[Phase 2] Add Rocks (12-24s)")
-	print("  - Coastal rocks (procedural, ~80 triangles each)")
-	print("  - Target: <4,500 triangles for RPi 4 @ 55 FPS")
+	print("\n[Phase 2] Add Coastal Rocks (12-24s)")
+	print("  - Rocky shoreline (procedural, ~80 triangles each)")
+	print("  - Target: <11,000 triangles for RPi 4 @ 40 FPS")
 	
 	await get_tree().process_frame
 	
 	var rocks = asset_library["rocks"]
 	if not rocks.is_empty():
 		multimesh_groups["all_rocks"] = create_combined_multimesh(rocks, [
-			{"count": 8, "zone": "coastal"},
-			{"count": 2, "zone": "general"}
+			{"count": 15, "zone": "coastal"},  # Rocky shoreline
+			{"count": 5, "zone": "general"}    # Scattered inland
 		])
-		print("[Phase 2] Created 10 procedural rocks (1 combined MultiMesh)")
-		print("[Phase 2] Est. triangles: ~5,600 (12 trees + 10 rocks × 80 tri)")
+		print("[Phase 2] Created 20 procedural rocks (rocky shoreline)")
+		print("[Phase 2] Est. triangles: ~8,100 (65 trees + 20 rocks × 80 tri)")
 	
 	# Note: Ocean shader disabled for performance test
 	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
@@ -590,20 +591,20 @@ func transition_to_phase_2():
 		metrics_overlay.update_phase(2, "Add Rocks")
 
 func transition_to_phase_3():
-	print("\n[Phase 3] Add Vegetation (24-36s)")
-	print("  - Dense undergrowth + wind animation")
+	print("\n[Phase 3] Add Dense Undergrowth (24-36s)")
+	print("  - Thick ground vegetation like reference images")
 	
 	await get_tree().process_frame
 	
 	var vegetation = asset_library["vegetation"]
 	if not vegetation.is_empty():
 		multimesh_groups["all_vegetation"] = create_combined_multimesh(vegetation, [
-			{"count": 12, "zone": "interior"},
-			{"count": 5, "zone": "coastal"},
-			{"count": 3, "zone": "general"}
+			{"count": 40, "zone": "interior"},  # Dense forest floor
+			{"count": 25, "zone": "coastal"},   # Coastal undergrowth
+			{"count": 20, "zone": "general"}    # Fill everywhere
 		])
-		print("[Phase 3] Created 20 vegetation (1 combined MultiMesh)")
-		print("[Phase 3] Est. triangles: ~5,600 (10 trees + 6 rocks + 20 vegetation × 50 tri)")
+		print("[Phase 3] Created 85 vegetation (dense undergrowth)")
+		print("[Phase 3] Est. triangles: ~10,750 (65 trees + 20 rocks + 85 plants × 50 tri)")
 		
 	# DISABLED FOR TESTING: Apply wind shader to vegetation
 	# var wind_shader = load("res://shaders/wind_vegetation.gdshader")
@@ -629,16 +630,22 @@ func transition_to_phase_3():
 		metrics_overlay.update_phase(3, "Add Vegetation")
 
 func transition_to_phase_4():
-	print("\n[Phase 4] Tree Wind Animation (36-48s)")
-	print("  - Wind shaders for trees (no additional geometry)")
-	print("  - Target: ~5,600 triangles for RPi 4 @ 45 FPS")
+	print("\n[Phase 4] Add Forest Floor Details (36-48s)")
+	print("  - Fallen logs, branches, natural debris")
+	print("  - Target: ~12,000 triangles for RPi 4 @ 38 FPS")
 	
 	await get_tree().process_frame
 	
-	# Skip ground details to stay under 10K triangle budget
-	# RPi 4 can handle ~10K triangles @ 60 FPS
-	print("[Phase 4] Ground details skipped (staying under RPi 4 triangle budget)")
-	print("[Phase 4] Total objects: 36 (10 trees + 6 rocks + 20 vegetation)")
+	# Add ground details for realism
+	var ground_details = asset_library["ground_details"]
+	if not ground_details.is_empty():
+		multimesh_groups["ground_details"] = create_combined_multimesh(ground_details, [
+			{"count": 15, "zone": "interior"},  # Fallen logs in forest
+			{"count": 10, "zone": "coastal"},   # Driftwood near shore
+			{"count": 5, "zone": "general"}     # Scattered branches
+		])
+		print("[Phase 4] Created 30 ground details (fallen logs, branches)")
+		print("[Phase 4] Total objects: 200 (65 trees + 20 rocks + 85 plants + 30 details)")
 	
 	# DISABLED FOR TESTING: Apply wind shader to trees
 	# var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
