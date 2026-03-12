@@ -42,12 +42,6 @@ subdivide_depth = 4
 shading_mode = 2
 albedo_color = Color(0.35, 0.45, 0.3, 1)
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-material = SubResource("StandardMaterial3D_ground")
-size = Vector2(30, 60)
-subdivide_width = 1
-subdivide_depth = 1
-
 [node name="NatureIsland" type="Node3D"]
 script = ExtResource("1")
 
@@ -69,7 +63,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 mesh = SubResource("PlaneMesh_ocean")
 
 [node name="Ground" type="MeshInstance3D" parent="."]
-mesh = SubResource("PlaneMesh_ground")
 
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("3")

@@ -437,6 +437,13 @@ func create_island_ground():
 	
 	var island_mesh = st.commit()
 	ground.mesh = island_mesh
+	
+	# Apply material (green/brown island ground color)
+	var ground_material = StandardMaterial3D.new()
+	ground_material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
+	ground_material.albedo_color = Color(0.35, 0.45, 0.3, 1)  # Green-brown island ground
+	ground.material_override = ground_material
+	
 	print("[Island] Created elliptical island ground (35.5m × 71m / 0.5 acres)")
 
 func find_mesh_instance_recursive(node: Node) -> MeshInstance3D:
