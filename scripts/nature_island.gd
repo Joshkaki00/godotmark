@@ -471,17 +471,18 @@ func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiM
 	
 	# Generate transforms for all zones combined
 	var instance_idx = 0
+	var base_scale = base_data.get("base_scale", 1.0)
+	
 	for config in zone_configs:
 		var count = config["count"]
 		var zone = config["zone"]
 		var transforms = generate_transforms_for_zone(count, zone)
 		
-		# Apply base scale to all transforms
-		var base_scale = base_data.get("base_scale", 1.0)
 		for i in range(count):
 			var transform = transforms[i]
-			# Scale the entire transform by base_scale
-			transform = transform.scaled(Vector3(base_scale, base_scale, base_scale))
+			# Apply base scale to the basis (rotation/scale) only, NOT the origin (position)
+			# This prevents the position from being scaled too!
+			transform.basis = transform.basis.scaled(Vector3(base_scale, base_scale, base_scale))
 			multimesh.set_instance_transform(instance_idx, transform)
 			instance_idx += 1
 	

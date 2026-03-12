@@ -233,6 +233,25 @@ Remove-Item .godot -Recurse -Force
 ]
 ```
 
+### "Assets clustered in one spot"
+
+**Problem:** Scaling the entire Transform3D scales the position too!
+
+**Bad approach:**
+```gdscript
+transform = transform.scaled(Vector3(0.05, 0.05, 0.05))
+# This scales BOTH position and mesh size
+# Position (10, 0, 5) becomes (0.5, 0, 0.25) - 20× closer to origin!
+```
+
+**Correct approach:**
+```gdscript
+transform.basis = transform.basis.scaled(Vector3(0.05, 0.05, 0.05))
+# This scales ONLY the mesh size, position stays at (10, 0, 5)
+```
+
+**Solution implemented:** Scale only the basis matrix, not the entire transform.
+
 ### "Can't see assets at all"
 
 **Possible causes:**
@@ -240,10 +259,6 @@ Remove-Item .godot -Recurse -Force
 2. Assets spawning under ground → check `pos.y` in `generate_transforms_for_zone()`
 3. Camera too far → check camera distance in scene
 4. Materials not loading → check console for texture errors
-
----
-
-## Related Files
 
 - **`scripts/nature_island.gd`** - Asset loading and scaling (lines 220-280, 468-480)
 - **`ASSET_REPLACEMENT_SUMMARY.md`** - Asset replacement overview
