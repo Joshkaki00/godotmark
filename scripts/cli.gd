@@ -1,4 +1,4 @@
-extends Node
+extends RefCounted
 ## Command Line Interface Handler for GodotMark
 ## Parses and processes CLI arguments
 

@@ -206,3 +206,15 @@ func get_cli_output_path(benchmark_name: String = "") -> String:
 		return "%s_%s.%s" % [without_ext, benchmark_name, ext]
 	
 	return base_path
+
+func _exit_tree():
+	"""Cleanup resources to prevent memory leaks"""
+	print("[Main] Cleaning up resources...")
+	
+	# Clear CLI reference (it's RefCounted, will auto-cleanup)
+	cli = null
+	
+	# Core systems (C++) are automatically cleaned up
+	# platform_detector, perf_monitor, quality_manager are GDExtension objects
+	
+	print("[Main] Cleanup complete")
