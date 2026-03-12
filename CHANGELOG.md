@@ -65,11 +65,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated `scripts/nature_island.gd` asset paths to use GLB format
 - **Nature Island density dramatically increased for realism**
   - Island size: 25×50m (0.24 acres) → 35.5×71m (0.5 acres) - real island size!
-  - Trees: 10 → 65 (6.5× more, matching real forest density)
-  - Rocks: 10 → 20 (2× more for rocky shoreline)
-  - Undergrowth: 20 → 85 (4.25× more, thick forest floor)
-  - Ground details: 0 → 30 (fallen logs, branches, debris)
-  - Total objects: 36 → 200 (5.5× more realistic)
+  - Trees: 10 → 40 (4× more, natural forest spacing with breathing room)
+  - Rocks: 10 → 15 (1.5× more for natural rocky shoreline)
+  - Undergrowth: 20 → 50 (2.5× more understory vegetation)
+  - Ground details: 0 → 20 (fallen logs, branches, natural debris)
+  - Total objects: 36 → 125 (3.5× more, balanced density)
   - Reference: Real forested island photos (0.5 acre size)
 - Nature Island now uses procedural rocks instead of photogrammetry-scanned GLTF assets
 - Island shape changed from rectangular (30×60m) to elliptical (25×50m)
