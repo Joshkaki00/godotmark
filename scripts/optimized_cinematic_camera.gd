@@ -7,21 +7,21 @@ var transform_cache: Array[Transform3D] = []
 var cache_duration: float = 60.0  # Total benchmark duration (1 minute)
 var cache_rate: float = 1.5  # One transform every 1.5 seconds (40 total - smooth but performant)
 
-# Camera path keyframes (smooth orbit around 0.5-acre island: 30m x 60m)
-# Design: Gentle 180° orbit showing different perspectives of the elongated island
+# Camera path keyframes (smooth orbit around 0.5-acre island: 35.5m × 71m)
+# Design: Aerial views showing the full forested island like reference photos
 var keyframes = [
-	# Phase 1: Start - South view, overlooking long axis
-	{"time": 0.0, "position": Vector3(0, 15, 40), "look_at": Vector3(0, 2, 0)},
-	# Phase 2: Southeast, descending to show rocks
-	{"time": 12.0, "position": Vector3(25, 12, 25), "look_at": Vector3(0, 1, 0)},
-	# Phase 3: East, side view of island length
-	{"time": 24.0, "position": Vector3(30, 10, 0), "look_at": Vector3(0, 2, 0)},
-	# Phase 4: Northeast, showing ground details
-	{"time": 36.0, "position": Vector3(25, 12, -25), "look_at": Vector3(0, 1, 0)},
-	# Phase 5: North, final wide view
-	{"time": 48.0, "position": Vector3(0, 15, -40), "look_at": Vector3(0, 2, 0)},
-	# End: Northwest, completion
-	{"time": 60.0, "position": Vector3(-20, 16, -35), "look_at": Vector3(0, 3, 0)},
+	# Phase 1: Start - High south aerial view showing full island
+	{"time": 0.0, "position": Vector3(0, 45, 60), "look_at": Vector3(0, 0, 0)},
+	# Phase 2: Southeast aerial, showing rocky shoreline
+	{"time": 12.0, "position": Vector3(40, 40, 45), "look_at": Vector3(0, 0, 0)},
+	# Phase 3: East high view of island length
+	{"time": 24.0, "position": Vector3(55, 38, 0), "look_at": Vector3(0, 0, 0)},
+	# Phase 4: Northeast aerial showing dense forest
+	{"time": 36.0, "position": Vector3(40, 40, -45), "look_at": Vector3(0, 0, 0)},
+	# Phase 5: North high view showing full island
+	{"time": 48.0, "position": Vector3(0, 45, -60), "look_at": Vector3(0, 0, 0)},
+	# End: Northwest aerial completion
+	{"time": 60.0, "position": Vector3(-35, 42, -50), "look_at": Vector3(0, 0, 0)},
 ]
 
 var parent_node: Node3D
@@ -29,9 +29,9 @@ var parent_node: Node3D
 func _ready():
 	parent_node = get_parent()
 	
-	# Set far plane for rendering distance
-	far = 100.0
-	print("[OptimizedCamera] Far plane set to 100m")
+	# Set far plane for rendering distance (larger for 0.5 acre island)
+	far = 250.0
+	print("[OptimizedCamera] Far plane set to 250m")
 	
 	# PRE-CALCULATE all transforms at startup
 	pre_calculate_transforms()

@@ -79,6 +79,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **CRITICAL:** Camera too close to island - changed to aerial views (height 13m → 42m avg)
 - **CRITICAL:** Memory leaks - CLI class extending Node without scene tree (changed to RefCounted)
 - **CRITICAL:** Memory leaks on benchmark exit - resources not freed properly (added _exit_tree cleanup)
 - **CRITICAL:** RPi5 build script missing godot-cpp compilation step - extension couldn't load
