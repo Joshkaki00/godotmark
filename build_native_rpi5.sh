@@ -1,6 +1,22 @@
 #!/bin/bash
 # Native build script for Raspberry Pi 5
 # Run this directly on your RPi5
+#
+# Usage:
+#   ./build_native_rpi5.sh [target] [cpu] [optimize_size]
+#
+# Examples:
+#   ./build_native_rpi5.sh                          # Release build for RPi5
+#   ./build_native_rpi5.sh template_debug           # Debug build
+#   ./build_native_rpi5.sh template_release rpi4    # Build for RPi4
+#   ./build_native_rpi5.sh template_release rpi5 no # No size optimization
+#   ./build_native_rpi5.sh clean                    # Clean build artifacts
+#
+# This script will:
+# 1. Check dependencies (scons, g++, python3)
+# 2. Initialize godot-cpp submodule
+# 3. Build godot-cpp library (10-15 minutes first time)
+# 4. Build GodotMark extension (2-3 minutes)
 
 set -e  # Exit on error
 
@@ -52,6 +68,60 @@ else
     echo "✅ godot-cpp already initialized"
 fi
 
+# Build godot-cpp first (CRITICAL - must be built before extension)
+echo ""
+echo "=========================================="
+echo "Step 1: Building godot-cpp"
+echo "=========================================="
+if [ ! -f "godot-cpp/bin/libgodot-cpp.linux.template_release.arm64.a" ] || [ "$BUILD_TARGET" = "template_release" ]; then
+    echo "🔨 Building godot-cpp (this may take 10-15 minutes)..."
+    cd godot-cpp
+    scons platform=linux \
+          arch=arm64 \
+          target=template_release \
+          -j$(nproc) \
+          2>&1 | tee ../godot-cpp-build.log
+    BUILD_RESULT=$?
+    cd ..
+    
+    if [ $BUILD_RESULT -ne 0 ]; then
+        echo "❌ ERROR: godot-cpp build failed!"
+        echo "   Check godot-cpp-build.log for details"
+        exit 1
+    fi
+    echo "✅ godot-cpp built successfully"
+else
+    echo "✅ godot-cpp already built (skipping)"
+fi
+
+if [ ! -f "godot-cpp/bin/libgodot-cpp.linux.template_debug.arm64.a" ] && [ "$BUILD_TARGET" = "template_debug" ]; then
+    echo "🔨 Building godot-cpp debug..."
+    cd godot-cpp
+    scons platform=linux \
+          arch=arm64 \
+          target=template_debug \
+          -j$(nproc) \
+          2>&1 | tee ../godot-cpp-debug-build.log
+    BUILD_RESULT=$?
+    cd ..
+    
+    if [ $BUILD_RESULT -ne 0 ]; then
+        echo "❌ ERROR: godot-cpp debug build failed!"
+        echo "   Check godot-cpp-debug-build.log for details"
+        exit 1
+    fi
+    echo "✅ godot-cpp debug built successfully"
+fi
+
+# Verify godot-cpp library exists
+GODOT_CPP_LIB="godot-cpp/bin/libgodot-cpp.linux.$BUILD_TARGET.arm64.a"
+if [ ! -f "$GODOT_CPP_LIB" ]; then
+    echo "❌ ERROR: godot-cpp library not found!"
+    echo "   Expected: $GODOT_CPP_LIB"
+    exit 1
+fi
+echo "✅ godot-cpp library verified: $GODOT_CPP_LIB"
+
 # Build configuration
 BUILD_TARGET="${1:-template_release}"  # Default: release
 CPU_TARGET="${2:-rpi5}"                # Default: rpi5
@@ -79,7 +149,10 @@ if [ "$BUILD_TARGET" = "clean" ]; then
 fi
 
 # Build
-echo "🔨 Building GodotMark..."
+echo ""
+echo "=========================================="
+echo "Step 2: Building GodotMark Extension"
+echo "=========================================="
 echo ""
 
 START_TIME=$(date +%s)
