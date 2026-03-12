@@ -217,27 +217,29 @@ func run_warmup_phase():
 	
 	# Queue all GLTF/GLB assets for loading
 	# NOTE: Updated to use low-poly GLB assets from Downloads
+	# Scale factors adjust for real-world modeling scale (assets modeled in meters)
 	var asset_paths = {
 		"trees": [
-			"res://art/nature-benchmark/Tree.glb"
+			{"path": "res://art/nature-benchmark/Tree.glb", "scale": 0.05}  # Trees are huge, scale down
 		],
 		# ROCKS: Using procedural rocks (~80 triangles each)
 		"vegetation": [
-			"res://art/nature-benchmark/Bushes.glb",
-			"res://art/nature-benchmark/Flowers.glb",
-			"res://art/nature-benchmark/Grass.glb"
+			{"path": "res://art/nature-benchmark/Bushes.glb", "scale": 0.1},
+			{"path": "res://art/nature-benchmark/Flowers.glb", "scale": 0.1},
+			{"path": "res://art/nature-benchmark/Grass.glb", "scale": 0.1}
 		],
 		"ground_details": [
-			"res://art/nature-benchmark/Dead Trees.glb",
-			"res://art/nature-benchmark/Rock.glb",
-			"res://art/nature-benchmark/Rock Large.glb"
+			{"path": "res://art/nature-benchmark/Dead Trees.glb", "scale": 0.05},
+			{"path": "res://art/nature-benchmark/Rock.glb", "scale": 0.2},
+			{"path": "res://art/nature-benchmark/Rock Large.glb", "scale": 0.15}
 		]
 	}
 	
 	# Queue all resources
 	var total_assets = 0
 	for category in asset_paths:
-		for path in asset_paths[category]:
+		for asset_config in asset_paths[category]:
+			var path = asset_config["path"]
 			if ResourceLoader.exists(path):
 				loader.queue_resource(path)
 				total_assets += 1
@@ -256,13 +258,16 @@ func run_warmup_phase():
 		
 		await get_tree().process_frame
 	
-	# Extract loaded assets
+	# Extract loaded assets with scale factors
 	for category in asset_paths:
-		for path in asset_paths[category]:
+		for asset_config in asset_paths[category]:
+			var path = asset_config["path"]
+			var scale = asset_config["scale"]
 			var packed_scene = loader.get_resource(path)
 			if packed_scene:
 				var asset_data = extract_gltf_asset(packed_scene)
 				if not asset_data.is_empty():
+					asset_data["base_scale"] = scale  # Store scale factor
 					asset_library[category].append(asset_data)
 	
 	print("[Warmup] Loaded %d trees, %d vegetation, %d ground details" % [
@@ -470,8 +475,14 @@ func create_combined_multimesh(asset_list: Array, zone_configs: Array) -> MultiM
 		var count = config["count"]
 		var zone = config["zone"]
 		var transforms = generate_transforms_for_zone(count, zone)
+		
+		# Apply base scale to all transforms
+		var base_scale = base_data.get("base_scale", 1.0)
 		for i in range(count):
-			multimesh.set_instance_transform(instance_idx, transforms[i])
+			var transform = transforms[i]
+			# Scale the entire transform by base_scale
+			transform = transform.scaled(Vector3(base_scale, base_scale, base_scale))
+			multimesh.set_instance_transform(instance_idx, transform)
 			instance_idx += 1
 	
 	add_child(mmi)

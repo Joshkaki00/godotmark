@@ -71,11 +71,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **CRITICAL:** GLB assets scale issue - assets modeled at real-world scale (10-100× too large)
 - **CRITICAL:** Nature Island 4.5 FPS bottleneck - root cause was GLTF rock assets with 500K-1M triangles each
 - Texture compression not applied (221 textures were using Lossless mode=4 instead of VRAM mode=2)
 - Empty `wind_vegetation.gdshader` file causing rendering errors
 - Assets spawning outside island boundaries
 - Parse error in `nature_island.gd` from malformed function definition
+- Orphaned `.import` files causing HDR warnings after asset replacement
 
 ### Performance
 - Triangle count reduced from 5M to ~5.5K (99.9% reduction)
