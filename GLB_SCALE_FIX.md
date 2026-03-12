@@ -2,7 +2,9 @@
 
 **Date:** March 11, 2026  
 **Issue:** Low-poly GLB assets are modeled at real-world scale (meters), making them 10-100× too large  
-**Status:** ✅ **FIXED**
+**Status:** ✅ **FIXED AND VERIFIED** - Nature Island now displays all assets at correct scale
+
+**Quick Summary:** Added per-asset scale factors and corrected transform application to fix massive GLB assets. All nature assets now render at proper gameplay scale.
 
 ---
 

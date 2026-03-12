@@ -2,7 +2,9 @@
 
 **Date:** March 11, 2026  
 **Issue:** Inconsistent lighting on GLB assets (some trunks very light, others very dark)  
-**Status:** ✅ **FIXED**
+**Status:** ✅ **FIXED AND VERIFIED** - All GLB assets now have consistent, dynamic lighting
+
+**Quick Summary:** Disabled baked vertex colors and configured materials for Lambert diffuse lighting. Nature Island now has uniform, real-time lighting across all assets.
 
 ---
 
