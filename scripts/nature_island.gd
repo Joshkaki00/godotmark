@@ -613,25 +613,25 @@ func transition_to_phase_3():
 		print("[Phase 3] Created 50 vegetation (natural understory)")
 		print("[Phase 3] Est. triangles: ~7,700 (40 trees + 15 rocks + 50 plants × 50 tri)")
 		
-	# DISABLED FOR TESTING: Apply wind shader to vegetation
-	# var wind_shader = load("res://shaders/wind_vegetation.gdshader")
-	# if multimesh_groups.has("all_vegetation"):
-	# 	var mmi = multimesh_groups["all_vegetation"]
-	# 	var shader_mat = ShaderMaterial.new()
-	# 	shader_mat.shader = wind_shader
-	# 	shader_mat.set_shader_parameter("wind_speed", 2.0)
-	# 	shader_mat.set_shader_parameter("wind_strength", 0.15)
-	# 	shader_mat.set_shader_parameter("max_height", 2.0)
-	# 	
-	# 	# Preserve original texture/color
-	# 	var original_mat = mmi.material_override
-	# 	if original_mat and original_mat is StandardMaterial3D:
-	# 		shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
-	# 		shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
-	# 		shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
-	# 	
-	# 	mmi.material_override = shader_mat
-	print("[Phase 3] Wind shader DISABLED for testing")
+	# Apply wind shader to vegetation
+	var wind_shader = load("res://shaders/wind_vegetation.gdshader")
+	if multimesh_groups.has("all_vegetation"):
+		var mmi = multimesh_groups["all_vegetation"]
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = wind_shader
+		shader_mat.set_shader_parameter("wind_speed", 2.0)
+		shader_mat.set_shader_parameter("wind_strength", 0.15)
+		shader_mat.set_shader_parameter("max_height", 2.0)
+		
+		# Preserve original texture/color
+		var original_mat = mmi.material_override
+		if original_mat and original_mat is StandardMaterial3D:
+			shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+			shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+			shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+		
+		mmi.material_override = shader_mat
+	print("[Phase 3] Wind shader applied to vegetation")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(3, "Add Vegetation")
@@ -654,25 +654,25 @@ func transition_to_phase_4():
 		print("[Phase 4] Created 20 ground details (natural debris)")
 		print("[Phase 4] Total objects: 125 (40 trees + 15 rocks + 50 plants + 20 details)")
 	
-	# DISABLED FOR TESTING: Apply wind shader to trees
-	# var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
-	# if multimesh_groups.has("all_trees"):
-	# 	var mmi = multimesh_groups["all_trees"]
-	# 	var shader_mat = ShaderMaterial.new()
-	# 	shader_mat.shader = tree_wind_shader
-	# 	shader_mat.set_shader_parameter("wind_speed", 0.8)
-	# 	shader_mat.set_shader_parameter("wind_strength", 0.4)
-	# 	shader_mat.set_shader_parameter("max_height", 5.0)
-	# 	
-	# 	# Preserve original texture/color
-	# 	var original_mat = mmi.material_override
-	# 	if original_mat and original_mat is StandardMaterial3D:
-	# 		shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
-	# 		shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
-	# 		shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
-	# 	
-	# 	mmi.material_override = shader_mat
-	print("[Phase 4] Wind shader DISABLED for testing")
+	# Apply wind shader to trees
+	var tree_wind_shader = load("res://shaders/wind_trees.gdshader")
+	if multimesh_groups.has("all_trees"):
+		var mmi = multimesh_groups["all_trees"]
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = tree_wind_shader
+		shader_mat.set_shader_parameter("wind_speed", 0.8)
+		shader_mat.set_shader_parameter("wind_strength", 0.4)
+		shader_mat.set_shader_parameter("max_height", 5.0)
+		
+		# Preserve original texture/color
+		var original_mat = mmi.material_override
+		if original_mat and original_mat is StandardMaterial3D:
+			shader_mat.set_shader_parameter("albedo_color", original_mat.albedo_color)
+			shader_mat.set_shader_parameter("albedo_texture", original_mat.albedo_texture)
+			shader_mat.set_shader_parameter("use_texture", original_mat.albedo_texture != null)
+		
+		mmi.material_override = shader_mat
+	print("[Phase 4] Wind shader applied to trees")
 	
 	# Add cheap Jolt Physics - falling leaves
 	var physics_leaves = preload("res://scripts/cheap_physics_leaves.gd").new()

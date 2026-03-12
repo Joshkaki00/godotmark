@@ -69,6 +69,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Dead Trees.glb, Rock.glb, Rock Large.glb (ground details)
   - Estimated 99.9% triangle count reduction (5M → 5.6K)
   - Updated `scripts/nature_island.gd` asset paths to use GLB format
+- **Wind shaders re-enabled** for all vegetation and trees
+  - Phase 3: Vegetation wind shader (GPU-based animation)
+  - Phase 4: Tree wind shader (GPU-based sway)
+  - Cheap vertex displacement on GPU
 - **Nature Island density dramatically increased for realism**
   - Island size: 25×50m → 106.5×213m (3× larger for proper scale - trees no longer hanging off edges!)
   - Trees: 10 → 40 (4× more, natural forest spacing with breathing room)
