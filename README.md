@@ -24,6 +24,8 @@ Built with **Godot 4.4-stable**, **C++ GDExtension**, and optimized for low-powe
 
 ✅ **SOLVED:** Nature Island 4.5 FPS mystery - photogrammetry rocks had 500K+ triangles each! Now uses procedural rocks. See [`MYSTERY_SOLVED_ROCKS.md`](MYSTERY_SOLVED_ROCKS.md)
 
+🔄 **NEW:** Low-poly asset replacement system - easily swap in optimized 3D models. See [`ASSET_REPLACEMENT_GUIDE.md`](ASSET_REPLACEMENT_GUIDE.md)
+
 💬 **COMMUNITY:** Join the discussion! Questions, ideas, and feedback welcome at [GitHub Discussions](https://github.com/Joshkaki00/godotmark/discussions)
 
 ---
@@ -810,6 +812,14 @@ godotmark/
 | **RPi5_BUILD_INSTRUCTIONS.md** | Detailed build guide |
 | **TESTING_GUIDE.md** | Testing workflow |
 | **CURRENT_STATUS.md** | Current project status |
+
+### Asset Management
+| Document | Description |
+|----------|-------------|
+| **ASSET_REPLACEMENT_GUIDE.md** | Complete guide for replacing GLTF/GLB assets |
+| **ASSET_REPLACEMENT_SUMMARY.md** | Summary of low-poly asset replacement |
+| **QUICK_START_NEW_ASSETS.md** | Quick testing guide for new assets |
+| **replace_assets.ps1** | Automated asset replacement script |
 
 ### Technical Planning
 | Document | Description |

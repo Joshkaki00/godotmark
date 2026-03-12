@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **Low-Poly Asset Replacement System**
+  - `replace_assets.ps1` - Automated script for asset archival and replacement
+  - `ASSET_REPLACEMENT_GUIDE.md` - Complete guide for replacing GLTF/GLB assets
+  - `ASSET_REPLACEMENT_SUMMARY.md` - Documentation of the replacement process
+  - Support for GLB format (in addition to GLTF)
 - **GitHub Discussions Integration**
   - Added prominent Discussions badge and links throughout documentation
   - Community section in README with category overview
@@ -51,6 +56,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Systematic diagnostic plan for performance issues
 
 ### Changed
+- **BREAKING:** Replaced 61 high-poly photogrammetry GLTF assets with 7 optimized low-poly GLB assets
+  - Old assets archived to `art/nature-benchmark-archive-<timestamp>/`
+  - Tree.glb (single tree type, ~200-400 triangles)
+  - Bushes.glb, Flowers.glb, Grass.glb (vegetation)
+  - Dead Trees.glb, Rock.glb, Rock Large.glb (ground details)
+  - Estimated 99.9% triangle count reduction (5M → 5.6K)
+  - Updated `scripts/nature_island.gd` asset paths to use GLB format
 - Nature Island now uses procedural rocks instead of photogrammetry-scanned GLTF assets
 - Island shape changed from rectangular (30×60m) to elliptical (25×50m)
 - Asset distribution uses elliptical zones for more natural placement

@@ -215,30 +215,22 @@ func run_warmup_phase():
 	if loading_screen:
 		loading_screen.update_progress(0.0, "Loading nature assets...")
 	
-	# Queue all GLTF assets for loading (EXCEPT ROCKS - using procedural)
+	# Queue all GLTF/GLB assets for loading
+	# NOTE: Updated to use low-poly GLB assets from Downloads
 	var asset_paths = {
 		"trees": [
-			"res://art/nature-benchmark/island_tree_01_1k.gltf/island_tree_01_1k.gltf",
-			"res://art/nature-benchmark/island_tree_02_1k.gltf/island_tree_02_1k.gltf",
-			"res://art/nature-benchmark/island_tree_03_1k.gltf/island_tree_03_1k.gltf"
+			"res://art/nature-benchmark/Tree.glb"
 		],
-		# ROCKS REMOVED: GLTF rocks are 500K+ triangles each (photogrammetry scans)
-		# Using procedural rocks instead (~80 triangles each)
+		# ROCKS: Using procedural rocks (~80 triangles each)
 		"vegetation": [
-			"res://art/nature-benchmark/shrub_01_1k.gltf/shrub_01_1k.gltf",
-			"res://art/nature-benchmark/shrub_03_1k.gltf/shrub_03_1k.gltf",
-			"res://art/nature-benchmark/shrub_04_1k.gltf/shrub_04_1k.gltf",
-			"res://art/nature-benchmark/weed_plant_02_1k.gltf/weed_plant_02_1k.gltf",
-			"res://art/nature-benchmark/fern_02_1k.gltf/fern_02_1k.gltf",
-			"res://art/nature-benchmark/flower_gazania_1k.gltf/flower_gazania_1k.gltf",
-			"res://art/nature-benchmark/dandelion_01_1k.gltf/dandelion_01_1k.gltf",
-			"res://art/nature-benchmark/nettle_plant_1k.gltf/nettle_plant_1k.gltf"
+			"res://art/nature-benchmark/Bushes.glb",
+			"res://art/nature-benchmark/Flowers.glb",
+			"res://art/nature-benchmark/Grass.glb"
 		],
 		"ground_details": [
-			"res://art/nature-benchmark/root_cluster_01_1k.gltf/root_cluster_01_1k.gltf",
-			"res://art/nature-benchmark/root_cluster_02_1k.gltf/root_cluster_02_1k.gltf",
-			"res://art/nature-benchmark/bark_debris_01_1k.gltf/bark_debris_01_1k.gltf",
-			"res://art/nature-benchmark/dry_branches_medium_01_1k.gltf/dry_branches_medium_01_1k.gltf"
+			"res://art/nature-benchmark/Dead Trees.glb",
+			"res://art/nature-benchmark/Rock.glb",
+			"res://art/nature-benchmark/Rock Large.glb"
 		]
 	}
 	
