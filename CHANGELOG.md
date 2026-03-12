@@ -71,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **CRITICAL:** GLB assets lighting inconsistency - vertex colors from modeling software causing dark/light patches
 - **CRITICAL:** GLB assets clustering issue - scaling entire transform was scaling positions too (basis-only scaling now)
 - **CRITICAL:** GLB assets scale issue - assets modeled at real-world scale (10-100× too large)
 - **CRITICAL:** Nature Island 4.5 FPS bottleneck - root cause was GLTF rock assets with 500K-1M triangles each

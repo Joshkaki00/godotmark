@@ -367,23 +367,33 @@ func extract_gltf_asset(packed_scene: PackedScene) -> Dictionary:
 	
 	var mesh = mesh_instance.mesh
 	
-	# Get original material
+	# Get original material from first surface
 	var original_mat = null
 	if mesh_instance.get_surface_override_material_count() > 0:
 		original_mat = mesh_instance.get_surface_override_material(0)
 	if not original_mat and mesh.get_surface_count() > 0:
 		original_mat = mesh.surface_get_material(0)
 	
-	# Create per-vertex lit material (default for all phases)
+	# Create optimized per-vertex lit material for RPi
 	var mat_lit = StandardMaterial3D.new()
 	mat_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX
 	mat_lit.cull_mode = BaseMaterial3D.CULL_BACK
+	mat_lit.vertex_color_use_as_albedo = false  # CRITICAL: Disable vertex colors
+	mat_lit.diffuse_mode = BaseMaterial3D.DIFFUSE_LAMBERT  # Simple Lambert
+	mat_lit.specular_mode = BaseMaterial3D.SPECULAR_DISABLED  # No specular
+	mat_lit.disable_ambient_light = false  # Enable ambient
+	mat_lit.shading_mode = BaseMaterial3D.SHADING_MODE_PER_VERTEX  # Per-vertex
+	
+	# Copy texture from original if available
 	if original_mat and original_mat is StandardMaterial3D:
-		mat_lit.albedo_color = original_mat.albedo_color
 		if original_mat.albedo_texture:
 			mat_lit.albedo_texture = original_mat.albedo_texture
+			mat_lit.albedo_color = Color(1, 1, 1)  # White to show texture properly
+		else:
+			mat_lit.albedo_color = original_mat.albedo_color
 	else:
-		mat_lit.albedo_color = Color(0.8, 0.8, 0.8)
+		# Default: neutral white for consistent lighting with textures
+		mat_lit.albedo_color = Color(1, 1, 1)
 	
 	scene_instance.queue_free()
 	
