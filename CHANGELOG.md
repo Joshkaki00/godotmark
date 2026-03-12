@@ -73,6 +73,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Phase 3: Vegetation wind shader (GPU-based animation)
   - Phase 4: Tree wind shader (GPU-based sway)
   - Cheap vertex displacement on GPU
+- **Ocean shader re-enabled** with progressive wave complexity
+  - Phase 1-3: UV scroll only (no vertex displacement)
+  - Phase 4: Wave displacement enabled (height=0.3, foam=0.2)
+  - Phase 5: Maximum waves (height=0.5, speed=0.8, foam=0.4)
+  - GPU-based vertex animation via `water_ocean.gdshader`
 - **Nature Island density dramatically increased for realism**
   - Island size: 25×50m → 106.5×213m (3× larger for proper scale - trees no longer hanging off edges!)
   - Trees: 10 → 40 (4× more, natural forest spacing with breathing room)

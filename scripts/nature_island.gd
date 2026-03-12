@@ -572,8 +572,18 @@ func setup_phase_1():
 		print("[Phase 1] Created 40 trees (natural forest spacing)")
 		print("[Phase 1] Est. triangles: ~4,000 (40 trees × 100 tri avg)")
 	
-	# Simple ocean (no shader - using StandardMaterial3D for testing)
-	print("[Phase 1] Ocean using StandardMaterial3D (shader disabled for performance test)")
+	# Apply ocean shader - Phase 1 (minimal waves)
+	var ocean_shader = load("res://shaders/water_ocean.gdshader")
+	if ocean and ocean_shader:
+		var shader_mat = ShaderMaterial.new()
+		shader_mat.shader = ocean_shader
+		shader_mat.set_shader_parameter("phase", 1)
+		shader_mat.set_shader_parameter("wave_speed", 0.5)
+		shader_mat.set_shader_parameter("wave_height", 0.0)  # No displacement yet
+		shader_mat.set_shader_parameter("wave_frequency", 1.0)
+		shader_mat.set_shader_parameter("foam_amount", 0.0)  # No foam yet
+		ocean.material_override = shader_mat
+		print("[Phase 1] Ocean shader enabled (minimal waves, UV scroll only)")
 
 func transition_to_phase_2():
 	print("\n[Phase 2] Add Rocky Shoreline (12-24s)")
@@ -591,8 +601,10 @@ func transition_to_phase_2():
 		print("[Phase 2] Created 15 procedural rocks (natural rocky shoreline)")
 		print("[Phase 2] Est. triangles: ~5,200 (40 trees + 15 rocks × 80 tri)")
 	
-	# Note: Ocean shader disabled for performance test
-	print("[Phase 2] Ocean waves disabled (StandardMaterial3D)")
+	# Update ocean shader - Phase 2 (still minimal)
+	if ocean and ocean.material_override:
+		ocean.material_override.set_shader_parameter("phase", 2)
+		print("[Phase 2] Ocean shader updated (phase 2)")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(2, "Add Rocks")
@@ -632,6 +644,11 @@ func transition_to_phase_3():
 		
 		mmi.material_override = shader_mat
 	print("[Phase 3] Wind shader applied to vegetation")
+	
+	# Update ocean shader - Phase 3 (still minimal)
+	if ocean and ocean.material_override:
+		ocean.material_override.set_shader_parameter("phase", 3)
+		print("[Phase 3] Ocean shader updated (phase 3)")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(3, "Add Vegetation")
@@ -679,8 +696,12 @@ func transition_to_phase_4():
 	add_child(physics_leaves)
 	print("[Phase 4] Jolt Physics: Spawning falling leaves (cheap RigidBody3D)")
 	
-	# Note: Ocean shader disabled for performance test
-	print("[Phase 4] Ocean waves disabled (StandardMaterial3D)")
+	# Update ocean shader - Phase 4 (enable waves!)
+	if ocean and ocean.material_override:
+		ocean.material_override.set_shader_parameter("phase", 4)
+		ocean.material_override.set_shader_parameter("wave_height", 0.3)  # Enable vertex displacement
+		ocean.material_override.set_shader_parameter("foam_amount", 0.2)  # Add some foam
+		print("[Phase 4] Ocean shader updated (waves enabled, wave_height=0.3)")
 	
 	if metrics_overlay:
 		metrics_overlay.update_phase(4, "Add Ground Detail")
@@ -694,8 +715,13 @@ func transition_to_phase_5():
 	
 	await get_tree().process_frame
 	
-	# Note: Ocean shader disabled for performance test
-	print("[Phase 5] Ocean waves disabled (StandardMaterial3D)")
+	# Update ocean shader - Phase 5 (maximum waves!)
+	if ocean and ocean.material_override:
+		ocean.material_override.set_shader_parameter("phase", 5)
+		ocean.material_override.set_shader_parameter("wave_height", 0.5)  # Maximum displacement
+		ocean.material_override.set_shader_parameter("wave_speed", 0.8)   # Faster waves
+		ocean.material_override.set_shader_parameter("foam_amount", 0.4)  # More foam
+		print("[Phase 5] Ocean shader at maximum (wave_height=0.5, foam=0.4)")
 	
 	# Boost ambient light
 	if env and env.environment:
