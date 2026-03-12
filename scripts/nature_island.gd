@@ -785,3 +785,31 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		print("[NatureIsland] ESC pressed - exiting benchmark")
 		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+
+func _exit_tree():
+	"""Cleanup resources to prevent memory leaks"""
+	print("[NatureIsland] Cleaning up resources...")
+	
+	# Free all MultiMesh instances
+	for key in multimesh_groups:
+		if multimesh_groups[key] and is_instance_valid(multimesh_groups[key]):
+			multimesh_groups[key].queue_free()
+	multimesh_groups.clear()
+	
+	# Free materials and meshes from asset library
+	for category in asset_library:
+		for asset_data in asset_library[category]:
+			# Free materials
+			if asset_data.has("material_lit") and asset_data["material_lit"]:
+				asset_data["material_lit"] = null
+			if asset_data.has("material_wind") and asset_data["material_wind"]:
+				asset_data["material_wind"] = null
+			# Meshes will be freed by Godot's reference counting
+		asset_library[category].clear()
+	
+	# Free any child nodes that might be loaders
+	for child in get_children():
+		if child.get_script() and "threaded_loader" in child.get_script().resource_path:
+			child.queue_free()
+	
+	print("[NatureIsland] Cleanup complete")

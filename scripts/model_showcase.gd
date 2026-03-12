@@ -1011,3 +1011,16 @@ func _load_menu_threaded():
 		loading_screen.visible = true
 		loading_screen.update_progress(0.0, "Returning to menu...")
 
+func _exit_tree():
+	"""Cleanup resources to prevent memory leaks"""
+	print("[ModelShowcase] Cleaning up resources...")
+	
+	# Free threaded loader if it exists
+	if menu_loader and is_instance_valid(menu_loader):
+		menu_loader.queue_free()
+		menu_loader = null
+	
+	# Cleanup any dynamically created materials (they're on particles/objects)
+	# Godot will handle most cleanup automatically, but we clear references
+	
+	print("[ModelShowcase] Cleanup complete")

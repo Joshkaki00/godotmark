@@ -89,3 +89,7 @@ func clear() -> void:
 	_loading_resources.clear()
 	_loaded_resources.clear()
 	print("[ThreadedLoader] Cleared all resources")
+
+func _exit_tree() -> void:
+	"""Cleanup on node exit"""
+	clear()
