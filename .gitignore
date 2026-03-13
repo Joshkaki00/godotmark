@@ -77,8 +77,11 @@ bin/*.dll
 bin/*.so
 bin/*.dylib
 
-# Benchmark results
-results/
+# Benchmark results (JSON output files)
+/results/
+user://results/
+benchmark_results*.json
+!src/results/  # Exception: Source code directory
 *.json
 
 ### Linux ###
