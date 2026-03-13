@@ -29,8 +29,8 @@ cpu_target = ARGUMENTS.get("cpu", "generic")
 
 print(f"Building GodotMark for {platform} ({arch}) - {target} - CPU: {cpu_target}")
 
-# ARM-specific optimizations
-if arch == "arm64" or platform == "linux":
+# ARM-specific optimizations (only for ARM architectures)
+if arch == "arm64":
     # Base ARM64 flags (NEON is built-in for ARM64, no -mfpu needed)
     arm_flags = [
         "-march=armv8-a+simd",      # ARM64 with NEON SIMD

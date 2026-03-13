@@ -129,6 +129,11 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed
+- **SCons build applying ARM flags to x86_64 Linux builds**
+  - Fixed condition: `if arch == "arm64" or platform == "linux"` → `if arch == "arm64"`
+  - ARM-specific flags (cortex-a53, armv8-a+simd) now only applied to actual ARM builds
+  - Fixes CI/CD error: "bad value 'armv8-a+simd' for '-march=' switch" on x86_64 runners
+  - x86_64 builds now use native/generic optimization without ARM-specific flags
 - **CI/CD workflow path errors**
   - Fixed incorrect working directory paths (removed extra `godotmark/` level)
   - Build now runs from repository root (not `godotmark/godotmark/...`)

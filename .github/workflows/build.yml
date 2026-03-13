@@ -138,7 +138,11 @@ jobs:
         shell: cmd
         run: |
           echo Building godot-cpp for Windows x86_64...
-          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS%
+          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS% 2>&1
+          if errorlevel 1 (
+            echo ❌ godot-cpp build failed!
+            exit /b 1
+          )
           echo ✅ godot-cpp build complete
           dir bin\
       
@@ -146,7 +150,11 @@ jobs:
         shell: cmd
         run: |
           echo Building GodotMark GDExtension...
-          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS%
+          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS% 2>&1
+          if errorlevel 1 (
+            echo ❌ Build failed!
+            exit /b 1
+          )
           echo ✅ GodotMark GDExtension build complete
           dir bin\
       
