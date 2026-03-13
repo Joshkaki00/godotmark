@@ -8,7 +8,7 @@
 #include "benchmarks/adaptive_quality_manager.h"
 #include "performance/performance_monitor.h"
 #include "platform/platform_detector.h"
-#include "results/results_exporter.h"
+// #include "results/results_exporter.h"  // TODO: Results exporter not yet implemented
 
 using namespace godot;
 
@@ -20,7 +20,7 @@ class BenchmarkOrchestrator : public Node {
   Ref<PlatformDetector> platform_detector;
   Ref<PerformanceMonitor> performance_monitor;
   Ref<AdaptiveQualityManager> quality_manager;
-  Ref<ResultsExporter> results_exporter;
+  // Ref<ResultsExporter> results_exporter;  // TODO: Not yet implemented
 
   // State
   bool is_initialized;
@@ -50,7 +50,7 @@ class BenchmarkOrchestrator : public Node {
   Ref<PlatformDetector> get_platform_detector() const;
   Ref<PerformanceMonitor> get_performance_monitor() const;
   Ref<AdaptiveQualityManager> get_quality_manager() const;
-  Ref<ResultsExporter> get_results_exporter() const;
+  // Ref<ResultsExporter> get_results_exporter() const;  // TODO: Not yet implemented
 
   // Status
   bool get_is_initialized() const;

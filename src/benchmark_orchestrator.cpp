@@ -21,8 +21,8 @@ void BenchmarkOrchestrator::_bind_methods() {
                        &BenchmarkOrchestrator::get_performance_monitor);
   ClassDB::bind_method(D_METHOD("get_quality_manager"),
                        &BenchmarkOrchestrator::get_quality_manager);
-  ClassDB::bind_method(D_METHOD("get_results_exporter"),
-                       &BenchmarkOrchestrator::get_results_exporter);
+  // ClassDB::bind_method(D_METHOD("get_results_exporter"),
+  //                      &BenchmarkOrchestrator::get_results_exporter);
 
   ClassDB::bind_method(D_METHOD("get_is_initialized"),
                        &BenchmarkOrchestrator::get_is_initialized);
@@ -75,8 +75,8 @@ void BenchmarkOrchestrator::initialize_systems() {
   quality_manager.instantiate();
   quality_manager->initialize(AdaptiveQualityManager::MEDIUM);
 
-  // Create results exporter
-  results_exporter.instantiate();
+  // TODO: Create results exporter (not yet implemented)
+  // results_exporter.instantiate();
 
   is_initialized = true;
   UtilityFunctions::print("[BenchmarkOrchestrator] Initialization complete!");
@@ -138,6 +138,15 @@ void BenchmarkOrchestrator::stop_benchmark() {
 }
 
 void BenchmarkOrchestrator::finalize_results() {
+  // TODO: Results exporter not yet implemented
+  // For now, benchmarks export their own results directly
+  
+  UtilityFunctions::print("\n");
+  UtilityFunctions::print("[BenchmarkOrchestrator] Benchmark complete!");
+  UtilityFunctions::print("[BenchmarkOrchestrator] (Results handled by benchmark scene)");
+  UtilityFunctions::print("\n");
+  
+  /*
   if (!results_exporter.is_valid()) {
     return;
   }
@@ -179,6 +188,7 @@ void BenchmarkOrchestrator::finalize_results() {
   results_exporter->save_json(filename);
 
   UtilityFunctions::print("[BenchmarkOrchestrator] Benchmark complete!");
+  */
 }
 
 Ref<PlatformDetector> BenchmarkOrchestrator::get_platform_detector() const {
@@ -193,9 +203,9 @@ Ref<AdaptiveQualityManager> BenchmarkOrchestrator::get_quality_manager() const {
   return quality_manager;
 }
 
-Ref<ResultsExporter> BenchmarkOrchestrator::get_results_exporter() const {
-  return results_exporter;
-}
+// Ref<ResultsExporter> BenchmarkOrchestrator::get_results_exporter() const {
+//   return results_exporter;
+// }
 
 bool BenchmarkOrchestrator::get_is_initialized() const {
   return is_initialized;

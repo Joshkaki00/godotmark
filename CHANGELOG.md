@@ -129,6 +129,12 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed
+- **Missing ResultsExporter causing build failures**
+  - Commented out `#include "results/results_exporter.h"` (file doesn't exist)
+  - Commented out all `ResultsExporter` usage in `BenchmarkOrchestrator`
+  - Benchmarks export their own results directly (no centralized exporter needed yet)
+  - Added TODO comments for future implementation
+  - Fixes: "Cannot open include file: 'results/results_exporter.h'" on Linux/Windows
 - **SCons build applying ARM flags to x86_64 Linux builds**
   - Fixed condition: `if arch == "arm64" or platform == "linux"` → `if arch == "arm64"`
   - ARM-specific flags (cortex-a53, armv8-a+simd) now only applied to actual ARM builds
