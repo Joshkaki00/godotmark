@@ -27,6 +27,9 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 
 ## [Unreleased]
 
+### Fixed
+- **CI/CD: Added `--import` flag to Godot test command** - Critical fix for GDExtension loading in CI/CD. Without this flag, Godot attempts to parse GDScript files before the GDExtension is properly loaded, causing "Could not find type" errors. The `--import` flag ensures proper resource import and GDExtension initialization.
+
 ### Added
 - **ResultsExporter C++ class** (`src/results/results_exporter.h/cpp`)
   - Centralized results collection and export system

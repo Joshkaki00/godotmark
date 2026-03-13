@@ -243,12 +243,15 @@ jobs:
       - name: Test project import
         run: |
           echo "Testing Godot project import..."
-          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit || true
+          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --import --quit 2>&1 | tee godot_import.log || true
           
           if [ -d ".godot" ]; then
             echo "✅ Project imported successfully"
+            echo "Checking for GDExtension classes..."
+            grep -i "PlatformDetector\|PerformanceMonitor\|AdaptiveQualityManager\|CLI" godot_import.log || echo "⚠️ GDExtension classes not found in logs"
           else
             echo "❌ Project import failed"
+            cat godot_import.log
             exit 1
           fi
       
