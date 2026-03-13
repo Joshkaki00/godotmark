@@ -840,6 +840,50 @@ func _input(event):
 	if event.is_action_pressed("ui_cancel"):
 		print("[NatureIsland] ESC pressed - exiting benchmark")
 		get_tree().change_scene_to_file("res://scenes/ui/main_menu.tscn")
+	
+	# Debug controls
+	if event is InputEventKey and event.pressed:
+		match event.keycode:
+			KEY_SPACE:
+				# Pause/Resume
+				get_tree().paused = !get_tree().paused
+				print("[NatureIsland] %s" % ("PAUSED" if get_tree().paused else "RESUMED"))
+			
+			KEY_Q:
+				# Quality Down
+				if quality_manager and current_quality_preset > 0:
+					current_quality_preset -= 1
+					quality_manager.set_quality_preset(current_quality_preset)
+					print("[NatureIsland] Quality: %s" % quality_manager.get_quality_name())
+			
+			KEY_E:
+				# Quality Up
+				if quality_manager and current_quality_preset < 3:
+					current_quality_preset += 1
+					quality_manager.set_quality_preset(current_quality_preset)
+					print("[NatureIsland] Quality: %s" % quality_manager.get_quality_name())
+			
+			KEY_T:
+				# Toggle Quick Test (not implemented for this benchmark yet)
+				print("[NatureIsland] Quick test toggle not implemented")
+			
+			KEY_V:
+				# Verbose Logging
+				print("[NatureIsland] Verbose logging:")
+				print("  Timeline: %.2fs / 60.0s" % timeline)
+				print("  Phase: %d" % phase)
+				print("  FPS: %.1f" % Engine.get_frames_per_second())
+				print("  Warmup: %s" % ("Complete" if warmup_complete else "In Progress"))
+				if perf_monitor:
+					print("  CPU: %.1f%%" % perf_monitor.get_cpu_usage())
+					print("  GPU: %.1f%%" % perf_monitor.get_gpu_usage())
+					print("  Temp: %.1f°C" % perf_monitor.get_temperature())
+			
+			KEY_R:
+				# Reset
+				print("[NatureIsland] Restarting benchmark...")
+				get_tree().reload_current_scene()
+
 
 func _exit_tree():
 	"""Cleanup resources to prevent memory leaks"""

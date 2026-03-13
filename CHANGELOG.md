@@ -113,6 +113,14 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **CRITICAL:** Debug controls (Space, Q/E, T, V, R) not working
+  - Added keyboard input handling to both `nature_island.gd` and `model_showcase.gd`
+  - **Space:** Pause/Resume benchmark
+  - **Q/E:** Decrease/Increase quality preset
+  - **T:** Toggle quick test (placeholder for future implementation)
+  - **V:** Verbose logging (displays timeline, FPS, CPU, GPU, temp)
+  - **R:** Reset/Restart current benchmark
+  - **ESC:** Exit to menu (already working)
 - **CRITICAL:** Nature Island GPU and temperature metrics not updating
   - Added missing `perf_monitor.update(delta)` call in `_process()`
   - Changed placeholder CPU/GPU/temp values to read from `PerformanceMonitor`
