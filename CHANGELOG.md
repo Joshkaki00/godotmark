@@ -129,11 +129,12 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed
-- **GitHub Actions cache deprecation warning**
-  - Updated `actions/cache` from v4.0.0 to v4.0.2
-  - Updated commit SHA to `0c45773b623bea8c8e75f6c82b208c3cf94ea4f9`
+- **GitHub Actions cache deprecation warning (v4.0.2 → v4.2.1)**
+  - Updated `actions/cache` to v4.2.1 (latest stable as of Feb 2026)
+  - Updated commit SHA to `6849a6489940f00c2f30c0fb92c6274307ccb58a`
   - Fixes: "deprecated version of actions/cache" error in CI/CD workflow
   - All 3 cache actions updated (godot-cpp Linux, godot-cpp Windows, Godot binary)
+  - Compliant with GitHub's March 1, 2025 cache architecture changes
 - **Temperature monitoring now works on multiple platforms**
   - Added multi-path thermal detection in C++ `PerformanceMonitor`
   - Tries `/sys/class/thermal/thermal_zone0-1/temp` for ARM SBCs
