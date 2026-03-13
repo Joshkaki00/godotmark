@@ -1,6 +1,6 @@
 {
-  "projectName": "GodotMark",
-  "projectOwner": "mehewz",
+  "projectName": "godotmark",
+  "projectOwner": "Joshkaki00",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -9,9 +9,20 @@
   "imageSize": 100,
   "commit": true,
   "commitConvention": "angular",
-  "contributors": [],
+  "contributors": [
+    {
+      "login": "you",
+      "name": "you",
+      "avatar_url": "https://avatars.githubusercontent.com/u/57100752?v=4",
+      "profile": "https://github.com/you",
+      "contributions": [
+        "projectManagement"
+      ]
+    }
+  ],
   "contributorsPerLine": 7,
   "skipCi": true,
   "badgeTemplate": "[![All Contributors](https://img.shields.io/badge/all_contributors-<%= contributors.length %>-orange.svg?style=flat-square)](#contributors)",
-  "contributorTemplate": "<%= contributor.profile %>"
+  "contributorTemplate": "<%= contributor.profile %>",
+  "commitType": "docs"
 }
