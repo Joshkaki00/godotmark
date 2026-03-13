@@ -2,10 +2,82 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <fstream>
+#ifdef __linux__
+#include <glob.h>
+#endif
 #include <godot_cpp/classes/time.hpp>
 #include <godot_cpp/variant/utility_functions.hpp>
 #include <sstream>
+
+namespace {
+constexpr float kTemperatureUnavailable = -1.0f;
+
+bool parse_sysfs_temperature(const String& raw_value,
+                             float& temperature_celsius) {
+  const String trimmed = raw_value.strip_edges();
+  if (trimmed.is_empty()) {
+    return false;
+  }
+
+  const CharString utf8 = trimmed.utf8();
+  char* end = nullptr;
+  const long value = std::strtol(utf8.get_data(), &end, 10);
+  if (end == utf8.get_data() || (end != nullptr && *end != '\0') ||
+      value <= 0) {
+    return false;
+  }
+
+  temperature_celsius = value >= 1000 ? static_cast<float>(value) / 1000.0f
+                                      : static_cast<float>(value);
+  return temperature_celsius > 0.0f;
+}
+
+bool parse_vcgencmd_temperature(const String& output,
+                                float& temperature_celsius) {
+  const int temp_start = output.find("=");
+  const int temp_end = output.find("'");
+  if (temp_start < 0 || temp_end <= temp_start) {
+    return false;
+  }
+
+  const String trimmed =
+      output.substr(temp_start + 1, temp_end - temp_start - 1).strip_edges();
+  if (trimmed.is_empty()) {
+    return false;
+  }
+
+  const CharString utf8 = trimmed.utf8();
+  char* end = nullptr;
+  const float value = std::strtof(utf8.get_data(), &end);
+  if (end == utf8.get_data() || (end != nullptr && *end != '\0') ||
+      value <= 0.0f) {
+    return false;
+  }
+
+  temperature_celsius = value;
+  return true;
+}
+
+void update_temperature_tracking(float temperature_celsius,
+                                 float& current_temperature,
+                                 float& avg_temperature,
+                                 float& max_temperature) {
+  current_temperature = temperature_celsius;
+
+  if (temperature_celsius > max_temperature) {
+    max_temperature = temperature_celsius;
+  }
+
+  if (avg_temperature < 0.0f) {
+    avg_temperature = temperature_celsius;
+  } else {
+    avg_temperature =
+        (avg_temperature * 0.9f) + (temperature_celsius * 0.1f);
+  }
+}
+}  // namespace
 
 bool PerformanceMonitor::verbose_logging = true;  // Enable for debugging
 
@@ -22,8 +94,8 @@ PerformanceMonitor::PerformanceMonitor()
       p1_low_fps(0.0f),
       p95_frametime_ms(0.0f),
       p99_frametime_ms(0.0f),
-      current_temperature(0.0f),
-      avg_temperature(0.0f),
+      current_temperature(kTemperatureUnavailable),
+      avg_temperature(kTemperatureUnavailable),
       max_temperature(0.0f),
       throttle_events(0),
       cpu_usage(0.0f),
@@ -117,14 +189,14 @@ String PerformanceMonitor::read_command_output(const String& command) {
   if (!pipe) {
     return "";
   }
-  
+
   char buffer[128];
   std::string result = "";
   while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
     result += buffer;
   }
   pclose(pipe);
-  
+
   return String(result.c_str());
 #else
   return "";
@@ -181,7 +253,6 @@ void PerformanceMonitor::update_statistics() {
 
   // Calculate min, max, avg
   float sum_fps = 0.0f;
-  float sum_temp = 0.0f;
   min_fps = 999999.0f;
   max_fps = 0.0f;
 
@@ -223,93 +294,92 @@ void PerformanceMonitor::update_statistics() {
 
 void PerformanceMonitor::read_temperature() {
 #ifdef __linux__
-  // Try common thermal zones for ARM SBCs
+  current_temperature = kTemperatureUnavailable;
+
+  auto try_temperature_path = [&](const char* path) -> bool {
+    if (verbose_logging) {
+      UtilityFunctions::print("[PerformanceMonitor] Trying thermal path: ",
+                              path);
+    }
+
+    const String temp_str = read_file_content(path);
+    float parsed_temperature = 0.0f;
+    if (temp_str.is_empty() ||
+        !parse_sysfs_temperature(temp_str, parsed_temperature)) {
+      if (!temp_str.is_empty() && verbose_logging) {
+        UtilityFunctions::print(
+            "[PerformanceMonitor] Ignoring invalid temperature value from ",
+            path, ": ", temp_str);
+      }
+      return false;
+    }
+
+    update_temperature_tracking(parsed_temperature, current_temperature,
+                                avg_temperature, max_temperature);
+
+    if (verbose_logging) {
+      UtilityFunctions::print("[PerformanceMonitor] Temperature: ",
+                              String::num(current_temperature, 1), "°C");
+    }
+
+    return true;
+  };
+
+  // Try common thermal zones for ARM SBCs first.
   const char* thermal_paths[] = {
       "/sys/class/thermal/thermal_zone0/temp",
       "/sys/class/thermal/thermal_zone1/temp",
       "/sys/devices/virtual/thermal/thermal_zone0/temp"};
 
-  bool found = false;
   for (const char* path : thermal_paths) {
-    if (verbose_logging) {
-      UtilityFunctions::print("[PerformanceMonitor] Trying thermal path: ", path);
-    }
-    
-    String temp_str = read_file_content(path);
-    if (!temp_str.is_empty()) {
-      if (verbose_logging) {
-        UtilityFunctions::print("[PerformanceMonitor] Temperature read: ", temp_str);
-      }
-      
-      // Temperature is in millidegrees Celsius
-      int temp_millidegrees = temp_str.to_int();
-      current_temperature = temp_millidegrees / 1000.0f;
-
-      if (verbose_logging) {
-        UtilityFunctions::print("[PerformanceMonitor] Temperature: ", 
-                               String::num(current_temperature, 1), "°C");
-      }
-
-      // Update max temperature
-      if (current_temperature > max_temperature) {
-        max_temperature = current_temperature;
-      }
-
-      // Update average (simple moving average)
-      if (avg_temperature == 0.0f) {
-        avg_temperature = current_temperature;
-      } else {
-        avg_temperature =
-            (avg_temperature * 0.9f) + (current_temperature * 0.1f);
-      }
-
-      found = true;
-      break;
+    if (try_temperature_path(path)) {
+      return;
     }
   }
-  
-  if (!found) {
-    // Try vcgencmd as fallback (Raspberry Pi specific)
-    String vcgencmd_result = read_command_output("vcgencmd measure_temp");
-    if (!vcgencmd_result.is_empty()) {
-      // Output format: "temp=52.3'C"
-      int temp_start = vcgencmd_result.find("=");
-      int temp_end = vcgencmd_result.find("'");
-      if (temp_start >= 0 && temp_end > temp_start) {
-        String temp_str = vcgencmd_result.substr(temp_start + 1, temp_end - temp_start - 1);
-        current_temperature = temp_str.to_float();
-        
-        if (verbose_logging) {
-          UtilityFunctions::print("[PerformanceMonitor] Temperature from vcgencmd: ", 
-                                 String::num(current_temperature, 1), "°C");
-        }
-        
-        // Update max temperature
-        if (current_temperature > max_temperature) {
-          max_temperature = current_temperature;
-        }
 
-        // Update average (simple moving average)
-        if (avg_temperature == 0.0f) {
-          avg_temperature = current_temperature;
-        } else {
-          avg_temperature =
-              (avg_temperature * 0.9f) + (current_temperature * 0.1f);
+  // Desktop Linux frequently exposes temperatures through hwmon instead.
+  const char* hwmon_patterns[] = {
+      "/sys/class/hwmon/hwmon*/temp*_input",
+      "/sys/class/hwmon/hwmon*/device/temp*_input"};
+
+  for (const char* pattern : hwmon_patterns) {
+    glob_t matches = {};
+    if (glob(pattern, 0, nullptr, &matches) == 0) {
+      for (size_t i = 0; i < matches.gl_pathc; i++) {
+        if (try_temperature_path(matches.gl_pathv[i])) {
+          globfree(&matches);
+          return;
         }
-        
-        found = true;
       }
     }
-    
-    if (!found && verbose_logging) {
-      UtilityFunctions::print("[PerformanceMonitor] WARNING: No thermal zones found");
+    globfree(&matches);
+  }
+
+  // Try vcgencmd as fallback (Raspberry Pi specific).
+  const String vcgencmd_result = read_command_output("vcgencmd measure_temp");
+  float parsed_temperature = 0.0f;
+  if (parse_vcgencmd_temperature(vcgencmd_result, parsed_temperature)) {
+    update_temperature_tracking(parsed_temperature, current_temperature,
+                                avg_temperature, max_temperature);
+
+    if (verbose_logging) {
+      UtilityFunctions::print(
+          "[PerformanceMonitor] Temperature from vcgencmd: ",
+          String::num(current_temperature, 1), "°C");
     }
+    return;
+  }
+
+  if (verbose_logging) {
+    UtilityFunctions::print(
+        "[PerformanceMonitor] WARNING: No usable thermal source found");
   }
 #else
-  // On Windows, we can't easily read temperature
-  current_temperature = 0.0f;
+  // On Windows, we can't easily read temperature.
+  current_temperature = kTemperatureUnavailable;
   if (verbose_logging) {
-    UtilityFunctions::print("[PerformanceMonitor] Windows: Temperature not available");
+    UtilityFunctions::print(
+        "[PerformanceMonitor] Windows: Temperature not available");
   }
 #endif
 }
@@ -319,17 +389,17 @@ void PerformanceMonitor::read_cpu_usage() {
   // Read /proc/stat for CPU usage
   String stat = read_file_content("/proc/stat");
   if (verbose_logging) {
-    UtilityFunctions::print("[PerformanceMonitor] /proc/stat read: ", 
-                           stat.is_empty() ? "FAILED" : "SUCCESS");
+    UtilityFunctions::print("[PerformanceMonitor] /proc/stat read: ",
+                            stat.is_empty() ? "FAILED" : "SUCCESS");
   }
-  
+
   if (!stat.is_empty()) {
     // Parse first line: cpu  user nice system idle iowait irq softirq steal
     int cpu_start = stat.find("cpu ");
     if (cpu_start >= 0) {
       int line_end = stat.find("\n", cpu_start);
       String cpu_line = stat.substr(cpu_start + 4, line_end - cpu_start - 4);
-      
+
       // Parse values
       PackedStringArray values = cpu_line.split(" ", false);
       if (values.size() >= 4) {
@@ -340,41 +410,44 @@ void PerformanceMonitor::read_cpu_usage() {
         uint64_t iowait = values.size() > 4 ? values[4].to_int() : 0;
         uint64_t irq = values.size() > 5 ? values[5].to_int() : 0;
         uint64_t softirq = values.size() > 6 ? values[6].to_int() : 0;
-        
-        uint64_t total = user + nice + system + idle + iowait + irq + softirq;
+
+        uint64_t total = user + nice + system + idle + iowait + irq +
+                         softirq;
         uint64_t idle_time = idle + iowait;
-        
+
         // Calculate delta
         if (prev_total_cpu_time > 0) {
           uint64_t total_delta = total - prev_total_cpu_time;
           uint64_t idle_delta = idle_time - prev_idle_cpu_time;
-          
+
           if (total_delta > 0) {
-            cpu_usage = 100.0f * (1.0f - (float)idle_delta / (float)total_delta);
+            cpu_usage = 100.0f *
+                        (1.0f - (float)idle_delta / (float)total_delta);
           }
         }
-        
+
         prev_total_cpu_time = total;
         prev_idle_cpu_time = idle_time;
-        
+
         if (verbose_logging) {
-          UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ", 
-                                 String::num(cpu_usage, 1), "%");
+          UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ",
+                                  String::num(cpu_usage, 1), "%");
         }
       }
     }
   } else {
     if (verbose_logging) {
-      UtilityFunctions::print("[PerformanceMonitor] WARNING: Could not read /proc/stat");
+      UtilityFunctions::print(
+          "[PerformanceMonitor] WARNING: Could not read /proc/stat");
     }
   }
 #else
   // On Windows, approximate based on frame time
   if (verbose_logging) {
-    UtilityFunctions::print("[PerformanceMonitor] Windows CPU calc: frametime=", 
-                           String::num(current_frametime_ms, 2), "ms");
+    UtilityFunctions::print("[PerformanceMonitor] Windows CPU calc: frametime=",
+                            String::num(current_frametime_ms, 2), "ms");
   }
-  
+
   // If we're taking >16ms per frame, assume high CPU usage
   if (current_frametime_ms > 16.0f) {
     cpu_usage = (current_frametime_ms / 16.0f) * 50.0f;
@@ -382,25 +455,24 @@ void PerformanceMonitor::read_cpu_usage() {
   } else {
     cpu_usage = 30.0f;  // Default assumption
   }
-  
+
   if (verbose_logging) {
-    UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ", 
-                           String::num(cpu_usage, 1), "%");
+    UtilityFunctions::print("[PerformanceMonitor] CPU usage set to: ",
+                            String::num(cpu_usage, 1), "%");
   }
 #endif
 
   // GPU usage approximation (would need platform-specific APIs for real values)
   gpu_usage = cpu_usage * 0.8f;  // Rough estimate
-  
+
   if (verbose_logging) {
-    UtilityFunctions::print("[PerformanceMonitor] GPU usage set to: ", 
-                           String::num(gpu_usage, 1), "%");
+    UtilityFunctions::print("[PerformanceMonitor] GPU usage set to: ",
+                            String::num(gpu_usage, 1), "%");
   }
 }
 
 void PerformanceMonitor::detect_throttling() {
   // Detect thermal throttling (>75°C on most ARM SBCs)
-  static float previous_temperature = 0.0f;
   static bool was_throttling = false;
 
   bool is_currently_throttling = current_temperature > 75.0f;
@@ -413,7 +485,6 @@ void PerformanceMonitor::detect_throttling() {
   }
 
   was_throttling = is_currently_throttling;
-  previous_temperature = current_temperature;
 }
 
 // Getters - Current values
@@ -423,9 +494,7 @@ float PerformanceMonitor::get_current_frametime_ms() const {
   return current_frametime_ms;
 }
 
-float PerformanceMonitor::get_temperature() const {
-  return current_temperature;
-}
+float PerformanceMonitor::get_temperature() const { return current_temperature; }
 
 float PerformanceMonitor::get_cpu_usage() const { return cpu_usage; }
 
@@ -470,7 +539,8 @@ String PerformanceMonitor::get_performance_summary() const {
   output += ", max: " + String::num(max_fps, 1);
   output += ", avg: " + String::num(avg_fps, 1) + ")";
 
-  output += " | Frame Time: " + String::num(current_frametime_ms, 1) + "ms";
+  output += " | Frame Time: " + String::num(current_frametime_ms, 1) +
+            "ms";
   output += " (P95: " + String::num(p95_frametime_ms, 1) + "ms)";
 
   output += " | CPU: " + String::num(cpu_usage, 0) + "%";
@@ -499,6 +569,8 @@ void PerformanceMonitor::reset() {
   p95_frametime_ms = 0.0f;
   p99_frametime_ms = 0.0f;
 
+  current_temperature = kTemperatureUnavailable;
+  avg_temperature = kTemperatureUnavailable;
   max_temperature = 0.0f;
   throttle_events = 0;
 

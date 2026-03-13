@@ -46,6 +46,9 @@ func _process(_delta):
 	
 	# Thermal
 	var temp = perf_monitor.get_temperature()
-	temp_label.text = "Temp: %.1f°C" % temp
-	throttle_warning.visible = perf_monitor.is_throttling()
-
+	if temp < 0.0:
+		temp_label.text = "Temp: N/A"
+		throttle_warning.visible = false
+	else:
+		temp_label.text = "Temp: %.1f°C" % temp
+		throttle_warning.visible = perf_monitor.is_throttling()
