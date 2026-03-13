@@ -129,6 +129,12 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed
+- **CI/CD workflow path errors**
+  - Fixed incorrect working directory paths (removed extra `godotmark/` level)
+  - Build now runs from repository root (not `godotmark/godotmark/...`)
+  - Updated godot-cpp build paths: `godotmark/godot-cpp` → `godot-cpp`
+  - Updated cache paths to match actual repository structure
+  - Fixes: "No such file or directory" and "The directory name is invalid" errors
 - **GitHub Actions cache deprecation - switched to v4 tag**
   - Changed from pinned SHA to `actions/cache@v4` tag reference
   - v4 tag automatically resolves to latest stable v4.x version (v4.2.x)
