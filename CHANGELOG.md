@@ -137,6 +137,12 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed
+- **Gitignore blocking src/results/ source code**
+  - Fixed `.gitignore` rule: `results/` was too broad, blocked `src/results/` C++ source
+  - Changed to `/results/` and `user://results/` for benchmark output only
+  - Added explicit exception: `!src/results/` for source code directory
+  - `results_exporter.cpp` and `results_exporter.h` now tracked by git
+  - Fixes: "Cannot open include file: 'results/results_exporter.h'" in CI/CD
 - **SCons build applying ARM flags to x86_64 Linux builds**
   - Fixed condition: `if arch == "arm64" or platform == "linux"` → `if arch == "arm64"`
   - ARM-specific flags (cortex-a53, armv8-a+simd) now only applied to actual ARM builds
