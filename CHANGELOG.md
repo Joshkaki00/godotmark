@@ -112,6 +112,13 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 - Trees increased from 10 to 12 for better visual density
 - Rocks increased from 6 to 10 for more realistic coastline
 
+### Removed
+- **Incorrect .NET/C# build workflow** (`.github/workflows/build.yml`)
+  - GodotMark uses C++ GDExtension, not C#/Mono
+  - Workflow was trying to build with Godot Mono and .NET 8.0
+  - Project uses standard Godot 4.4-stable (not Mono) with native C++ extensions
+  - `pr-check.yml` workflow remains for security and style checks
+
 ### Fixed
 - **Temperature monitoring now works on multiple platforms**
   - Added multi-path thermal detection in C++ `PerformanceMonitor`
