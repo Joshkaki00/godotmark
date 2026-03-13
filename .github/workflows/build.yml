@@ -45,7 +45,7 @@ jobs:
             libudev-dev libxi-dev libxrandr-dev
       
       - name: Cache godot-cpp build
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: godotmark/godot-cpp/bin
           key: godot-cpp-linux-x86_64-${{ hashFiles('godotmark/godot-cpp/**') }}
@@ -128,7 +128,7 @@ jobs:
           pip install scons==4.5.2
       
       - name: Cache godot-cpp build
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: godotmark/godot-cpp/bin
           key: godot-cpp-windows-x86_64-${{ hashFiles('godotmark/godot-cpp/**') }}
@@ -207,7 +207,7 @@ jobs:
       
       - name: Cache Godot binary
         id: cache-godot
-        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
         with:
           path: ~/godot
           key: godot-4.4-stable-linux
