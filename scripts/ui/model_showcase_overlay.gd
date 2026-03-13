@@ -30,7 +30,13 @@ func update_metrics(fps: float, frame_time: float, cpu_usage: float, temp: float
 	
 	frame_time_label.text = "Frame: %.2f ms" % frame_time
 	cpu_label.text = "CPU: %.1f%%" % cpu_usage
-	temp_label.text = "Temp: %.1f°C" % temp
+	
+	# Handle unavailable temperature
+	if temp < 0.0:
+		temp_label.text = "Temp: N/A"
+	else:
+		temp_label.text = "Temp: %.1f°C" % temp
+	
 	gpu_label.text = "GPU: %.1f%%" % gpu_usage
 
 func update_phase(phase_num: int, phase_name: String):

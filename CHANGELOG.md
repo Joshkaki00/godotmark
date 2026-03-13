@@ -113,6 +113,14 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 - Rocks increased from 6 to 10 for more realistic coastline
 
 ### Fixed
+- **Temperature monitoring now works on multiple platforms**
+  - Added multi-path thermal detection in C++ `PerformanceMonitor`
+  - Tries `/sys/class/thermal/thermal_zone0-1/temp` for ARM SBCs
+  - Uses glob patterns for desktop Linux hwmon (`/sys/class/hwmon/hwmon*/temp*_input`)
+  - Falls back to `vcgencmd measure_temp` on Raspberry Pi
+  - Displays "N/A" instead of -1°C when temperature unavailable
+  - No crashes on platforms without thermal zones
+  - **Credit:** Community contributor (untested submission - needs runtime verification)
 - **CRITICAL:** Debug controls (Space, Q/E, T, V, R) not working
   - Added keyboard input handling to both `nature_island.gd` and `model_showcase.gd`
   - **Space:** Pause/Resume benchmark
