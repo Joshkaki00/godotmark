@@ -209,6 +209,21 @@ jobs:
           name: godotmark-linux-x86_64
           path: ./
       
+      - name: Verify downloaded artifacts
+        run: |
+          echo "Checking downloaded artifacts..."
+          ls -lh bin/
+          ls -lh *.gdextension || echo "No gdextension file found"
+          
+          # Make .so file executable
+          if [ -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
+            chmod +x bin/libgodotmark.linux.template_release.x86_64.so
+            echo "✅ Made .so file executable"
+          else
+            echo "❌ .so file not found!"
+            exit 1
+          fi
+      
       - name: Cache Godot binary
         id: cache-godot
         uses: actions/cache@v4

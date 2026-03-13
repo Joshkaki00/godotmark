@@ -42,9 +42,7 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
   - Caches godot-cpp builds for faster CI
   - Tests Godot project import and GDExtension loading
   - Generates build summary with status table
-  - Security hardening with step-security/harden-runner
-  - Pinned action versions to commit SHAs (prevents tag replacement attacks)
-  - Uploads build artifacts (`.so` and `.dll` files)
+  - **Status:** Work in progress - build artifacts created, import test debugging in progress
 - **Jolt Physics integration** - Cheap physics simulation for falling leaves
   - Enabled Jolt Physics engine (15% faster than default, multi-core friendly)
   - Added falling leaves with RigidBody3D (20 max, very lightweight)
