@@ -28,6 +28,15 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 ## [Unreleased]
 
 ### Added
+- **Proper CI/CD build workflow** (`.github/workflows/build.yml`)
+  - Builds C++ GDExtension for Linux x86_64 and Windows x86_64
+  - Uses SCons (not .NET) for native compilation
+  - Caches godot-cpp builds for faster CI
+  - Tests Godot project import and GDExtension loading
+  - Generates build summary with status table
+  - Security hardening with step-security/harden-runner
+  - Pinned action versions to commit SHAs (prevents tag replacement attacks)
+  - Uploads build artifacts (`.so` and `.dll` files)
 - **Jolt Physics integration** - Cheap physics simulation for falling leaves
   - Enabled Jolt Physics engine (15% faster than default, multi-core friendly)
   - Added falling leaves with RigidBody3D (20 max, very lightweight)
@@ -114,9 +123,9 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 
 ### Removed
 - **Incorrect .NET/C# build workflow** (`.github/workflows/build.yml`)
-  - GodotMark uses C++ GDExtension, not C#/Mono
-  - Workflow was trying to build with Godot Mono and .NET 8.0
-  - Project uses standard Godot 4.4-stable (not Mono) with native C++ extensions
+  - Old workflow was for Godot Mono + .NET 8.0 (incompatible with project)
+  - Replaced with proper C++ GDExtension build workflow
+  - New workflow uses SCons and builds native libraries
   - `pr-check.yml` workflow remains for security and style checks
 
 ### Fixed

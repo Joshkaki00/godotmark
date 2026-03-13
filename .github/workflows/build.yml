@@ -1,0 +1,290 @@
+name: Build & Test GodotMark
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+# Security: Set minimal permissions
+permissions:
+  contents: read
+
+jobs:
+  build-linux:
+    name: Build Linux (x86_64)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          submodules: recursive
+          lfs: false
+      
+      - name: Setup Python
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: '3.11'
+      
+      - name: Install SCons
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons==4.5.2
+      
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential pkg-config libx11-dev libxcursor-dev \
+            libxinerama-dev libgl1-mesa-dev libglu1-mesa-dev libasound2-dev libpulse-dev \
+            libudev-dev libxi-dev libxrandr-dev
+      
+      - name: Cache godot-cpp build
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: godotmark/godot-cpp/bin
+          key: godot-cpp-linux-x86_64-${{ hashFiles('godotmark/godot-cpp/**') }}
+          restore-keys: |
+            godot-cpp-linux-x86_64-
+      
+      - name: Build godot-cpp
+        working-directory: godotmark/godot-cpp
+        run: |
+          echo "Building godot-cpp for Linux x86_64..."
+          scons platform=linux target=template_release arch=x86_64 -j$(nproc)
+          echo "✅ godot-cpp build complete"
+          ls -lh bin/
+      
+      - name: Build GodotMark GDExtension
+        working-directory: godotmark
+        run: |
+          echo "Building GodotMark GDExtension..."
+          scons platform=linux target=template_release arch=x86_64 -j$(nproc)
+          echo "✅ GodotMark GDExtension build complete"
+          ls -lh bin/
+      
+      - name: Verify build outputs
+        working-directory: godotmark
+        run: |
+          echo "Checking for required libraries..."
+          
+          # Check for GDExtension library
+          if [ ! -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
+            echo "❌ GDExtension library not found!"
+            exit 1
+          fi
+          
+          # Check file size (should be reasonable, not 0 bytes)
+          SIZE=$(stat -c%s "bin/libgodotmark.linux.template_release.x86_64.so")
+          if [ $SIZE -lt 10000 ]; then
+            echo "❌ Library file too small (${SIZE} bytes) - build may have failed"
+            exit 1
+          fi
+          
+          echo "✅ Build verification passed"
+          echo "Library size: ${SIZE} bytes"
+      
+      - name: Upload Linux build artifacts
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        with:
+          name: godotmark-linux-x86_64
+          path: |
+            godotmark/bin/*.so
+            godotmark/godotmark.gdextension
+          retention-days: 7
+
+  build-windows:
+    name: Build Windows (x86_64)
+    runs-on: windows-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          submodules: recursive
+          lfs: false
+      
+      - name: Setup Python
+        uses: actions/setup-python@82c7e631bb3cdc910f68e0081d67478d79c6982d # v5.1.0
+        with:
+          python-version: '3.11'
+      
+      - name: Setup MSVC
+        uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2.0.0
+      
+      - name: Install SCons
+        run: |
+          python -m pip install --upgrade pip
+          pip install scons==4.5.2
+      
+      - name: Cache godot-cpp build
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: godotmark/godot-cpp/bin
+          key: godot-cpp-windows-x86_64-${{ hashFiles('godotmark/godot-cpp/**') }}
+          restore-keys: |
+            godot-cpp-windows-x86_64-
+      
+      - name: Build godot-cpp
+        working-directory: godotmark/godot-cpp
+        shell: cmd
+        run: |
+          echo Building godot-cpp for Windows x86_64...
+          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS%
+          echo ✅ godot-cpp build complete
+          dir bin\
+      
+      - name: Build GodotMark GDExtension
+        working-directory: godotmark
+        shell: cmd
+        run: |
+          echo Building GodotMark GDExtension...
+          scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS%
+          echo ✅ GodotMark GDExtension build complete
+          dir bin\
+      
+      - name: Verify build outputs
+        working-directory: godotmark
+        shell: pwsh
+        run: |
+          Write-Host "Checking for required libraries..."
+          
+          $dllPath = "bin\libgodotmark.windows.template_release.x86_64.dll"
+          if (-Not (Test-Path $dllPath)) {
+            Write-Host "❌ GDExtension DLL not found!"
+            exit 1
+          }
+          
+          $size = (Get-Item $dllPath).Length
+          if ($size -lt 10000) {
+            Write-Host "❌ DLL file too small ($size bytes) - build may have failed"
+            exit 1
+          }
+          
+          Write-Host "✅ Build verification passed"
+          Write-Host "DLL size: $size bytes"
+      
+      - name: Upload Windows build artifacts
+        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        with:
+          name: godotmark-windows-x86_64
+          path: |
+            godotmark/bin/*.dll
+            godotmark/godotmark.gdextension
+          retention-days: 7
+
+  test-import:
+    name: Test Godot Project Import
+    needs: [build-linux]
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@17d0e2bd7d51742c71671bd19fa12bdc9d40a3d6 # v2.8.1
+        with:
+          egress-policy: audit
+      
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          lfs: false
+      
+      - name: Download Linux build artifacts
+        uses: actions/download-artifact@c850b930e6ba138125429b7e5c93fc707a7f8427 # v4.1.4
+        with:
+          name: godotmark-linux-x86_64
+          path: godotmark/
+      
+      - name: Cache Godot binary
+        id: cache-godot
+        uses: actions/cache@13aacd865c20de90d75de3b17ebe84f7a17d57d2 # v4.0.0
+        with:
+          path: ~/godot
+          key: godot-4.4-stable-linux
+      
+      - name: Download Godot
+        if: steps.cache-godot.outputs.cache-hit != 'true'
+        run: |
+          mkdir -p ~/godot
+          cd ~/godot
+          wget https://github.com/godotengine/godot/releases/download/4.4-stable/Godot_v4.4-stable_linux.x86_64.zip
+          unzip Godot_v4.4-stable_linux.x86_64.zip
+          chmod +x Godot_v4.4-stable_linux.x86_64
+      
+      - name: Test project import
+        working-directory: godotmark
+        run: |
+          echo "Testing Godot project import..."
+          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit || true
+          
+          if [ -d ".godot" ]; then
+            echo "✅ Project imported successfully"
+          else
+            echo "❌ Project import failed"
+            exit 1
+          fi
+      
+      - name: Test GDExtension loading
+        working-directory: godotmark
+        run: |
+          echo "Testing GDExtension loading..."
+          
+          # Run with --verbose to check for GDExtension errors
+          timeout 30 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --verbose --quit 2>&1 | tee godot_output.log || true
+          
+          # Check for GDExtension errors
+          if grep -i "GDExtension.*error\|failed to load" godot_output.log; then
+            echo "❌ GDExtension loading errors detected"
+            cat godot_output.log
+            exit 1
+          fi
+          
+          echo "✅ GDExtension loading test passed"
+      
+      - name: Test CLI help
+        working-directory: godotmark
+        run: |
+          echo "Testing CLI --help..."
+          timeout 30 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . -- --help 2>&1 | tee cli_help.log || true
+          
+          # Check if help output was generated
+          if grep -q "GodotMark" cli_help.log; then
+            echo "✅ CLI help test passed"
+          else
+            echo "⚠️ CLI help may not be working (non-critical)"
+          fi
+
+  build-summary:
+    name: Build Summary
+    needs: [build-linux, build-windows, test-import]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+      - name: Check build status
+        run: |
+          echo "## GodotMark Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Platform | Status |" >> $GITHUB_STEP_SUMMARY
+          echo "|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Linux x86_64 | ${{ needs.build-linux.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Windows x86_64 | ${{ needs.build-windows.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Import Test | ${{ needs.test-import.result == 'success' && '✅ Success' || '❌ Failed' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          
+          if [ "${{ needs.build-linux.result }}" == "success" ] && [ "${{ needs.build-windows.result }}" == "success" ] && [ "${{ needs.test-import.result }}" == "success" ]; then
+            echo "✅ All builds passed!" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "❌ Some builds failed. Check logs above." >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
