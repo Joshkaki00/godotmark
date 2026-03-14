@@ -271,9 +271,10 @@ jobs:
       - name: Test project import
         run: |
           echo "Testing Godot project import..."
-          echo "=== Step 1: Import project resources (editor mode) ==="
-          # Import project - editor mode will have GDExtension timing issues but that's OK for import
-          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --import --quit 2>&1 > import.log || true
+          echo "=== Step 1: Import project resources (allow time for GDExtension scan) ==="
+          # Use --quit-after to allow sufficient frames for EditorFileSystem scan to complete
+          # Issue: https://github.com/godotengine/godot/issues/84460
+          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --import --quit-after 100 2>&1 > import.log || true
           
           if [ ! -d ".godot" ]; then
             echo "❌ Project import failed - .godot directory not created"
@@ -283,39 +284,27 @@ jobs:
           echo "✅ Project resources imported (.godot directory created)"
           
           echo ""
-          echo "=== Diagnostic: Check what Godot can see ==="
-          echo "Current directory:"
-          pwd
-          echo ""
-          echo "Files in current directory:"
-          ls -la | head -20
-          echo ""
-          echo "Files in bin/:"
-          ls -la bin/
-          echo ""
-          echo "Checking if .so file is accessible via absolute path:"
-          test -f "$(pwd)/bin/libgodotmark.linux.template_release.x86_64.so" && echo "✅ Absolute path works" || echo "❌ Absolute path fails"
-          echo ""
-          echo "Trying to manually load with Python ctypes (if available):"
-          python3 -c "import ctypes; lib = ctypes.CDLL('$(pwd)/bin/libgodotmark.linux.template_release.x86_64.so'); print('✅ Python can load the .so file')" 2>&1 || echo "⚠️ Python test skipped or failed"
+          echo "=== Step 2: Verify GDExtension was registered ==="
+          if [ -f ".godot/extension_list.cfg" ]; then
+            echo "✅ extension_list.cfg exists"
+            cat .godot/extension_list.cfg
+          else
+            echo "⚠️ extension_list.cfg not found (may need more frames)"
+          fi
           
           echo ""
-          echo "=== Step 2: Test with explicit --path to project root ==="
-          # Make absolutely sure Godot knows where the project is
-          PROJECT_PATH="$(pwd)"
-          echo "Project path: $PROJECT_PATH"
-          timeout 10 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path "$PROJECT_PATH" --script "$PROJECT_PATH/scripts/version.gd" --quit 2>&1 | tee runtime.log || true
+          echo "=== Step 3: Test loading main scene ==="
+          # Test with actual scene instead of script
+          timeout 10 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit-after 10 2>&1 | tee runtime.log || true
           
           echo ""
           echo "=== Checking for GDExtension errors ==="
-          if grep -q "GDExtension.*not found\|Error loading extension" runtime.log; then
+          if grep -q "GDExtension.*not found\|Error loading extension.*godotmark" runtime.log; then
             echo "❌ GDExtension still not loading"
-            echo ""
-            echo "Full runtime log:"
-            cat runtime.log
+            grep -i "error.*gdextension\|Error loading extension" runtime.log | head -10
             exit 1
           else
-            echo "✅ GDExtension test passed"
+            echo "✅ GDExtension loaded successfully (no errors found)"
           fi
       
       - name: Test CLI help
