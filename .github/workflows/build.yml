@@ -231,6 +231,12 @@ jobs:
             chmod +x bin/libgodotmark.linux.template_release.x86_64.so
             echo "✅ Made .so file executable"
             ls -lh bin/libgodotmark.linux.template_release.x86_64.so
+            echo ""
+            echo "=== Checking .so dependencies ==="
+            ldd bin/libgodotmark.linux.template_release.x86_64.so || echo "⚠️ ldd failed"
+            echo ""
+            echo "=== Checking .so file type ==="
+            file bin/libgodotmark.linux.template_release.x86_64.so
           else
             echo "❌ .so file not found!"
             exit 1
