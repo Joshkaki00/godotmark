@@ -237,6 +237,16 @@ jobs:
             echo ""
             echo "=== Checking .so file type ==="
             file bin/libgodotmark.linux.template_release.x86_64.so
+            echo ""
+            echo "=== Testing if we can read the .so file ==="
+            if [ -r "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
+              echo "✅ .so file is readable"
+            else
+              echo "❌ .so file is NOT readable"
+            fi
+            echo ""
+            echo "=== Checking absolute path ==="
+            realpath bin/libgodotmark.linux.template_release.x86_64.so
           else
             echo "❌ .so file not found!"
             exit 1
