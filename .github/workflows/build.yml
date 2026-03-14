@@ -274,28 +274,38 @@ jobs:
           echo "=== Step 1: Import project resources with proper editor initialization ==="
           # Use --headless --editor --import --quit-after to ensure GDExtensions are registered
           # Issue: https://github.com/godotengine/godot/issues/84460
-          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --editor --path . --import --quit-after 100 2>&1 > import.log || true
+          timeout 120 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --editor --path . --import --quit-after 200 2>&1 | tee import.log || true
+          
+          echo ""
+          echo "=== Import process completed, checking results ==="
           
           if [ ! -d ".godot" ]; then
             echo "❌ Project import failed - .godot directory not created"
-            cat import.log
+            cat import.log | tail -50
             exit 1
           fi
-          echo "✅ Project resources imported (.godot directory created)"
+          echo "✅ .godot directory created"
           
           echo ""
-          echo "=== Step 2: Verify GDExtension was registered ==="
+          echo "=== Checking for extension_list.cfg ==="
           if [ -f ".godot/extension_list.cfg" ]; then
             echo "✅ extension_list.cfg exists"
             cat .godot/extension_list.cfg
           else
-            echo "❌ extension_list.cfg not found - GDExtension not registered!"
+            echo "❌ extension_list.cfg NOT CREATED!"
+            echo "This means GDExtension was not registered during import."
+            echo ""
+            echo "Checking what's in .godot directory:"
+            ls -la .godot/
+            echo ""
+            echo "Last 100 lines of import log:"
+            tail -100 import.log
             exit 1
           fi
           
           echo ""
-          echo "=== Step 3: Test loading project (should work now) ==="
-          timeout 10 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit-after 10 2>&1 | tee runtime.log || true
+          echo "=== Step 2: Test loading project (should work if extension registered) ==="
+          timeout 15 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit-after 10 2>&1 | tee runtime.log || true
           
           echo ""
           echo "=== Checking for GDExtension errors ==="
