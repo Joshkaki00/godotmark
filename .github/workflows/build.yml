@@ -304,19 +304,40 @@ jobs:
           fi
           
           echo ""
-          echo "=== Step 2: Verify .so file still exists before runtime test ==="
+          echo "=== Step 2: Debug - Try to understand what path Godot is checking ==="
+          echo "Let's see what Godot thinks the path should be:"
+          echo "Current directory: $(pwd)"
+          echo "godotmark.gdextension location: $(pwd)/godotmark.gdextension"
+          echo "Expected .so location: $(pwd)/bin/libgodotmark.linux.template_release.x86_64.so"
+          echo ""
+          echo "Content of godotmark.gdextension:"
+          cat godotmark.gdextension | grep "linux.release.x86_64"
+          echo ""
+          
+          echo "=== Step 3: Verify .so file still exists before runtime test ==="
           if [ -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
             echo "✅ .so file exists"
             ls -lh bin/libgodotmark.linux.template_release.x86_64.so
+            echo "Checking if it's a valid ELF:"
+            file bin/libgodotmark.linux.template_release.x86_64.so
+            echo "Checking if we can dlopen it directly:"
+            python3 -c "import ctypes; lib = ctypes.CDLL('$(pwd)/bin/libgodotmark.linux.template_release.x86_64.so'); print('✅ Can load with absolute path')" || echo "❌ Failed to load"
           else
             echo "❌ .so file MISSING!"
-            echo "The file was there during build but is now gone!"
             ls -la bin/
             exit 1
           fi
           
           echo ""
-          echo "=== Step 3: Test loading project (should work if extension registered) ==="
+          echo "=== Step 4: Try using strace to see what file Godot is actually looking for ==="
+          # Run with strace to see what files Godot tries to access
+          timeout 15 strace -e trace=open,openat,stat,access ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --editor --path . --quit-after 5 2>&1 | grep -i "libgodotmark\|gdextension" | head -20 | tee strace.log || true
+          echo ""
+          echo "Files Godot tried to access related to GDExtension:"
+          cat strace.log || echo "No strace output"
+          
+          echo ""
+          echo "=== Step 5: Test loading project ==="
           timeout 15 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --editor --path . --quit-after 10 2>&1 | tee runtime.log || true
           
           echo ""
