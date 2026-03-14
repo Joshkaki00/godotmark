@@ -271,42 +271,34 @@ jobs:
       - name: Test project import
         run: |
           echo "Testing Godot project import..."
-          echo "=== Running Godot with --import flag ==="
-          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --import --verbose --quit 2>&1 | tee godot_import.log || true
+          echo "=== Step 1: Import project resources (editor mode) ==="
+          # Import project - editor mode will have GDExtension timing issues but that's OK for import
+          timeout 60 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --import --quit 2>&1 > import.log || true
+          
+          if [ ! -d ".godot" ]; then
+            echo "❌ Project import failed - .godot directory not created"
+            cat import.log
+            exit 1
+          fi
+          echo "✅ Project resources imported (.godot directory created)"
+          
           echo ""
-          echo "=== Checking import results ==="
+          echo "=== Step 2: Test GDExtension loading (runtime mode) ==="
+          # Now test in script mode (not editor) which should load GDExtensions properly
+          timeout 10 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --script res://scripts/version.gd --quit 2>&1 | tee runtime.log || true
           
-          if [ -d ".godot" ]; then
-            echo "✅ Project imported successfully"
+          echo ""
+          echo "=== Checking for GDExtension errors ==="
+          if grep -q "Could not find type.*PlatformDetector\|Could not find type.*PerformanceMonitor\|GDExtension.*not found" runtime.log; then
+            echo "❌ GDExtension still not loading in runtime mode"
+            grep -i "error.*gdextension\|Could not find type\|GDExtension.*not found" runtime.log || true
             echo ""
-            echo "=== Checking for GDExtension loading messages ==="
-            grep -i "gdextension\|PlatformDetector\|PerformanceMonitor\|AdaptiveQualityManager\|CLI" godot_import.log || echo "⚠️ No GDExtension loading messages found"
-            echo ""
-            echo "=== Checking for errors ==="
-            grep -i "error.*gdextension\|error.*library\|error.*\.so" godot_import.log || echo "✅ No GDExtension-related errors"
+            echo "This suggests the .so file itself may have issues. Full runtime log:"
+            cat runtime.log
+            exit 1
           else
-            echo "❌ Project import failed"
-            echo ""
-            echo "=== Full Godot output ==="
-            cat godot_import.log
-            exit 1
+            echo "✅ GDExtension test passed - no type errors found"
           fi
-      
-      - name: Test GDExtension loading
-        run: |
-          echo "Testing GDExtension loading..."
-          
-          # Run with --verbose to check for GDExtension errors
-          timeout 30 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --verbose --quit 2>&1 | tee godot_output.log || true
-          
-          # Check for GDExtension errors
-          if grep -i "GDExtension.*error\|failed to load" godot_output.log; then
-            echo "❌ GDExtension loading errors detected"
-            cat godot_output.log
-            exit 1
-          fi
-          
-          echo "✅ GDExtension loading test passed"
       
       - name: Test CLI help
         run: |

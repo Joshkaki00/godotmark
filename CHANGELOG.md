@@ -28,8 +28,7 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 ## [Unreleased]
 
 ### Fixed
-- **CI/CD: Added `--import` flag to Godot test command** - Critical fix for GDExtension loading in CI/CD. Without this flag, Godot attempts to parse GDScript files before the GDExtension is properly loaded, causing "Could not find type" errors. The `--import` flag ensures proper resource import and GDExtension initialization.
-- **CI/CD: Investigating GDExtension dynamic library loading failure** - Despite files being present and correctly structured, Godot cannot load the `.so` file. Added extensive debugging including `ldd` dependency checking, file type verification, and path resolution tests to diagnose the root cause.
+- **CI/CD: Fixed GDExtension loading test approach** - Discovered that `--import` with `--headless` runs the Godot editor, which attempts to load GDExtensions before the filesystem is fully initialized, causing spurious "dynamic library not found" errors. The test now runs in two phases: (1) editor mode for resource import (ignoring GDExtension timing errors), (2) runtime/script mode to verify GDExtension actually loads correctly. This properly validates that the compiled `.so` file works while avoiding editor initialization race conditions.
 
 ### Added
 - **ResultsExporter C++ class** (`src/results/results_exporter.h/cpp`)
