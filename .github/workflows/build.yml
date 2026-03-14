@@ -304,8 +304,20 @@ jobs:
           fi
           
           echo ""
-          echo "=== Step 2: Test loading project (should work if extension registered) ==="
-          timeout 15 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --path . --quit-after 10 2>&1 | tee runtime.log || true
+          echo "=== Step 2: Verify .so file still exists before runtime test ==="
+          if [ -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
+            echo "✅ .so file exists"
+            ls -lh bin/libgodotmark.linux.template_release.x86_64.so
+          else
+            echo "❌ .so file MISSING!"
+            echo "The file was there during build but is now gone!"
+            ls -la bin/
+            exit 1
+          fi
+          
+          echo ""
+          echo "=== Step 3: Test loading project (should work if extension registered) ==="
+          timeout 15 ~/godot/Godot_v4.4-stable_linux.x86_64 --headless --editor --path . --quit-after 10 2>&1 | tee runtime.log || true
           
           echo ""
           echo "=== Checking for GDExtension errors ==="
