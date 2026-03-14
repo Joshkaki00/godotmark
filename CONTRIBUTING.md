@@ -161,6 +161,8 @@ No problem! Check these resources:
 - [First Timers Only](https://www.firsttimersonly.com/)
 - [GitHub's Guide to Contributing](https://docs.github.com/en/get-started/quickstart/contributing-to-projects)
 
+**Working on assets?** Read [ASSET_GUIDELINES.md](ASSET_GUIDELINES.md) for triangle budgets, approved sources, and how to test meshes before you submit them.
+
 ### Pull Requests
 
 **Before submitting a pull request:**
