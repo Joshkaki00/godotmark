@@ -28,8 +28,8 @@ See [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md) for com
 ## [Unreleased]
 
 ### Fixed
-- **CRITICAL: GDExtension paths must use `res://` prefix** - Changed all library paths in `godotmark.gdextension` from relative paths (`bin/...`) to resource paths (`res://bin/...`). Godot's GDExtension loader requires explicit `res://` paths to properly resolve library locations, especially in headless mode. This fixes the persistent "GDExtension dynamic library not found" error in CI/CD.
-- **CI/CD: Fixed GDExtension loading test approach** - Implemented two-phase testing: (1) editor mode for resource import, (2) runtime/script mode to verify GDExtension loads correctly. This properly validates the compiled `.so` file while handling editor initialization race conditions.
+- **CRITICAL: CI/CD GDExtension loading requires `--quit-after` not `--quit`** - Discovered Godot issue #84460: `EditorFileSystem::scan()` is delayed and doesn't complete before `--quit` exits after 1 frame. Changed to `--quit-after 100` to allow sufficient time for GDExtension scanning and registration. This fixes the persistent "GDExtension dynamic library not found" error that occurred despite the `.so` file being present and valid.
+- **GDExtension path format** - Updated to use `"./bin/..."` format per official Godot documentation (relative paths with `./` prefix).
 
 ### Added
 - **ResultsExporter C++ class** (`src/results/results_exporter.h/cpp`)
