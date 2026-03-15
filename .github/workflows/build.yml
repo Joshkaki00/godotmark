@@ -62,7 +62,8 @@ jobs:
       
       - name: Build GodotMark GDExtension
         run: |
-          echo "Building GodotMark GDExtension..."
+          echo "Building GodotMark GDExtension (debug and release)..."
+          scons platform=linux target=template_debug arch=x86_64 -j$(nproc)
           scons platform=linux target=template_release arch=x86_64 -j$(nproc)
           echo "✅ GodotMark GDExtension build complete"
           ls -lh bin/
@@ -71,21 +72,33 @@ jobs:
         run: |
           echo "Checking for required libraries..."
           
-          # Check for GDExtension library
-          if [ ! -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
-            echo "❌ GDExtension library not found!"
+          # Check for GDExtension debug library
+          if [ ! -f "bin/libgodotmark.linux.template_debug.x86_64.so" ]; then
+            echo "❌ GDExtension debug library not found!"
             exit 1
           fi
           
-          # Check file size (should be reasonable, not 0 bytes)
-          SIZE=$(stat -c%s "bin/libgodotmark.linux.template_release.x86_64.so")
-          if [ $SIZE -lt 10000 ]; then
-            echo "❌ Library file too small (${SIZE} bytes) - build may have failed"
+          # Check for GDExtension release library
+          if [ ! -f "bin/libgodotmark.linux.template_release.x86_64.so" ]; then
+            echo "❌ GDExtension release library not found!"
+            exit 1
+          fi
+          
+          # Check file sizes (should be reasonable, not 0 bytes)
+          SIZE_DEBUG=$(stat -c%s "bin/libgodotmark.linux.template_debug.x86_64.so")
+          SIZE_RELEASE=$(stat -c%s "bin/libgodotmark.linux.template_release.x86_64.so")
+          if [ $SIZE_DEBUG -lt 10000 ]; then
+            echo "❌ Debug library file too small (${SIZE_DEBUG} bytes) - build may have failed"
+            exit 1
+          fi
+          if [ $SIZE_RELEASE -lt 10000 ]; then
+            echo "❌ Release library file too small (${SIZE_RELEASE} bytes) - build may have failed"
             exit 1
           fi
           
           echo "✅ Build verification passed"
-          echo "Library size: ${SIZE} bytes"
+          echo "Debug library size: ${SIZE_DEBUG} bytes"
+          echo "Release library size: ${SIZE_RELEASE} bytes"
       
       - name: Upload Linux build artifacts
         uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
@@ -149,10 +162,15 @@ jobs:
       - name: Build GodotMark GDExtension
         shell: cmd
         run: |
-          echo Building GodotMark GDExtension...
+          echo Building GodotMark GDExtension (debug and release)...
+          scons platform=windows target=template_debug arch=x86_64 -j%NUMBER_OF_PROCESSORS% 2>&1
+          if errorlevel 1 (
+            echo ❌ Debug build failed!
+            exit /b 1
+          )
           scons platform=windows target=template_release arch=x86_64 -j%NUMBER_OF_PROCESSORS% 2>&1
           if errorlevel 1 (
-            echo ❌ Build failed!
+            echo ❌ Release build failed!
             exit /b 1
           )
           echo ✅ GodotMark GDExtension build complete
