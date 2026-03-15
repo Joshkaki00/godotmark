@@ -32,13 +32,19 @@ First off, **thank you** for considering contributing to GodotMark. This project
 ### The Current State of the Project
 
 **What Works:**
+- ✅ **Nature Island benchmark** - FULLY WORKING! 40-60+ FPS on Raspberry Pi 5 with all features enabled
 - ✅ **Model Showcase benchmark** - Runs smoothly on Raspberry Pi 4/5
-- ✅ **Build system** - SCons and CMake builds working
-- ✅ **Optimization documentation** - Extensively documented
+- ✅ **Build system** - SCons builds working for Linux and Windows
+- ✅ **CI/CD Pipeline** - Automated builds and tests via GitHub Actions
+- ✅ **GDExtension (C++)** - Performance monitoring, platform detection, quality management
+- ✅ **Optimization documentation** - Extensively documented with success stories
 
-**What's Broken:**
-- ❌ **Nature Island benchmark** - Stuck at 4.5 FPS on Raspberry Pi despite "correct" optimizations
-- ❌ We don't know why yet - **this is the #1 priority**
+**Recent Major Achievements:**
+- 🎉 Fixed Nature Island from 4.5 FPS to 40-60+ FPS (see [NATURE_ISLAND_DIAGNOSTIC_PLAN.md](NATURE_ISLAND_DIAGNOSTIC_PLAN.md))
+- 🎉 Working CI/CD with automated GDExtension builds
+- 🎉 All GPU shaders re-enabled (wind animation, ocean waves)
+- 🎉 Memory leak fixes and proper resource cleanup
+- 🎉 Real-time metrics (CPU, GPU, temperature) working correctly
 
 ### Technology Stack
 
@@ -148,11 +154,12 @@ This is a **benchmark project** with a specific goal: testing Godot 4.4 performa
 
 **🔥 High-Priority Contributions:**
 
-1. **Debug Nature Island 4.5 FPS issue** - The most critical problem
-2. **Profile and compare Model Showcase vs Nature Island** - Why does one work and not the other?
-3. **Test on other ARM SBCs** - Orange Pi 5, Rock 5B, Jetson, etc.
-4. **Improve GLTF import optimization** - Can we simplify meshes better?
-5. **Add additional benchmarks** - Physics, particles, lighting tests
+1. **Test on other ARM SBCs** - Orange Pi 5, Rock 5B, Jetson, etc. (verify our optimizations work elsewhere)
+2. **Add additional benchmarks** - Physics stress test, particles, complex lighting
+3. **Improve CLI functionality** - Better command-line benchmark automation
+4. **Optimize for Raspberry Pi 4** - Nature Island targets RPi5, can we get similar performance on RPi4?
+5. **Cross-platform testing** - Verify builds work on Windows/Linux desktop
+6. **Performance profiling tools** - Better real-time metrics and bottleneck detection
 
 **Never contributed to open source before?**
 
@@ -186,7 +193,8 @@ No problem! Check these resources:
 - [ ] Tested on Desktop PC (Specs: [Your specs])
 - [ ] Tested on Raspberry Pi 4/5 (if available)
 - [ ] Model Showcase benchmark still works
-- [ ] Nature Island benchmark [works/still broken/improved]
+- [ ] Nature Island benchmark still works
+- [ ] No performance regressions introduced
 
 ## Performance Impact
 - Before: [FPS/metrics]
@@ -386,21 +394,31 @@ Fixes #123
 ### Why Your Contribution Matters
 
 **ARM single-board computers are everywhere:**
-- 50+ million Raspberry Pis sold
-- Used in education, embedded systems, IoT, robotics
+- 60+ million Raspberry Pis sold (as of 2026)
+- Used in education, embedded systems, IoT, robotics, AI edge computing
 - $35-150 vs $1000+ gaming PCs
+- Growing market for affordable computing
 
-**But there's no good 3D benchmark for them.** Your contribution helps:
-- Prove what Godot can do on low-power hardware
+**And now we have a working 3D benchmark for them!** Your contribution helps:
+- Prove what Godot can do on low-power hardware (we did it - 40-60+ FPS!)
 - Help others optimize their ARM projects
 - Make game development more accessible
-- Solve a real problem for the community
+- Solve real problems for the community
+- Push the boundaries of what's possible on affordable hardware
+
+### A Note About Success
+
+**We solved the "impossible" 4.5 FPS problem.**
+
+After systematic debugging, profiling, and optimization, Nature Island now runs at 40-60+ FPS on Raspberry Pi 5 with ALL features enabled (GPU shaders, wind animation, ocean waves, Jolt physics).
+
+**This proves that complex 3D scenes CAN run well on ARM SBCs** - and your contributions can help push it even further.
 
 ### A Note About Struggling
 
 If you're reading this and feeling overwhelmed by contributing to open source:
 
-**You're not alone.** The project creator felt the same way a year ago.
+**You're not alone.** Every contributor starts somewhere.
 
 **You don't need to be an expert.** Small fixes, documentation improvements, testing on different hardware - it all helps.
 
@@ -408,73 +426,16 @@ If you're reading this and feeling overwhelmed by contributing to open source:
 
 **The hardest part is starting.** After that first contribution, the next one is easier.
 
+**Success takes persistence.** Nature Island went from "broken at 4.5 FPS" to "fully working at 40-60+ FPS" through systematic debugging and refusing to give up. Your contribution could be the next breakthrough.
+
 ### Thank You
 
-Whether you're here to fix the 4.5 FPS issue, add a new benchmark, improve documentation, or just report a bug - **thank you for being here.**
+Whether you're here to add a new benchmark, optimize for different hardware, improve documentation, or just report a bug - **thank you for being here.**
 
 This project exists because people care enough to contribute.
 
-**Now let's build something useful together.** 🚀
+**We proved that complex 3D can run well on ARM SBCs. Now let's see how much further we can push it.** 🚀
 
 ---
 
-## 🤖 Contributor Recognition Bots
-
-We use several GitHub bots to make contributing more welcoming and rewarding:
-
-### All-Contributors Bot ✨
-Automatically recognizes **all types of contributions** to the project!
-
-**How to use:**
-1. After someone contributes (code, docs, ideas, bug reports, etc.)
-2. Comment on the PR or issue: `@all-contributors please add @username for <contribution-type>`
-3. The bot will automatically update the README with their contribution
-
-**Example:**
-```
-@all-contributors please add @johndoe for code, docs, bug
-```
-
-**Contribution types:**
-- `code` - Code contributions
-- `doc` - Documentation
-- `bug` - Bug reports
-- `ideas` - Ideas & suggestions
-- `test` - Testing
-- `review` - Code reviews
-- `infra` - Infrastructure
-- `design` - Design
-- `question` - Answering questions
-- ...and [many more](https://allcontributors.org/docs/en/emoji-key)!
-
-### Welcome Bot 👋
-Automatically welcomes new contributors when they:
-- Open their first issue
-- Create their first pull request
-- Get their first PR merged
-
-You don't need to do anything - the bot handles it automatically!
-
-### First Timers Bot 🎯
-**For Maintainers:** Create beginner-friendly issues by:
-1. Creating a branch that starts with `first-timers-`
-2. The bot will automatically generate a detailed issue for newcomers
-3. Perfect for simple fixes like typos, formatting, or minor improvements
-
-**For Contributors:** Look for issues labeled `first-timers-only` - they're specifically designed to be easy for newcomers!
-
----
-
-## Questions?
-
-If you have questions about contributing, please:
-1. Check this document again
-2. Search existing issues
-3. Ask in GitHub Discussions
-4. Open a new issue with the `question` label
-
-**We're here to help you help us!**
-
----
-
-*Last updated: January 27, 2026*
+*Last updated: March 14, 2026*
