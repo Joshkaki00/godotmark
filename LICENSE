@@ -19,3 +19,29 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+## Third-Party Licenses
+
+This project uses the following third-party software:
+
+### Godot Engine
+- License: MIT License
+- Copyright: Juan Linietsky, Ariel Manzur, and contributors
+- Source: https://github.com/godotengine/godot
+
+### .NET Runtime
+- License: MIT License
+- Copyright: .NET Foundation and Contributors
+- Source: https://github.com/dotnet/runtime
+
+### CUDA Toolkit (Jetson platforms only)
+- License: NVIDIA Software License Agreement
+- Copyright: NVIDIA Corporation
+- Source: https://developer.nvidia.com/cuda-toolkit
+
+### TensorRT (Jetson platforms only, optional)
+- License: NVIDIA Software License Agreement
+- Copyright: NVIDIA Corporation
+- Source: https://developer.nvidia.com/tensorrt
